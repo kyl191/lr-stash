@@ -167,7 +167,7 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	
 	assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 	
-	local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. propertyTable.access_token 
+	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. propertyTable.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
 	local filePath = assert( params.filePath )
@@ -175,9 +175,21 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	
 	local fileName = LrPathUtils.leafName( filePath )
 	
-	params.tags = string.gsub( params.tags, ",", " " )
-
-	postUrl = postUrl .. '&keywords=' .. params.tags
+	if not (params.tags == nil) then
+		params.tags = string.gsub( params.tags, ",", " " )
+		postUrl = postUrl .. '&keywords=' .. params.tags
+	end
+	
+	if not (params.description == nil) then
+		postUrl = postUrl .. '&artist_comments=' .. params.description
+		--LrDialogs.message(params.description)
+	end
+	
+	if not (params.title == nil) then
+		--LrDialogs.message('Title: ' .. params.title)
+		postUrl = postUrl .. '&title=' .. params.title
+		--LrDialogs.message(postUrl)
+	end
 	
 	local mimeChunks = {}
 
@@ -197,7 +209,7 @@ function StashAPI.uploadPhoto( propertyTable, params )
 		
 	else
 		json = JSON:decode(result)
-		LrDialogs.message(result)
+		--LrDialogs.message(result)
 	end
 	
 end
