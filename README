@@ -1,0 +1,17 @@
+LR-Sta.sh
+Lightroom Integration with Sta.sh
+
+v 0.0.0.1
+- Initial release
+
++ Uploading works
++ Authentication works
++ It's something shiny to click on
+- Dialog boxes all over the place from debug code
+- No (minimal) network error handling
+- Tags that are more than one word break when uploaded (Tags following the broken tag aren't processed)
+ -> THIS IS A LIMITATION OF STA.SH
+ -> However, I can strip the invalid tags out. Hopefully.
+
+o Plugin id & plugin secret are littered everywhere in plain text
+ -> However, even compiled, you can still look for something that looks like a URL and get the codes that way, so, eh. Please don't abuse it?
