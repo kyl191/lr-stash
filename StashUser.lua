@@ -12,6 +12,7 @@ local LrTasks = import 'LrTasks'
 local LrDate = import 'LrDate'
 
 local logger = import 'LrLogger'( 'StashAPI' )
+local prefs = import 'LrPrefs'.prefsForPlugin()
 
 require 'StashAPI'
 
@@ -114,6 +115,8 @@ function StashUser.getUsername ( propertyTable )
 
 	if not propertyTable.username == nil then 
 		username = propertyTable.username 
+	elseif not prefs.username == nil then
+		username = prefs.username
 	else
 		username = StashAPI.getUsername(propertyTable)
 	end
