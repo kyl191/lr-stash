@@ -98,6 +98,9 @@ local exportServiceProvider = {}
  	-- @class property
 
 exportServiceProvider.exportPresetFields = {
+	{ key = 'titleFirstChoice', default = 'title'},
+	{ key = 'exportSettings.titleSecondChoice',  default = 'filename'}
+
 }
 
 --------------------------------------------------------------------------------
