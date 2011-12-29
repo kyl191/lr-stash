@@ -138,7 +138,7 @@ function StashUser.verifyLogin( propertyTable )
 		propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logging In..."
 		propertyTable.loginButtonEnabled = false
 
-			if propertyTable.expire and tonumber(propertyTable.expire) < LrDate.currentTime() then
+			if not propertyTable.expire == nil and tonumber(propertyTable.expire) < LrDate.currentTime() then
 				StashAPI.refreshAuth( propertyTable )
 			end
 
