@@ -130,11 +130,12 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.processToken( propertyTable, token_json, context )
+function StashAPI.processToken( propertyTable, token, context )
 
 	--LrDialogs.message('Access token: ' .. token_json)
 
-	local token = JSON:decode(token_json)
+	-- Token already decoded, no need for this.
+	--local token = JSON:decode(token_json)
 
 	if token.status ~= "success" then
 		LrDialogs.attachErrorDialogToFunctionContext(context)
