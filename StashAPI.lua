@@ -227,9 +227,7 @@ function StashAPI.getUsername( propertyTable )
 
 	local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. propertyTable.access_token
 
-	local token_json = LrHttp.post(postUrl, "")
-
-	local token = JSON:decode(token_json)
+	local token = StashAPI.getResult( postUrl )
 	
 	if token.status then
 		LrDialogs.attachErrorDialogToFunctionContext(context)
@@ -239,9 +237,9 @@ function StashAPI.getUsername( propertyTable )
 		prefs.username = username
 		propertyTable.username = username
 	else
-		--Error'd, network layer
+		--Error'd, probably not network layer
 		LrDialogs.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "Network Problems" )
+		LrErrors.throwUserError( "An unknown problem occured. Try again." )
 	end
 	return username
 
