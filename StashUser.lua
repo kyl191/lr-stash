@@ -10,6 +10,7 @@ local LrDialogs = import 'LrDialogs'
 local LrFunctionContext = import 'LrFunctionContext'
 local LrTasks = import 'LrTasks'
 local LrDate = import 'LrDate'
+local LrStringUtils = import 'LrStringUtils'
 
 local logger = import 'LrLogger'( 'StashAPI' )
 local prefs = import 'LrPrefs'.prefsForPlugin()
@@ -144,8 +145,10 @@ function StashUser.verifyLogin( propertyTable )
 			if storedCredentialsAreValid( propertyTable ) then
 			     
 				local username = StashUser.getUsername(propertyTable)
+				local space = StashAPI.getRemainingSpace(propertyTable)
+				space = LrStringUtils.byteString(space) .. " of space remaining."
 
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", username )
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 (^2)", username, space )
 				--LrDialogs.message('Username: ' .. username)
 			
 				if propertyTable.LR_editingExistingPublishConnection then

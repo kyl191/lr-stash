@@ -269,4 +269,14 @@ function StashAPI.getResult( postUrl )
 		local decode = JSON:decode(json)
 		return decode
 	end
+
 end	
+--------------------------------------------------------------------------------
+
+function StashAPI.getRemainingSpace( propertyTable )
+
+	local token = StashAPI.getResult("https://www.deviantart.com/api/draft15/stash/space?token=" .. propertyTable.access_token)
+
+	return token.available_space
+
+end
