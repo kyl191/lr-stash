@@ -100,7 +100,7 @@ local exportServiceProvider = {}
 exportServiceProvider.exportPresetFields = {
 	{ key = 'access_token', default = '' },
 	{ key = 'refresh_token', default = '' },
-	{ key = 'expire', default = '' },
+	{ key = 'expire', default = '0' },
 	{ key = 'username', default = ''},
 	{ key = 'titleFirstChoice', default = 'title'},
 	{ key = 'titleSecondChoice',  default = 'filename'}
