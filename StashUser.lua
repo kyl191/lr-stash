@@ -81,9 +81,6 @@ function StashUser.login( propertyTable )
 
 		end )
 		
-		-- todo: Make sure we have an API key. Find a way to code it in another file and do loadfile?
-
-
 		-- auth_code is one-time use, don't bother storing it in the propertyTable
 		local auth_code = StashAPI.showAuthDialog(propertyTable, '')
 
