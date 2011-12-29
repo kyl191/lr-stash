@@ -171,24 +171,24 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	
 	local fileName = LrPathUtils.leafName( filePath )
 	
+	-- Append the tags if present
 	if not (params.tags == nil) then
 		postUrl = postUrl .. '&keywords=' .. params.tags
 	end
 	
+	-- Append the description
+	-- Though it's short, so maybe a Memo/long description panel in Lightroom?
 	if not (params.description == nil) then
 		postUrl = postUrl .. '&artist_comments=' .. params.description
-		--LrDialogs.message(params.description)
 	end
 	
+	-- Append the title too.
 	if not (params.title == nil) then
-		--LrDialogs.message('Title: ' .. params.title)
 		postUrl = postUrl .. '&title=' .. params.title
-		--LrDialogs.message(postUrl)
 	end
 	
+	-- Add the photo itself
 	local mimeChunks = {}
-
-	-- Wait, where do the tags go?
 
 	mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
 	
@@ -204,7 +204,7 @@ function StashAPI.uploadPhoto( propertyTable, params )
 		
 	else
 		json = JSON:decode(result)
-		--LrDialogs.message(result)
+		-- Throw the sta.sh id back? For use in a publishing service.
 	end
 	
 end
