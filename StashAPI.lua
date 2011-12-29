@@ -172,7 +172,6 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	local fileName = LrPathUtils.leafName( filePath )
 	
 	if not (params.tags == nil) then
-		params.tags = string.gsub( params.tags, ",", " " )
 		postUrl = postUrl .. '&keywords=' .. params.tags
 	end
 	

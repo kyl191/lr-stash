@@ -492,7 +492,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										filePath = pathOrMessage,
 										title = title or '',
 										description = description,
-										tags = table.concat( tags, ',' ),
+										tags = table.concat( tags, ' ' ),
 									} )
 				
 				
