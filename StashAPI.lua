@@ -12,7 +12,7 @@ local LrDialogs = import 'LrDialogs'
 local LrErrors = import 'LrErrors'
 local LrFunctionContext = import 'LrFunctionContext'
 local LrHttp = import 'LrHttp'
-local LrMD5 = import 'LrMD5'
+local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrView = import 'LrView'
 local LrXml = import 'LrXml'
@@ -190,6 +190,14 @@ function StashAPI.uploadPhoto( propertyTable, params )
 
 	mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
 	
+	-- Before uploading, check to make sure that there's enough space to upload
+	local space = StashAPI.getRemainingSpace( propertyTable )
+	local fileAttribs = LrFileUtils.fileAttributes(filePath)
+	
+	if tonumber(space) < tonumber(fileAttribs.fileSize) then
+		LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
+	end
+
 	-- Post it and wait for confirmation.
 	
 	local result, hdrs = LrHttp.postMultipart( postUrl, mimeChunks )
