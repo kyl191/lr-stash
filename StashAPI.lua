@@ -119,11 +119,8 @@ end
 
 function StashAPI.getToken(code)
 
-	local postUrl = "https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&redirect_uri=http://oauth2.kyl191.net/&code=" .. code
+	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&redirect_uri=http://oauth2.kyl191.net/&code=" .. code)
 
-	local token = LrHttp.post(postUrl, "")
-
-	-- error checking?
 	return token
 
 end
