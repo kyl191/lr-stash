@@ -146,9 +146,12 @@ function StashUser.verifyLogin( propertyTable )
 			     
 				local username = StashUser.getUsername(propertyTable)
 				local space = StashAPI.getRemainingSpace(propertyTable)
-				space = LrStringUtils.byteString(space) .. " of space remaining."
+				propertyTable.space = space
+				if space ~= nil then
+					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
+				end
 
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 (^2)", username, space )
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", username, space )
 				--LrDialogs.message('Username: ' .. username)
 			
 				if propertyTable.LR_editingExistingPublishConnection then
