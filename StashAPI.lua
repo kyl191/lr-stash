@@ -251,9 +251,7 @@ end
 
 function StashAPI.refreshAuth( propertyTable )
 
-	local postUrl = "https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. propertyTable.refresh_token
-
-	local token = LrHttp.post(postUrl, "")
+	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. propertyTable.refresh_token)
 
 	StashAPI.processToken(propertyTable, token, nil)
 
