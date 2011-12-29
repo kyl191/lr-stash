@@ -462,7 +462,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 					for keyword in keywordIter do
 					
-						-- Seems to be removing a single leading space if present
+						--[[ Seems to be removing a single leading space if present
 						if string.sub( keyword, 1, 1 ) == ' ' then
 							keyword = string.sub( keyword, 2, -1 )
 						end
@@ -471,12 +471,13 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 						if string.find( keyword, ' ' ) ~= nil then
 							keyword = '"' .. keyword .. '"'
 						end
+						]]
 
 						-- Strip non-alphanumeric characters from keyword
 						if string.find( keyword, "[^%w*]") ~= nil then
 							keyword = string.gsub( keyword, "[^%w*]", "" )
 						end
-						
+
 						tags[ #tags + 1 ] = keyword
 
 					end
