@@ -258,3 +258,21 @@ function StashAPI.refreshAuth( propertyTable )
 	StashAPI.processToken(propertyTable, token, nil)
 
 end
+
+--------------------------------------------------------------------------------
+
+function StashAPI.getResult( postUrl )
+
+	local json, headers = LrHttp.post(postUrl, "")
+
+	if not json then
+	
+		if hdrs and hdrs.error then
+			LrErrors.throwUserError( hdrs.error.nativeCode )
+		end
+		
+	else
+		local decode = JSON:decode(json)
+		return decode
+	end
+end	
