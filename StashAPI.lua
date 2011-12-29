@@ -30,10 +30,6 @@ JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 StashAPI = {}
 
-if prefs then
-	propertyTable = prefs
-end
-
 --------------------------------------------------------------------------------
 
 
