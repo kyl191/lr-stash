@@ -1,6 +1,11 @@
 LR-Sta.sh
 Lightroom Integration with Sta.sh
 
+v 0.0.0.3
++ Fixed the tag problems
+ -> Anything that's not an alphanumeric character will be stripped. No exceptions.
++ Most network communication is done with an improved method that *should* handle errors
+
 v 0.0.0.2
 - Uploading additions
 + Title Support
