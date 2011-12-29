@@ -33,6 +33,7 @@ StashAPI = {}
 --------------------------------------------------------------------------------
 
 
+-- Isn't this replacable with LrStringUtils.trimWhitespace?
 local function trim( s )
 
 	return string.gsub( s, "^%s*(.-)%s*$", "%1" )
