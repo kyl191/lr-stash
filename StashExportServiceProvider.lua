@@ -103,7 +103,7 @@ exportServiceProvider.exportPresetFields = {
 	{ key = 'expire', default = '' },
 	{ key = 'username', default = ''},
 	{ key = 'titleFirstChoice', default = 'title'},
-	{ key = 'exportSettings.titleSecondChoice',  default = 'filename'}
+	{ key = 'titleSecondChoice',  default = 'filename'}
 
 }
 
