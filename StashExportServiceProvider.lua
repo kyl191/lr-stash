@@ -462,10 +462,12 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 					for keyword in keywordIter do
 					
+						-- Seems to be removing a single leading space if present
 						if string.sub( keyword, 1, 1 ) == ' ' then
 							keyword = string.sub( keyword, 2, -1 )
 						end
 						
+						-- If the keyword has a space in it, put it in quotations
 						if string.find( keyword, ' ' ) ~= nil then
 							keyword = '"' .. keyword .. '"'
 						end
