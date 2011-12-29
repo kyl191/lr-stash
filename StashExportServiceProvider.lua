@@ -72,7 +72,7 @@ local exportServiceProvider = {}
 	-- @name exportServiceProvider.supportsIncrementalPublish
 	-- @class property
 
--- exportServiceProvider.supportsIncrementalPublish = 'only'
+--exportServiceProvider.supportsIncrementalPublish = 'true'
 
 --------------------------------------------------------------------------------
 --- (optional) Plug-in defined value declares which fields in your property table should
