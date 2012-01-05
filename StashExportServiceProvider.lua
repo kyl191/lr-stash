@@ -11,6 +11,7 @@ local LrDialogs = import 'LrDialogs'
 local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrView = import 'LrView'
+local LrStringUtils = import 'LrStringUtils'
 
 	-- Common shortcuts
 local bind = LrView.bind
@@ -495,9 +496,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										tags = table.concat( tags, ' ' ),
 									} )
 
-				LrDialogs.message("Sta.sh id: " .. StashInfo.stashid)
+				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(StashInfo.stashid))
 				rendition:recordPublishedPhotoId(StashInfo.stashid)
-				rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
+				rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. LrStringUtils.numberToString(StashInfo.stashid))
 
 				exportSession:recordRemoteCollectionId( StashInfo.folderid )
 
