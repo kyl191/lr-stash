@@ -488,13 +488,17 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				
 				-- Upload or replace the photo.
 				
-				StashPhotoId = StashAPI.uploadPhoto( exportSettings, {
+				StashInfo = StashAPI.uploadPhoto( exportSettings, {
 										filePath = pathOrMessage,
 										title = title or '',
 										description = description,
 										tags = table.concat( tags, ' ' ),
 									} )
-				
+
+				LrDialogs.message("Sta.sh id: " .. tostring(StashInfo.stashid))
+				exportRendition:recordPublishedPhotoId(StashInfo.stashid)
+				exportRendition:recordPublishedPhotoUrl("http://sta.sh/1" .. tostring(StashInfo.stashid))
+
 				
 				-- When done with photo, delete temp file. There is a cleanup step that happens later,
 				-- but this will help manage space in the event of a large upload.
