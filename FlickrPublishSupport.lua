@@ -117,11 +117,11 @@ publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/Fl
 function publishServiceProvider.getCollectionBehaviorInfo( publishSettings )
 
 	return {
-		defaultCollectionName = LOC "$$$/Flickr/DefaultCollectionName/Photostream=Photostream",
+		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Published by Lightroom=Published by Lightroom",
 		defaultCollectionCanBeDeleted = false,
 		canAddCollection = true,
 		maxCollectionSetDepth = 0,
-			-- Collection sets are not supported through the Flickr sample plug-in.
+			-- Collection sets are not supported in Sta.sh.
 	}
 	
 end
