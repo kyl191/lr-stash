@@ -184,6 +184,17 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	if not (params.title == nil) then
 		postUrl = postUrl .. '&title=' .. params.title
 	end
+
+	-- Append the Sta.sh id if we're replacing it.
+	if not (params.stashid == nil) then
+		postUrl = postUrl .. '&stashid=' .. params.stashid
+	end
+
+	-- Append the folderid too if we've got it.
+	if not (params.folderid == nil) then
+		postUrl = postUrl .. '&folderid=' .. params.folderid
+	end
+
 	
 	-- Add the photo itself
 	local mimeChunks = {}
