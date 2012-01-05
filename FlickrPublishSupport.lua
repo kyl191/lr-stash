@@ -1,8 +1,8 @@
 	-- Lightroom SDK
 local LrDialogs = import 'LrDialogs'
 
-	-- Flickr plug-in
-require 'FlickrAPI'
+	-- Stash plug-in
+require 'StashAPI'
 
 
 --------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ publishServiceProvider.publish_fallbackNameBinding = 'fullname'
 	-- @name publishServiceProvider.titleForPublishedCollection
 	-- @class property
 	
-publishServiceProvider.titleForPublishedCollection = LOC "$$$/Flickr/TitleForPublishedCollection=Photoset"
+publishServiceProvider.titleForPublishedCollection = LOC "$$$/Stash/TitleForPublishedCollection=Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -57,7 +57,7 @@ publishServiceProvider.titleForPublishedCollection = LOC "$$$/Flickr/TitleForPub
 	-- @name publishServiceProvider.titleForPublishedCollection_standalone
 	-- @class property
 
-publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Flickr/TitleForPublishedCollection/Standalone=Photoset"
+publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Stash/TitleForPublishedCollection/Standalone=Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -69,7 +69,7 @@ publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Flickr/
  	-- @name publishServiceProvider.titleForPublishedSmartCollection
 	-- @class property
 
-publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Flickr/TitleForPublishedSmartCollection=Smart Photoset"
+publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Stash/TitleForPublishedSmartCollection=Smart Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -85,7 +85,7 @@ publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Flickr/TitleF
 	-- @name publishServiceProvider.titleForPublishedSmartCollection_standalone
 	-- @class property
 
-publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/Flickr/TitleForPublishedSmartCollection/Standalone=Smart Photoset"
+publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/Stash/TitleForPublishedSmartCollection/Standalone=Smart Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional) If you provide this plug-in defined callback function, Lightroom calls it to
@@ -133,7 +133,7 @@ end
 	-- @name publishServiceProvider.titleForGoToPublishedCollection
 	-- @class property
 
-publishServiceProvider.titleForGoToPublishedCollection = LOC "$$$/Flickr/TitleForGoToPublishedCollection=Show in Flickr"
+publishServiceProvider.titleForGoToPublishedCollection = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Stash"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value overrides the label for the 
@@ -143,7 +143,7 @@ publishServiceProvider.titleForGoToPublishedCollection = LOC "$$$/Flickr/TitleFo
 	-- @name publishServiceProvider.titleForGoToPublishedPhoto
 	-- @class property
 
-publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Flickr/TitleForGoToPublishedCollection=Show in Flickr"
+publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Stash"
 
 --------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called when the user chooses the
@@ -172,7 +172,7 @@ publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Flickr/TitleForGoTo
 	  -- <a href="LrExportRendition.html#exportRendition:recordPublishedPhotoUrl"><code>exportRendition:recordPublishedPhotoUrl</code></a>.</li>
 	 -- </ul>
 
---[[ Not used for Flickr plug-in.
+--[[ Not used for Stash plug-in.
 
 function publishServiceProvider.goToPublishedPhoto( publishSettings, info )
 end
@@ -199,7 +199,7 @@ end
 	  -- 	The publish service object.</li>
 	 -- </ul>
 
---[[ Not used for Flickr plug-in.
+--[[ Not used for Stash plug-in.
 
 function publishServiceProvider.didCreateNewPublishService( publishSettings, info )
 end
@@ -229,7 +229,7 @@ end
 	  --  (description) has changed</li>
 	 -- </ul>
 
---[[ Not used for Flickr plug-in.
+--[[ Not used for Stash plug-in.
 
 function publishServiceProvider.didUpdatePublishService( publishSettings, info )
 end
@@ -312,7 +312,7 @@ function publishServiceProvider.metadataThatTriggersRepublish( publishSettings )
 		gps = true,
 		dateCreated = true,
 
-		-- also (not used by Flickr sample plug-in):
+		-- also (not used by Stash sample plug-in):
 			-- customMetadata = true,
 			-- com.whoever.plugin_name.* = true,
 			-- com.whoever.plugin_name.field_name = true,
@@ -337,7 +337,7 @@ end
 	-- @return (Boolean) True if the name is acceptable, false if not
 	-- @return (string) If the name is not acceptable, a string that describes the reason, suitable for display.
 
---[[ Not used for Flickr plug-in. --]]
+--[[ Not used for Stash plug-in. --]]
 
 -- Unknown what the Sta.sh API allows as a folder name.
 function publishServiceProvider.validatePublishedCollectionName( proposedName )
@@ -354,7 +354,7 @@ end
 	-- @class property
 -- Unknown if Sta.sh allows folders to be renamed from Lightroom.
 -- Web service it's possible, so need to check the folder name & grab that?
-publishServiceProvider.disableRenamePublishedCollection = true -- not used for Flickr sample plug-in
+publishServiceProvider.disableRenamePublishedCollection = true -- not used for Stash sample plug-in
 
 -------------------------------------------------------------------------------
 --- This plug-in callback function is called when the user has renamed a
@@ -397,7 +397,7 @@ function publishServiceProvider.renamePublishedCollection( publishSettings, info
 
 	if info.remoteId then
 
-		FlickrAPI.createOrUpdatePhotoset( publishSettings, {
+		StashAPI.createOrUpdatePhotoset( publishSettings, {
 							photosetId = info.remoteId,
 							title = info.name,
 						} )
@@ -434,4 +434,4 @@ end
 
 --------------------------------------------------------------------------------
 
-FlickrPublishSupport = publishServiceProvider
+StashPublishSupport = publishServiceProvider
