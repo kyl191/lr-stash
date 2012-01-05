@@ -145,7 +145,7 @@ publishServiceProvider.titleForGoToPublishedCollection = "disable"
 	-- @name publishServiceProvider.titleForGoToPublishedPhoto
 	-- @class property
 
-publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Stash"
+publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Sta.sh"
 
 
 
