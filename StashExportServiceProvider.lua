@@ -496,8 +496,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 									} )
 
 				LrDialogs.message("Sta.sh id: " .. tostring(StashInfo.stashid))
-				exportRendition:recordPublishedPhotoId(StashInfo.stashid)
-				exportRendition:recordPublishedPhotoUrl("http://sta.sh/1" .. tostring(StashInfo.stashid))
+				rendition:recordPublishedPhotoId(StashInfo.stashid)
+				rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
 
 				exportSession:recordRemoteCollectionId( StashInfo.folderid )
 
