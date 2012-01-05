@@ -213,7 +213,6 @@ function StashAPI.uploadPhoto( propertyTable, params )
 		if json.error ~= nil then
 			LrErrors.throwUserError( "Error uploading to Sta.sh: " .. json.error .. " : " .. json.error_description)
 		end
-		
 		return json
 	end
 	
