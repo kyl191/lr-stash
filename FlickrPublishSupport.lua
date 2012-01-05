@@ -1,21 +1,3 @@
---[[----------------------------------------------------------------------------
-
-FlickrPublishServiceProvider.lua
-Publish-specific portions of Lightroom Flickr uploader
-
---------------------------------------------------------------------------------
-
-ADOBE SYSTEMS INCORPORATED
- Copyright 2007-2010 Adobe Systems Incorporated
- All Rights Reserved.
-
-NOTICE: Adobe permits you to use, modify, and distribute this file in accordance
-with the terms of the Adobe license agreement accompanying it. If you have received
-this file from a source other than Adobe, then your use, modification, or distribution
-of it requires the prior written permission of Adobe.
-
-------------------------------------------------------------------------------]]
-
 	-- Lightroom SDK
 local LrDialogs = import 'LrDialogs'
 
@@ -24,52 +6,6 @@ require 'FlickrAPI'
 
 
 --------------------------------------------------------------------------------
-
- -- NOTE to developers reading this sample code: This file is used to generate
- -- the documentation for the "publish service provider" section of the API
- -- reference material. This means it's more verbose than it would otherwise
- -- be, but also means that you can match up the documentation with an actual
- -- working example. It is not necessary for you to preserve any of the
- -- documentation comments in your own code.
-
-
---===========================================================================--
---[[ @sdk
---- The <i>service definition script</i> for a publish service provider associates 
- -- the code and hooks that extend the behavior of Lightroom's Publish features
- -- with their implementation for your plug-in. The plug-in's <code>Info.lua</code> file 
- -- identifies this script in the <code>LrExportServiceProvider</code> entry. The script
- -- must define the needed callback functions and properties (with the required
- -- names and syntax) and assign them to members of the table that it returns. 
- -- <p>The <code>FlickrPublishSupport.lua</code> file of the Flickr sample plug-in provides 
- -- 	examples of and documentation for the hooks that a plug-in must provide in order to 
- -- 	define a publish service. Because much of the functionality of a publish service
- -- 	is the same as that of an export service, this example builds upon that defined in the
- -- 	<code>FlickrExportServiceProvider.lua</code> file.</p>
-  -- <p>The service definition script for a publish service should return a table that contains:
- --   <ul><li>A pair of functions that initialize and terminate your publish service. </li>
- --	<li>Optional items that define the desired customizations for the Publish dialog. 
- --	    These can restrict the built-in services offered by the dialog,
- --	    or customize the dialog by defining new sections. </li>
- --	<li> A function that defines the publish operation to be performed 
- --	     on rendered photos (required).</li> 
- --	<li> Additional functions and/or properties to customize the publish operation.</li>
- --   </ul>
- -- <p>Most of these functions are the same as those defined for an export service provider.
- -- Publish services, unlike export services, cannot create presets. (You could think of the 
- -- publish service itself as an export preset.) The settings tables passed
- -- to these callback functions contain only Lightroom-defined settings, and settings that
- -- have been explicitly declared in the <code>exportPresetFields</code> list of the publish service.
- -- A callback function that you define for a publish service cannot make any changes to the
- -- settings table passed to it.</p>
- -- @module_type Plug-in provided
-
-	module 'SDK - Publish service provider' -- not actually executed, but suffices to trick LuaDocs
-
---]]
-
-
---============================================================================--
 
 local publishServiceProvider = {}
 
