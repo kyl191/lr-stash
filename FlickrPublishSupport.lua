@@ -220,8 +220,6 @@ function publishServiceProvider.metadataThatTriggersRepublish( publishSettings )
 		title = true,
 		caption = true,
 		keywords = true,
-		gps = true,
-		dateCreated = true,
 
 		-- also (not used by Stash sample plug-in):
 			-- customMetadata = true,
