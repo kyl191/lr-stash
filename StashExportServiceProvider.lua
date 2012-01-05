@@ -499,6 +499,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				exportRendition:recordPublishedPhotoId(StashInfo.stashid)
 				exportRendition:recordPublishedPhotoUrl("http://sta.sh/1" .. tostring(StashInfo.stashid))
 
+				exportSession:recordRemoteCollectionId( StashInfo.folderid )
+
 				
 				-- When done with photo, delete temp file. There is a cleanup step that happens later,
 				-- but this will help manage space in the event of a large upload.
