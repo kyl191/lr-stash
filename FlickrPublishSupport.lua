@@ -248,9 +248,9 @@ end
 
 --[[ Not used for Stash plug-in. --]]
 
--- Unknown what the Sta.sh API allows as a folder name.
+-- Unknown what the Sta.sh API allows as a folder name. Assuming it's only ASCII
 function publishServiceProvider.validatePublishedCollectionName( proposedName )
-	return true
+	return LrStringUtils.isOnlyAscii( proposedName )
 end
 
 
