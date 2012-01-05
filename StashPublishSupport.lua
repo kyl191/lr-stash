@@ -134,7 +134,8 @@ end
 	-- @name publishServiceProvider.titleForGoToPublishedCollection
 	-- @class property
 
-publishServiceProvider.titleForGoToPublishedCollection = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Stash"
+-- Sta.sh doesn't seem to allow going to a folder directly.
+publishServiceProvider.titleForGoToPublishedCollection = "disable"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value overrides the label for the 
