@@ -495,7 +495,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										tags = table.concat( tags, ' ' ),
 									} )
 
-				LrDialogs.message("Sta.sh id: " .. tostring(StashInfo.stashid))
+				LrDialogs.message("Sta.sh id: " .. StashInfo.stashid)
 				rendition:recordPublishedPhotoId(StashInfo.stashid)
 				rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
 
