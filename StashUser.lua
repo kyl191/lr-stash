@@ -109,21 +109,6 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashUser.getUsername ()
-	
-	local username = nil
-
-	if not prefs.username == nil then
-		username = prefs.username
-	else
-		username = StashAPI.getUsername()
-	end
-
-	return username
-end
-
---------------------------------------------------------------------------------
-
 function StashUser.verifyLogin( propertyTable )
 
 	-- Observe changes to prefs and update status message accordingly.
@@ -144,7 +129,7 @@ function StashUser.verifyLogin( propertyTable )
 
 			if storedCredentialsAreValid( propertyTable ) then
 			     
-				local username = StashUser.getUsername()
+				local username = StashAPI.getUsername()
 				local space = StashAPI.getRemainingSpace()
 				propertyTable.space = space
 				if space ~= nil then
