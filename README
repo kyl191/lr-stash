@@ -1,6 +1,10 @@
 LR-Sta.sh
 Lightroom Integration with Sta.sh
 
+v 0.0.0.5
++ Support for Publishing to Sta.sh
+- No cute icon though
+
 v 0.0.0.4
 + Added a file size check before uploading, just to ensure that there's enough space in Sta.sh
 + Remaining space is also displayed in the Export dialog for the user's info
