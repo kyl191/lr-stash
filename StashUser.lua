@@ -137,7 +137,6 @@ function StashUser.verifyLogin( propertyTable )
 
 				local username = StashAPI.getUsername()
 				local space = StashAPI.getRemainingSpace()
-				propertyTable.space = space
 				if space ~= nil then
 					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
 				end

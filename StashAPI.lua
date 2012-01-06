@@ -165,7 +165,6 @@ function StashAPI.uploadPhoto( params )
 	postUrl = postUrl .. '&title=' .. params.title
 
 	local filePath = assert( params.filePath )
-	params.filePath = nil
 	
 	local fileName = LrPathUtils.leafName( filePath )
 	
