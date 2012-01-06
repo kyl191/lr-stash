@@ -120,7 +120,7 @@ publishServiceProvider.publish_fallbackNameBinding = 'fullname'
 function publishServiceProvider.getCollectionBehaviorInfo( publishSettings )
 
 	return {
-		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Publish to sta.sh=Publish to sta.sh",
+		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Default=Default",
 		defaultCollectionCanBeDeleted = false,
 		canAddCollection = true,
 		maxCollectionSetDepth = 0,
