@@ -128,7 +128,8 @@ function StashUser.verifyLogin( propertyTable )
 			end
 
 			if storedCredentialsAreValid( propertyTable ) then
-			     
+  
+			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
 				local username = StashAPI.getUsername()
 				local space = StashAPI.getRemainingSpace()
 				propertyTable.space = space
