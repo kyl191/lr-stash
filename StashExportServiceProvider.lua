@@ -496,8 +496,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 					end
 
 				end
-				
 
+				local stashId = rendition.publishedPhotoId
 				
 				-- Upload or replace the photo.
 				
@@ -506,6 +506,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										title = title or '',
 										description = description,
 										tags = table.concat( tags, ' ' ),
+										stashId = stashID or '',
+										folderId = folderId or '',
 									} )
 
 				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(StashInfo.stashid))
