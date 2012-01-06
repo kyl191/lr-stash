@@ -120,15 +120,19 @@ function StashUser.verifyLogin( propertyTable )
 		
 		LrTasks.startAsyncTask( function()
 			logger:trace( "verifyLogin: updateStatus() is executing." )
+			
+			propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Sign In?"
+			propertyTable.loginButtonEnabled = true
+			propertyTable.LR_cantExportBecause = "Waiting for you to log into Sta.sh..." 
 
-		propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logging In..."
-		propertyTable.loginButtonEnabled = false
 
 			if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
 				StashAPI.refreshAuth()
 			end
 
 			if storedCredentialsAreValid( propertyTable ) then
+				propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logging In..."
+				propertyTable.loginButtonEnabled = false
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
 
 				local username = StashAPI.getUsername()
@@ -151,6 +155,7 @@ function StashUser.verifyLogin( propertyTable )
 					propertyTable.validAccount = true
 				end
 			else
+				LrDialogs.message("Login failed.")
 				notLoggedIn( propertyTable )
 			end
 	
