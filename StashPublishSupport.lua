@@ -42,7 +42,7 @@ publishServiceProvider.publish_fallbackNameBinding = 'fullname'
 	-- @name publishServiceProvider.titleForPublishedCollection
 	-- @class property
 	
-publishServiceProvider.titleForPublishedCollection = LOC "$$$/Stash/TitleForPublishedCollection=Photoset"
+--publishServiceProvider.titleForPublishedCollection = LOC "$$$/Stash/TitleForPublishedCollection=Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -58,7 +58,7 @@ publishServiceProvider.titleForPublishedCollection = LOC "$$$/Stash/TitleForPubl
 	-- @name publishServiceProvider.titleForPublishedCollection_standalone
 	-- @class property
 
-publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Stash/TitleForPublishedCollection/Standalone=Photoset"
+--publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Stash/TitleForPublishedCollection/Standalone=Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -70,7 +70,7 @@ publishServiceProvider.titleForPublishedCollection_standalone = LOC "$$$/Stash/T
  	-- @name publishServiceProvider.titleForPublishedSmartCollection
 	-- @class property
 
-publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Stash/TitleForPublishedSmartCollection=Smart Photoset"
+--publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Stash/TitleForPublishedSmartCollection=Smart Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional, string) Plug-in defined value customizes the name of a published
@@ -86,7 +86,7 @@ publishServiceProvider.titleForPublishedSmartCollection = LOC "$$$/Stash/TitleFo
 	-- @name publishServiceProvider.titleForPublishedSmartCollection_standalone
 	-- @class property
 
-publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/Stash/TitleForPublishedSmartCollection/Standalone=Smart Photoset"
+--publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/Stash/TitleForPublishedSmartCollection/Standalone=Smart Photoset"
 
 --------------------------------------------------------------------------------
 --- (optional) If you provide this plug-in defined callback function, Lightroom calls it to
@@ -118,7 +118,7 @@ publishServiceProvider.titleForPublishedSmartCollection_standalone = LOC "$$$/St
 function publishServiceProvider.getCollectionBehaviorInfo( publishSettings )
 
 	return {
-		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Published by Lightroom=Published by Lightroom",
+		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Publish to sta.sh=Publish to sta.sh",
 		defaultCollectionCanBeDeleted = false,
 		canAddCollection = true,
 		maxCollectionSetDepth = 0,
@@ -146,8 +146,6 @@ publishServiceProvider.titleForGoToPublishedCollection = "disable"
 	-- @class property
 
 publishServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Sta.sh"
-
-
 
 --------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called whenever a new
@@ -222,12 +220,6 @@ function publishServiceProvider.metadataThatTriggersRepublish( publishSettings )
 		title = true,
 		caption = true,
 		keywords = true,
-
-		-- also (not used by Stash sample plug-in):
-			-- customMetadata = true,
-			-- com.whoever.plugin_name.* = true,
-			-- com.whoever.plugin_name.field_name = true,
-
 	}
 
 end
