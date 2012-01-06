@@ -522,9 +522,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 									} )
 
 				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(StashInfo.stashid))
-				-- Try formating the number as base 36, eg tonumber(number,base) -> tonumber(StashInfo.stashid,36)?
-				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(tonumber(StashInfo.stashid,36)))
-				
 
 				if publishing then 
 					rendition:recordPublishedPhotoId(StashInfo.stashid)
