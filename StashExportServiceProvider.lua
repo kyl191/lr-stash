@@ -417,7 +417,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
 
 		-- Look for a folder id for this collection - determines if we've previously published this collection
-		local folderId = publishedCollectionInfo.remoteId
+		folderId = publishedCollectionInfo.remoteId
 		--LrDialogs.message(publishedCollectionInfo.remoteId)
 
 	end
