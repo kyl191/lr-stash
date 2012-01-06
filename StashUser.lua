@@ -131,6 +131,7 @@ function StashUser.verifyLogin( propertyTable )
 			end
 
 			if storedCredentialsAreValid( propertyTable ) then
+				propertyTable.accountStatus = "Logging into Sta.sh, please wait..."
 				propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Re-Login?"
 				propertyTable.loginButtonEnabled = true
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
