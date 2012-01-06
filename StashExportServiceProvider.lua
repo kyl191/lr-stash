@@ -454,6 +454,10 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		-- Get next photo.
 
 		local photo = rendition.photo
+
+		if publishing and rendition.publishedPhotoId then
+			stashId = rendition.publishedPhotoId	
+		end
 		
 		if not rendition.wasSkipped then
 
@@ -508,28 +512,29 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 				end
 
-				local stashId = rendition.publishedPhotoId
-				LrDialogs.message(rendition.publishedPhotoId)
-				
 				-- Upload or replace the photo.
-				
+
 				StashInfo = StashAPI.uploadPhoto( {
 										filePath = pathOrMessage,
-										title = title or '',
+										title = title,
 										description = description,
 										tags = table.concat( tags, ' ' ),
-										stashId = stashId or '',
-										folderId = folderId or '',
+										stashid = stashId or nil,
+										folderid = folderId or nil,
 									} )
 
 				--LrDialogs.message("Publishing: " .. tostring(publishing))
 
 				if publishing then 
+					--LrDialogs.message(StashInfo.stashid)
+					if type(StashInfo.stashid) == 'number' then
+						StashInfo.stashid = LrStringUtils.numberToString(StashInfo.stashid)
+					end
 					rendition:recordPublishedPhotoId(StashInfo.stashid)
-					rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. LrStringUtils.numberToString(StashInfo.stashid))
+					rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
 				end
 				
-				folderId = StashInfo.folderid				
+				folderId = LrStringUtils.numberToString(StashInfo.folderid)
 				
 				-- When done with photo, delete temp file. There is a cleanup step that happens later,
 				-- but this will help manage space in the event of a large upload.
@@ -544,7 +549,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 	if publishing then
 		--LrDialogs.message(folderId)
-		exportSession:recordRemoteCollectionId( folderId )
+		exportSession:recordRemoteCollectionId(folderId)
 	end
 
 	progressScope:done()

@@ -15,6 +15,7 @@ local LrHttp = import 'LrHttp'
 local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrView = import 'LrView'
+local LrStringUtils = import 'LrStringUtils'
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
