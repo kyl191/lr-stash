@@ -1,5 +1,6 @@
 	-- Lightroom SDK
 local LrDialogs = import 'LrDialogs'
+local LrPathUtils = import 'LrPathUtils'
 local LrStringUtils = import 'LrStringUtils'
 
 	-- Stash plug-in

@@ -19,6 +19,7 @@ local share = LrView.share
 
 	-- Stash plug-in
 require 'StashAPI'
+require 'StashPublishSupport'
 
 
 
