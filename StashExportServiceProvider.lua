@@ -430,7 +430,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 	-- Look for a photoset id for this collection - determines if we've previously published this collection
 
-	local collectionId = publishedCollectionInfo.remoteId
+	local folderId = publishedCollectionInfo.remoteId
 
 	-- Iterate through photo renditions.
 
