@@ -418,11 +418,13 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 					}
 
 
+	local publishedCollectionInfo = exportContext.publishedCollectionInfo
+
 	-- Determine if we're trying to publish, or just export
 
 	local publishing = nil
 
-	if not exportContext.publishedCollectionInfo == nil then
+	if not publishedCollectionInfo == nil then
 		publishing = true
 	end
 
