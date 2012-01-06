@@ -406,15 +406,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	
 	local nPhotos = exportSession:countRenditions()
 	
-	-- Set progress title.
-	
-	local progressScope = exportContext:configureProgress {
-						title = nPhotos > 1
-									and string.format("Publishing %s photos to Sta.sh",  nPhotos)
-									or "Publishing one photo to Sta.sh",
-					}
-
-
 	local publishedCollectionInfo = exportContext.publishedCollectionInfo
 
 	-- Determine if we're trying to publish, or just export
@@ -430,6 +421,27 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		local folderId = publishedCollectionInfo.remoteId
 
 	end
+
+	-- Set progress title depending on whether we're exporting or publishing.
+
+	local progressScope = nil
+	
+	if publishing then
+		progressScope = exportContext:configureProgress {
+						title = nPhotos > 1
+									and string.format("Publishing %s photos to Sta.sh",  nPhotos)
+									or "Publishing one photo to Sta.sh",
+					}
+	else
+	
+		progressScope = exportContext:configureProgress {
+						title = nPhotos > 1
+									and string.format("Exporting %s photos to Sta.sh",  nPhotos)
+									or "Exporting one photo to Sta.sh",
+					}
+	end
+
+
 
 	-- Iterate through photo renditions.
 
