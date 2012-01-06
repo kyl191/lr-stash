@@ -418,6 +418,19 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 					}
 
 
+	-- Determine if we're trying to publish, or just export
+
+	local publishing = nil
+
+	if not exportContext.publishedCollectionInfo == nil then
+		publishing = true
+	end
+
+	local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
+
+	-- Look for a photoset id for this collection - determines if we've previously published this collection
+
+	local collectionId = publishedCollectionInfo.remoteId
 	-- Iterate through photo renditions.
 	
 	local photosetUrl
