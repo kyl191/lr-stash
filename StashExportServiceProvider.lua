@@ -512,11 +512,14 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 									} )
 
 				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(StashInfo.stashid))
-				rendition:recordPublishedPhotoId(StashInfo.stashid)
-				rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. LrStringUtils.numberToString(StashInfo.stashid))
+				
 
-				exportSession:recordRemoteCollectionId( StashInfo.folderid )
-
+				if publishing then 
+					rendition:recordPublishedPhotoId(StashInfo.stashid)
+					rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. LrStringUtils.numberToString(StashInfo.stashid))
+				end
+				
+				folderId = StashInfo.folderid				
 				
 				-- When done with photo, delete temp file. There is a cleanup step that happens later,
 				-- but this will help manage space in the event of a large upload.
@@ -527,6 +530,10 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 			
 		end
 
+	end
+
+	if publishing then
+		exportSession:recordRemoteCollectionId( folderId )
 	end
 
 	progressScope:done()
