@@ -128,6 +128,16 @@ end
 
 --------------------------------------------------------------------------------
 
+function StashAPI.refreshAuth()
+
+	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. prefs.refresh_token)
+
+	StashAPI.processToken( token, nil)
+
+end
+
+--------------------------------------------------------------------------------
+
 function StashAPI.processToken( token, context )
 
 	--LrDialogs.message('Access token: ' .. token_json)
@@ -259,16 +269,6 @@ function StashAPI.getUsername()
 		LrErrors.throwUserError( "An unknown problem occured. Try again." )
 	end
 	return username
-
-end
-
---------------------------------------------------------------------------------
-
-function StashAPI.refreshAuth()
-
-	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. prefs.refresh_token)
-
-	StashAPI.processToken( token, nil)
 
 end
 
