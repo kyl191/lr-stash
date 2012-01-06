@@ -127,7 +127,7 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.processToken( propertyTable, token, context )
+function StashAPI.processToken( token, context )
 
 	--LrDialogs.message('Access token: ' .. token_json)
 
@@ -138,13 +138,10 @@ function StashAPI.processToken( propertyTable, token, context )
 		LrDialogs.attachErrorDialogToFunctionContext(context)
 		LrErrors.throwUserError( "Unable to authenticate" )
 	elseif token.status == "success" then 
-		propertyTable.access_token = token.access_token
-		propertyTable.refresh_token = token.refresh_token
-		propertyTable.expire = LrDate.currentTime() + token.expires_in
+		prefs.access_token = token.access_token
+		prefs.refresh_token = token.refresh_token
+		prefs.expire = LrDate.currentTime() + token.expires_in
 		--LrDialogs.message('Token expires at ' .. LrDate.timeToW3CDate( propertyTable.expire ) )
-		prefs.access_token = propertyTable.access_token
-		prefs.refresh_token = propertyTable.refresh_token
-		prefs.expire = propertyTable.expire
 	else
 		--Error'd, network layer
 		LrDialogs.attachErrorDialogToFunctionContext(context)
@@ -155,13 +152,13 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.uploadPhoto( propertyTable, params )
+function StashAPI.uploadPhoto( params )
 
 	-- Prepare to upload.
 	
 	assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 	
-	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. propertyTable.access_token 
+	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
 	local filePath = assert( params.filePath )
@@ -202,7 +199,7 @@ function StashAPI.uploadPhoto( propertyTable, params )
 	mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
 	
 	-- Before uploading, check to make sure that there's enough space to upload
-	local space = StashAPI.getRemainingSpace( propertyTable )
+	local space = StashAPI.getRemainingSpace()
 	local fileAttribs = LrFileUtils.fileAttributes(filePath)
 	
 	if tonumber(space) < tonumber(fileAttribs.fileSize) then
@@ -241,11 +238,11 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.getUsername( propertyTable )
+function StashAPI.getUsername()
 
 	local username = nil
 
-	local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. propertyTable.access_token
+	local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token
 
 	local token = StashAPI.getResult( postUrl )
 	
@@ -255,7 +252,6 @@ function StashAPI.getUsername( propertyTable )
 	elseif token.username then 
 		username = token.symbol .. token.username
 		prefs.username = username
-		propertyTable.username = username
 	else
 		--Error'd, probably not network layer
 		LrDialogs.attachErrorDialogToFunctionContext(context)
@@ -267,9 +263,9 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.refreshAuth( propertyTable )
+function StashAPI.refreshAuth()
 
-	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. propertyTable.refresh_token)
+	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. prefs.refresh_token)
 
 	StashAPI.processToken(propertyTable, token, nil)
 
@@ -298,9 +294,9 @@ function StashAPI.getResult( postUrl )
 end	
 --------------------------------------------------------------------------------
 
-function StashAPI.getRemainingSpace( propertyTable )
+function StashAPI.getRemainingSpace()
 
-	local token = StashAPI.getResult("https://www.deviantart.com/api/draft15/stash/space?token=" .. propertyTable.access_token)
+	local token = StashAPI.getResult("https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token)
 
 	return token.available_space
 

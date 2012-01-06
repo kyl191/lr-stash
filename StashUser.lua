@@ -23,10 +23,10 @@ StashUser = {}
 
 --------------------------------------------------------------------------------
 
-local function storedCredentialsAreValid( propertyTable )
+local function storedCredentialsAreValid()
 
-	return propertyTable.access_token and string.len( propertyTable.access_token ) > 0
-			and propertyTable.refresh_token
+	return prefs.access_token and string.len( prefs.access_token ) > 0
+			and prefs.refresh_token
 
 end
 
@@ -34,10 +34,10 @@ end
 
 local function notLoggedIn( propertyTable )
 
-	propertyTable.access_token = nil
-	propertyTable.refresh_token = nil
-	propertyTable.expire = nil
-	propertyTable.username = nil
+	prefs.access_token = nil
+	prefs.refresh_token = nil
+	prefs.expire = nil
+	prefs.username = nil
 
 	propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/NotLoggedIn=Not logged in"
 	propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/NotLoggedIn=Log In"
@@ -73,7 +73,7 @@ function StashUser.login( propertyTable )
 
 			doingLogin = false
 
-			if not storedCredentialsAreValid( propertyTable ) then
+			if not storedCredentialsAreValid() then
 				notLoggedIn( propertyTable )
 			end
 			
@@ -91,13 +91,15 @@ function StashUser.login( propertyTable )
 		-- json token is similarly one-time use
 		local token = StashAPI.getToken(auth_code)
 
-		StashAPI.processToken(propertyTable, token, context)
+		StashAPI.processToken(token, context)
 
 		-- User has OK'd authentication. Get the user info.
 		
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
 
-		propertyTable.username = StashAPI.getUsername( propertyTable )
+		
+		-- Get the username from the StashAPI rather than StashUser because this is a new login
+		prefs.username = StashAPI.getUsername( propertyTable )
 
 		StashUser.verifyLogin( propertyTable )
 		
@@ -107,16 +109,14 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashUser.getUsername ( propertyTable )
+function StashUser.getUsername ()
 	
 	local username = nil
 
-	if not propertyTable.username == nil then 
-		username = propertyTable.username 
-	elseif not prefs.username == nil then
+	if not prefs.username == nil then
 		username = prefs.username
 	else
-		username = StashAPI.getUsername(propertyTable)
+		username = StashAPI.getUsername()
 	end
 
 	return username
@@ -138,14 +138,14 @@ function StashUser.verifyLogin( propertyTable )
 		propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logging In..."
 		propertyTable.loginButtonEnabled = false
 
-			if not propertyTable.expire == nil and tonumber(propertyTable.expire) < LrDate.currentTime() then
-				StashAPI.refreshAuth( propertyTable )
+			if not prefs.expire == nil and tonumber(prefs.expire) < LrDate.currentTime() then
+				StashAPI.refreshAuth()
 			end
 
 			if storedCredentialsAreValid( propertyTable ) then
 			     
-				local username = StashUser.getUsername(propertyTable)
-				local space = StashAPI.getRemainingSpace(propertyTable)
+				local username = StashUser.getUsername()
+				local space = StashAPI.getRemainingSpace()
 				propertyTable.space = space
 				if space ~= nil then
 					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"

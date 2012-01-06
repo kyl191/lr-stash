@@ -503,7 +503,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				
 				-- Upload or replace the photo.
 				
-				StashInfo = StashAPI.uploadPhoto( exportSettings, {
+				StashInfo = StashAPI.uploadPhoto( {
 										filePath = pathOrMessage,
 										title = title or '',
 										description = description,
