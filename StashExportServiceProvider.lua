@@ -406,19 +406,19 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	
 	local nPhotos = exportSession:countRenditions()
 	
-	local publishedCollectionInfo = exportContext.publishedCollectionInfo
-
 	-- Determine if we're trying to publish, or just export
 
 	local publishing = nil
 
-	if not publishedCollectionInfo == nil then
+	if exportContext.publishService then
 		publishing = true
 
+		local publishedCollectionInfo = exportContext.publishedCollectionInfo
 		local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
 
 		-- Look for a folder id for this collection - determines if we've previously published this collection
 		local folderId = publishedCollectionInfo.remoteId
+		--LrDialogs.message(publishedCollectionInfo.remoteId)
 
 	end
 
@@ -509,6 +509,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				end
 
 				local stashId = rendition.publishedPhotoId
+				LrDialogs.message(rendition.publishedPhotoId)
 				
 				-- Upload or replace the photo.
 				
@@ -517,11 +518,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										title = title or '',
 										description = description,
 										tags = table.concat( tags, ' ' ),
-										stashId = stashID or '',
+										stashId = stashId or '',
 										folderId = folderId or '',
 									} )
 
-				LrDialogs.message("Sta.sh id: " .. LrStringUtils.numberToString(StashInfo.stashid))
+				--LrDialogs.message("Publishing: " .. tostring(publishing))
 
 				if publishing then 
 					rendition:recordPublishedPhotoId(StashInfo.stashid)
@@ -542,6 +543,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	end
 
 	if publishing then
+		--LrDialogs.message(folderId)
 		exportSession:recordRemoteCollectionId( folderId )
 	end
 
