@@ -423,12 +423,13 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 	if not publishedCollectionInfo == nil then
 		publishing = true
+
+		local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
+
+		-- Look for a folder id for this collection - determines if we've previously published this collection
+		local folderId = publishedCollectionInfo.remoteId
+
 	end
-
-	local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
-
-	-- Look for a folder id for this collection - determines if we've previously published this collection
-	local folderId = publishedCollectionInfo.remoteId
 
 	-- Iterate through photo renditions.
 
