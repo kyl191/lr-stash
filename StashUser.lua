@@ -155,7 +155,7 @@ function StashUser.verifyLogin( propertyTable )
 				--LrDialogs.message('Username: ' .. username)
 			
 				if propertyTable.LR_editingExistingPublishConnection then
-					propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Log In"
+					propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logged In"
 					propertyTable.loginButtonEnabled = false
 					propertyTable.validAccount = true
 				else
