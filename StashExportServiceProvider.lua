@@ -418,6 +418,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 		-- Look for a folder id for this collection - determines if we've previously published this collection
 		folderId = publishedCollectionInfo.remoteId
+		if isDefaultCollection then
+			folderId = nil
+		else 
+			folderName = publishedCollectionInfo.name
+		end
 		--LrDialogs.message(publishedCollectionInfo.remoteId)
 
 	end
@@ -514,6 +519,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 				-- Upload or replace the photo.
 
+
+
 				StashInfo = StashAPI.uploadPhoto( {
 										filePath = pathOrMessage,
 										title = title,
@@ -521,6 +528,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										tags = table.concat( tags, ' ' ),
 										stashid = stashId or nil,
 										folderid = folderId or nil,
+										foldername = folderName or nil
 									} )
 
 				--LrDialogs.message("Publishing: " .. tostring(publishing))
