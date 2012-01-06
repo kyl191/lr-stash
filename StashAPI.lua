@@ -142,7 +142,7 @@ function StashAPI.processToken( token, context )
 		prefs.access_token = token.access_token
 		prefs.refresh_token = token.refresh_token
 		prefs.expire = LrDate.currentTime() + token.expires_in
-		--LrDialogs.message('Token expires at ' .. LrDate.timeToW3CDate( propertyTable.expire ) )
+		--LrDialogs.message('Token expires at ' .. LrDate.timeToW3CDate( prefs.expire ) )
 	else
 		--Error'd, network layer
 		LrDialogs.attachErrorDialogToFunctionContext(context)
@@ -265,7 +265,7 @@ function StashAPI.refreshAuth()
 
 	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. prefs.refresh_token)
 
-	StashAPI.processToken(propertyTable, token, nil)
+	StashAPI.processToken( token, nil)
 
 end
 
