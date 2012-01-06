@@ -162,6 +162,8 @@ function StashAPI.uploadPhoto( params )
 	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
+	postUrl = postUrl .. '&title=' .. params.title
+
 	local filePath = assert( params.filePath )
 	params.filePath = nil
 	
@@ -178,11 +180,6 @@ function StashAPI.uploadPhoto( params )
 		postUrl = postUrl .. '&artist_comments=' .. params.description
 	end
 	
-	-- Append the title too.
-	if not (params.title == nil) then
-		postUrl = postUrl .. '&title=' .. params.title
-	end
-
 	-- Append the Sta.sh id if we're replacing it.
 	if not (params.stashid == nil) then
 		postUrl = postUrl .. '&stashid=' .. params.stashid
