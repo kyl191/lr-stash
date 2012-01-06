@@ -26,7 +26,8 @@ StashUser = {}
 local function storedCredentialsAreValid()
 
 	return prefs.access_token and string.len( prefs.access_token ) > 0
-			and prefs.refresh_token
+			and prefs.refresh_token and string.len( prefs.refresh_token ) > 0
+			and prefs.expire and (tonumber(prefs.expire) > LrDate.currentTime())
 
 end
 
@@ -123,13 +124,13 @@ function StashUser.verifyLogin( propertyTable )
 		propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logging In..."
 		propertyTable.loginButtonEnabled = false
 
-			if not prefs.expire == nil and tonumber(prefs.expire) < LrDate.currentTime() then
+			if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
 				StashAPI.refreshAuth()
 			end
 
 			if storedCredentialsAreValid( propertyTable ) then
-  
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
+
 				local username = StashAPI.getUsername()
 				local space = StashAPI.getRemainingSpace()
 				propertyTable.space = space
