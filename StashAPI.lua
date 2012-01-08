@@ -26,16 +26,7 @@ local logger = import 'LrLogger'( 'StashAPI' )
 
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
--- client secret is 6ac9aa67308019e9f8a307480dadf5f4
--- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
--- And breaking it up into 2 16 character strings results in some strange truncation
--- So 4 8 character strings works
-local client_secret_pt1 = 0x6ac9aa67
-local client_secret_pt2 = 0x308019e9
-local client_secret_pt3 = 0xf8a30748
-local client_secret_pt4 = 0x0dadf5f4
-
-local client_id = 114
+require 'StashClientSecret'
 
 --============================================================================--
 
