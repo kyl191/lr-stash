@@ -443,7 +443,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		else 
 			folderName = publishedCollectionInfo.name
 		end
-		--LrDialogs.message(publishedCollectionInfo.remoteId)
+		--LrDialogs.message(folderName)
 
 	end
 
