@@ -223,12 +223,6 @@ local displayNameForTitleChoice = {
 	empty = LOC "$$$/Stash/ExportDialog/Title/Empty=Leave Blank",
 }
 
-local function booleanToNumber( value )
-
-	return value and 1 or 0
-
-end
-
 local function getStashTitle( photo, exportSettings, pathOrMessage )
 
 	local title
