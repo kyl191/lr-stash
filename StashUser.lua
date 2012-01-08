@@ -35,10 +35,14 @@ end
 
 local function notLoggedIn( propertyTable )
 
+	-- Reset all the user auth information
+
 	prefs.access_token = nil
 	prefs.refresh_token = nil
 	prefs.expire = nil
 	prefs.username = nil
+
+	-- Show the user a 'Log In' button in the Export/Publish menu
 
 	propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/NotLoggedIn=Not logged in"
 	propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/NotLoggedIn=Log In"
@@ -53,6 +57,7 @@ local doingLogin = false
 
 function StashUser.login( propertyTable )
 
+	-- Prevent race conditions where we're already logging in
 	if doingLogin then return end
 	doingLogin = true
 
@@ -63,12 +68,14 @@ function StashUser.login( propertyTable )
 
 		notLoggedIn( propertyTable )
 
+		-- Give the user a status message and disable the login button
+
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/LoggingIn=Logging in..."
 		propertyTable.loginButtonEnabled = false
 		
 		LrDialogs.attachErrorDialogToFunctionContext( context )
 		
-		-- Make sure login is valid when done, or is marked as invalid.
+		-- Make sure login is valid when done, or if it's invalid, reset the status
 		
 		context:addCleanupHandler( function()
 
@@ -77,16 +84,14 @@ function StashUser.login( propertyTable )
 			if not StashUser.storedCredentialsAreValid() then
 				notLoggedIn( propertyTable )
 			end
-			
-			-- Hrm. New API doesn't make it easy to show what operation failed.
-			-- LrDialogs.message( LOC "$$$/Stash/LoginFailed=Failed to log in." )
 
 		end )
 		
 		-- auth_code is one-time use, don't bother storing it in the propertyTable
 		local auth_code = StashAPI.showAuthDialog(propertyTable, '')
 
-		-- Wipe out the code that was stored in the table
+		-- But, the UI wants to be attached to a table, and I gave it propertyTable
+		-- So, wipe out the code that was stored in the table
 		propertyTable.code = nil
 
 		-- json token is similarly one-time use
@@ -99,9 +104,7 @@ function StashUser.login( propertyTable )
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
 
 		
-		-- Get the username from the StashAPI rather than StashUser because this is a new login
-		prefs.username = StashAPI.getUsername( propertyTable )
-
+		-- Verify that the login was successful, and update the menus.
 		StashUser.verifyLogin( propertyTable )
 		
 	end )
@@ -121,30 +124,42 @@ function StashUser.verifyLogin( propertyTable )
 		LrTasks.startAsyncTask( function()
 			logger:trace( "verifyLogin: updateStatus() is executing." )
 			
+			-- Start off assuming the user hasn't logged in before
 			propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Sign In?"
 			propertyTable.loginButtonEnabled = true
 			propertyTable.LR_cantExportBecause = "Waiting for you to log into Sta.sh..." 
 
 
+			-- If there's a record of a past login, check if the credentials have expired
+			-- If so, refresh them
 			if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
 				StashAPI.refreshAuth()
 			end
 
 			if StashUser.storedCredentialsAreValid( propertyTable ) then
+				
+				-- We think the user is a valid one, so try accessing a protected resource
+				-- Activate the login button because if the authenticated call fails, the entire process bombs out,
+				-- and we can't login because the login button is disabled.
 				propertyTable.accountStatus = "Logging into Sta.sh, please wait..."
 				propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Re-Login?"
 				propertyTable.loginButtonEnabled = true
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
 
 				local username = StashAPI.getUsername()
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", username)
+
+				-- Be nice and try to show the user how much space he has left.
 				local space = StashAPI.getRemainingSpace()
 				if space ~= nil then
 					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
 				end
-
 				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", username, space )
-				--LrDialogs.message('Username: ' .. username)
 			
+				-- If the user's editing an existing connection, we can't allow him to switch users, 
+				-- otherwise we'll get an error when trying to republish under a different user.
+				-- Todo: Find a way to track which account the user's published through before?
+				-- Because he can still change which user he wants in the export section...
 				if propertyTable.LR_editingExistingPublishConnection then
 					propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Logged In"
 					propertyTable.loginButtonEnabled = false
@@ -155,7 +170,7 @@ function StashUser.verifyLogin( propertyTable )
 					propertyTable.validAccount = true
 				end
 			else
-				LrDialogs.message("Login failed.")
+				LrDialogs.message("Existing credentials are invalid, please login again.")
 				notLoggedIn( propertyTable )
 			end
 	
