@@ -26,6 +26,14 @@ local logger = import 'LrLogger'( 'StashAPI' )
 
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
+-- client secret is 6ac9aa67308019e9f8a307480dadf5f4, we're going to build it dynamically for obfusication
+local client_secret_pt1 = 0x6ac9aa67
+local client_secret_pt2 = 0x308019e9
+local client_secret_pt3 = 0xf8a30748
+local client_secret_pt4 = 0x0dadf5f4
+
+local client_id = 114
+
 --============================================================================--
 
 StashAPI = {}
@@ -120,7 +128,7 @@ end
 
 function StashAPI.getToken(code)
 
-	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&redirect_uri=http://oauth2.kyl191.net/&code=" .. code)
+	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&redirect_uri=http://oauth2.kyl191.net/&code=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
 
 	return token
 
@@ -130,7 +138,7 @@ end
 
 function StashAPI.refreshAuth()
 
-	local token = StashAPI.getResult("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=114&client_secret=6ac9aa67308019e9f8a307480dadf5f4&refresh_token=" .. prefs.refresh_token)
+	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
 
 	StashAPI.processToken( token, nil)
 
@@ -241,7 +249,7 @@ end
 
 function StashAPI.openAuthUrl()
 
-	LrHttp.openUrlInBrowser( "https://www.deviantart.com/oauth2/draft15/authorize?client_id=114&redirect_uri=http://oauth2.kyl191.net/&response_type=code" )
+	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&redirect_uri=http://oauth2.kyl191.net/&response_type=code", client_id ))
 
 	return nil
 
