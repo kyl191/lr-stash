@@ -12,6 +12,8 @@ local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrView = import 'LrView'
 local LrStringUtils = import 'LrStringUtils'
+local prefs = import 'LrPrefs'.prefsForPlugin()
+local LrDate = import 'LrDate'
 
 	-- Common shortcuts
 local bind = LrView.bind
@@ -20,6 +22,7 @@ local share = LrView.share
 	-- Stash plug-in
 require 'StashAPI'
 require 'StashPublishSupport'
+require 'StashUser'
 
 
 
@@ -396,6 +399,16 @@ end
 
 function exportServiceProvider.processRenderedPhotos( functionContext, exportContext )
 	
+		-- Ensure that the auth tokens are still good
+
+	if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
+		StashAPI.refreshAuth()
+	end
+
+	if not StashUser.storedCredentialsAreValid() == true then
+		LrErrors.throwUserError( "Something's up with your login credentials, they're not valid!" )
+	end
+
 	local exportSession = exportContext.exportSession
 
 	-- Make a local reference to the export parameters.
