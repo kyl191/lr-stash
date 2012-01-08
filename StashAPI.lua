@@ -167,23 +167,20 @@ end
 
 function StashAPI.processToken( token, context )
 
-	--LrDialogs.message('Access token: ' .. token_json)
-
-	-- Token already decoded, no need for this.
-	--local token = JSON:decode(token_json)
-
-	if token.status ~= "success" then
-		LrDialogs.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "Unable to authenticate" )
-	elseif token.status == "success" then 
+	-- Token gets to here after passing through getResult, with the attendant network error checking
+	-- So no need for network errors
+	-- Also, one of the checks was to see if the status was 'error', so the default case that we assume is that status == success
+	
+	-- Setup the various plugin preferences
+	if token.status == "success" then
 		prefs.access_token = token.access_token
 		prefs.refresh_token = token.refresh_token
 		prefs.expire = LrDate.currentTime() + token.expires_in
-		--LrDialogs.message('Token expires at ' .. LrDate.timeToW3CDate( prefs.expire ) )
-	else
-		--Error'd, network layer
+	
+	-- If the token has anything other than status = success, oops, we've got a problem
+	else 
 		LrDialogs.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "Network Problems" )
+		LrErrors.throwUserError( "Unable to authenticate" )
 	end
 
 end
