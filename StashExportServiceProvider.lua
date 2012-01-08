@@ -69,6 +69,14 @@ require 'StashUser'
 
 local exportServiceProvider = {}
 
+-- A typical service provider would probably roll all of this into one file, but
+-- this approach allows us to document the publish-specific hooks separately.
+
+for name, value in pairs( StashPublishSupport ) do
+	exportServiceProvider[ name ] = value
+end
+
+
 --------------------------------------------------------------------------------
 --- (optional) Plug-in defined value declares whether this plug-in supports the Lightroom
  -- publish feature. If not present, this plug-in is available in Export only.
