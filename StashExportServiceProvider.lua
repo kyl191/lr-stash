@@ -433,6 +433,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 		-- Look for a folder id for this collection - determines if we've previously published this collection
 		folderId = publishedCollectionInfo.remoteId
+
+		-- However, if we're uploading from the default collection, then just dump stuff into a folder labelled
+		-- "Uploaded by Lightroom"
+		-- The presumed use-case of this collection is piece-meal uploading, so in virtually all cases, this is fine.
+		-- However, if the user creates a collection, we'll create a corresponding folder on Sta.sh.
 		if isDefaultCollection then
 			folderId = nil
 			folderName = "Uploaded by Lightroom"
