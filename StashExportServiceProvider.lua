@@ -435,6 +435,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		folderId = publishedCollectionInfo.remoteId
 		if isDefaultCollection then
 			folderId = nil
+			folderName = "Uploaded by Lightroom"
 		else 
 			folderName = publishedCollectionInfo.name
 		end
