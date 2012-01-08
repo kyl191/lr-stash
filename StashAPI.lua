@@ -199,17 +199,14 @@ end
 function StashAPI.uploadPhoto( params )
 
 	-- Prepare to upload.
-	
+	-- Make sure that we got a table of parameters
 	assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 	
 	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
+	-- We definitely have a title, so append that
 	postUrl = postUrl .. '&title=' .. params.title
-
-	local filePath = assert( params.filePath )
-	
-	local fileName = LrPathUtils.leafName( filePath )
 	
 	-- Append the tags if present
 	if not (params.tags == nil) then
@@ -240,6 +237,10 @@ function StashAPI.uploadPhoto( params )
 	-- Add the photo itself
 	local mimeChunks = {}
 
+	local filePath = assert( params.filePath )
+	
+	local fileName = LrPathUtils.leafName( filePath )
+
 	mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
 	
 	-- Before uploading, check to make sure that there's enough space to upload
@@ -251,13 +252,12 @@ function StashAPI.uploadPhoto( params )
 	end
 
 	-- Post it and wait for confirmation.
-	
 	local result, hdrs = LrHttp.postMultipart( postUrl, mimeChunks )
 	
 	if not result then
 	
 		if hdrs and hdrs.error then
-			LrErrors.throwUserError( hdrs.error.nativeCode )
+			LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
 		end
 		
 	else
