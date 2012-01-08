@@ -290,14 +290,14 @@ function StashAPI.getResult( postUrl )
 
 	if not json then
 	
-		if hdrs and hdrs.error then
-			LrErrors.throwUserError( hdrs.error.nativeCode )
+		if headers and headers.error then
+			LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
 		end
 		
 	else
 		local decode = JSON:decode(json)
 		if decode.status and decode.status == "error" then
-			LrErrors.throwUserError ("Error with a JSON response! " .. decode.error .. decode.error_description)
+			LrErrors.throwUserError ("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
 		end
 		return decode
 	end
