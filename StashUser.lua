@@ -146,8 +146,8 @@ function StashUser.verifyLogin( propertyTable )
 				propertyTable.loginButtonEnabled = true
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
 
-				local username = StashAPI.getUsername()
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", username)
+				prefs.username = StashAPI.getUsername()
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.username)
 
 				-- Be nice and try to show the user how much space he has left.
 				local space = StashAPI.getRemainingSpace()
