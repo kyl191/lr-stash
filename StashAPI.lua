@@ -262,24 +262,9 @@ end
 
 function StashAPI.getUsername()
 
-	local username = nil
-
-	local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token
-
-	local token = StashAPI.getResult( postUrl )
+	local token = StashAPI.getResult( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
 	
-	if token.status then
-		LrDialogs.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "Unable to retrieve username: " .. token.error .. token.error_description )
-	elseif token.username then 
-		username = token.symbol .. token.username
-		prefs.username = username
-	else
-		--Error'd, probably not network layer
-		LrDialogs.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "An unknown problem occured. Try again." )
-	end
-	return username
+	return token.symbol .. token.username
 
 end
 
