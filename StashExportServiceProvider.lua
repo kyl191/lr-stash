@@ -411,10 +411,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		LrErrors.throwUserError( "Something's up with your login credentials, they're not valid!" )
 	end
 
-	local exportSession = exportContext.exportSession
-
 	-- Make a local reference to the export parameters.
 	
+	local exportSession = exportContext.exportSession
 	local exportSettings = assert( exportContext.propertyTable )
 		
 	-- Get the # of photos.
