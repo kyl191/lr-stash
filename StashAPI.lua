@@ -55,6 +55,8 @@ end
 
 function StashAPI.showAuthDialog( propertyTable, message )
 
+	-- I'm not touching this thing till I know what it does!
+
 	LrFunctionContext.callWithContext( 'StashAPI.showAuthDialog', function( context )
 
 		local f = LrView.osFactory()
@@ -147,6 +149,10 @@ end
 
 function StashAPI.getToken(code)
 
+	-- Get the initial authorization token.
+	-- ONLY called by StashUser.login
+	-- And, yes, redirect_uri appears to be needed, so don't remove it
+
 	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&redirect_uri=http://oauth2.kyl191.net/&code=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
 
 	return token
@@ -156,6 +162,9 @@ end
 --------------------------------------------------------------------------------
 
 function StashAPI.refreshAuth()
+
+	-- Refresh the auth token
+	-- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
 	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
 
@@ -264,6 +273,8 @@ end
 --------------------------------------------------------------------------------
 
 function StashAPI.getUsername()
+
+	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
 	local token = StashAPI.getResult( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
 	
