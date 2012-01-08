@@ -286,8 +286,11 @@ end
 
 function StashAPI.getResult( postUrl )
 
+	-- Do the request
 	local json, headers = LrHttp.post(postUrl, "")
 
+	-- If we didn't get a result back, that means there was a transport error
+	-- So show that error to the user
 	if not json then
 	
 		if headers and headers.error then
@@ -295,6 +298,8 @@ function StashAPI.getResult( postUrl )
 		end
 		
 	else
+		-- Now that we have valid JSON, decode it, and try to get the status of our request
+		-- If the status is error, show the error to the user, and die.
 		local decode = JSON:decode(json)
 		if decode.status and decode.status == "error" then
 			LrErrors.throwUserError ("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
