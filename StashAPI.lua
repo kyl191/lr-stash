@@ -129,6 +129,22 @@ end
 
 --------------------------------------------------------------------------------
 
+function StashAPI.openAuthUrl()
+
+	-- Send the user to the dA approve application screen
+	-- Called from StashAPI.showAuthDialog
+	-- Which in turn should ONLY be called from StashUser.login
+	-- Reasoning behind having a separate function?
+	-- Will combine into showAuthDialog
+
+	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&redirect_uri=http://oauth2.kyl191.net/&response_type=code", client_id ))
+
+	return nil
+
+end
+
+--------------------------------------------------------------------------------
+
 function StashAPI.getToken(code)
 
 	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&redirect_uri=http://oauth2.kyl191.net/&code=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
@@ -246,16 +262,6 @@ function StashAPI.uploadPhoto( params )
 		return json
 	end
 	
-end
-
---------------------------------------------------------------------------------
-
-function StashAPI.openAuthUrl()
-
-	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&redirect_uri=http://oauth2.kyl191.net/&response_type=code", client_id ))
-
-	return nil
-
 end
 
 --------------------------------------------------------------------------------
