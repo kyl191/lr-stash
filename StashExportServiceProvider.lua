@@ -401,7 +401,7 @@ end
 
 function exportServiceProvider.processRenderedPhotos( functionContext, exportContext )
 	
-		-- Ensure that the auth tokens are still good
+	-- Ensure that the auth tokens are still good
 
 	if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
 		StashAPI.refreshAuth()
