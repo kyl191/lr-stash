@@ -23,7 +23,7 @@ StashUser = {}
 
 --------------------------------------------------------------------------------
 
-local function storedCredentialsAreValid()
+function StashUser.storedCredentialsAreValid()
 
 	return prefs.access_token and string.len( prefs.access_token ) > 0
 			and prefs.refresh_token and string.len( prefs.refresh_token ) > 0
