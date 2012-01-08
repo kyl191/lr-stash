@@ -74,7 +74,7 @@ function StashUser.login( propertyTable )
 
 			doingLogin = false
 
-			if not storedCredentialsAreValid() then
+			if not StashUser.storedCredentialsAreValid() then
 				notLoggedIn( propertyTable )
 			end
 			
@@ -130,7 +130,7 @@ function StashUser.verifyLogin( propertyTable )
 				StashAPI.refreshAuth()
 			end
 
-			if storedCredentialsAreValid( propertyTable ) then
+			if StashUser.storedCredentialsAreValid( propertyTable ) then
 				propertyTable.accountStatus = "Logging into Sta.sh, please wait..."
 				propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Re-Login?"
 				propertyTable.loginButtonEnabled = true
