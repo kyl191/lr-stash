@@ -154,7 +154,7 @@ function StashUser.verifyLogin( propertyTable )
 				if space ~= nil then
 					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
 				end
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", username, space )
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", prefs.username, space )
 			
 				-- If the user's editing an existing connection, we can't allow him to switch users, 
 				-- otherwise we'll get an error when trying to republish under a different user.
