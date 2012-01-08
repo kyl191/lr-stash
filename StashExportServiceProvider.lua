@@ -21,7 +21,6 @@ local share = LrView.share
 
 	-- Stash plug-in
 require 'StashAPI'
-require 'StashPublishSupport'
 require 'StashUser'
 
 
@@ -68,14 +67,6 @@ require 'StashUser'
 --============================================================================--
 
 local exportServiceProvider = {}
-
--- A typical service provider would probably roll all of this into one file, but
--- this approach allows us to document the publish-specific hooks separately.
-
-for name, value in pairs( StashPublishSupport ) do
-	exportServiceProvider[ name ] = value
-end
-
 
 --------------------------------------------------------------------------------
 --- (optional) Plug-in defined value declares whether this plug-in supports the Lightroom
@@ -206,6 +197,124 @@ exportServiceProvider.canExportVideo = false
 
 --------------------------------------------------------------------------------
 
+ -- (string) Plug-in defined value is the filename of the icon to be displayed
+ -- for this publish service provider, in the Publish Services panel, the Publish 
+ -- Manager dialog, and in the header shown when a published collection is selected.
+ -- The icon must be in PNG format and no more than 26 pixels wide or 19 pixels tall.
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name exportServiceProvider.small_icon
+	-- @class property
+
+exportServiceProvider.small_icon = 'logo.png'
+
+--------------------------------------------------------------------------------
+--- (optional, string) Plug-in defined value customizes the behavior of the
+ -- Description entry in the Publish Manager dialog. If the user does not provide
+ -- an explicit name choice, Lightroom can provide one based on another entry
+ -- in the publishSettings property table. This entry contains the name of the
+ -- property that should be used in this case.
+	-- @name exportServiceProvider.publish_fallbackNameBinding
+	-- @class property
+	
+exportServiceProvider.publish_fallbackNameBinding = 'fullname'
+
+--------------------------------------------------------------------------------
+
+--- When set to the string "disable", the "Go to Published Collection" context-menu item
+ -- is disabled (dimmed) for this publish service.
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name exportServiceProvider.titleForGoToPublishedCollection
+	-- @class property
+
+-- Sta.sh doesn't seem to allow going to a folder directly.
+
+exportServiceProvider.titleForGoToPublishedCollection = "disable"
+
+--------------------------------------------------------------------------------
+--- (optional, string) Plug-in defined value overrides the label for the 
+ -- "Go to Published Photo" context-menu item, allowing you to use something more appropriate to
+ -- your service. Set to the special value "disable" to disable (dim) the menu item for this service. 
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name exportServiceProvider.titleForGoToPublishedPhoto
+	-- @class property
+
+exportServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPublishedCollection=Show in Sta.sh"
+
+--------------------------------------------------------------------------------
+--- This plug-in defined callback function is called when the user attempts to change the name
+ -- of a collection, to validate that the new name is acceptable for this service.
+ -- <p>This is a blocking call. You should use it only to validate easily-verified
+ -- characteristics of the name, such as illegal characters in the name. For
+ -- characteristics that require validation against a server (such as duplicate
+ -- names), you should accept the name here and reject the name when the server-side operation
+ -- is attempted.</p>
+	-- @name exportServiceProvider.validatePublishedCollectionName
+	-- @class function
+ 	-- @param proposedName (string) The name as currently typed in the new/rename/edit
+		-- collection dialog.
+	-- @return (Boolean) True if the name is acceptable, false if not
+	-- @return (string) If the name is not acceptable, a string that describes the reason, suitable for display.
+
+--[[ Not used for Stash plug-in. --]]
+
+-- Unknown what the Sta.sh API allows as a folder name. Assuming it's only ASCII
+function exportServiceProvider.validatePublishedCollectionName( proposedName )
+	return LrStringUtils.isOnlyAscii( proposedName )
+end
+
+-------------------------------------------------------------------------------
+
+function exportServiceProvider.metadataThatTriggersRepublish( publishSettings )
+
+	return {
+
+		default = false,
+		title = true,
+		caption = true,
+		keywords = true,
+	}
+
+end
+
+
+-------------------------------------------------------------------------------
+--- (Boolean) This plug-in defined value, when true, disables (dims) the Rename Published
+ -- Collection command in the context menu of the Publish Services panel 
+ -- for all published collections created by this service. 
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name exportServiceProvider.disableRenamePublishedCollection
+	-- @class property
+-- Unknown if Sta.sh allows folders to be renamed from Lightroom.
+-- Web service it's possible, so need to check the folder name & grab that?
+exportServiceProvider.disableRenamePublishedCollection = true -- not used for Stash sample plug-in
+
+-------------------------------------------------------------------------------
+--- (optional) This plug-in defined callback function is called whenever a
+ -- published photo is selected in the Library module. Your implementation should
+ -- return true if there is a viable connection to the publish service and
+ -- comments can be added at this time. If this function is not implemented,
+ -- the new comment section of the Comments panel in the Library is left enabled
+ -- at all times for photos published by this service. If you implement this function,
+ -- it allows you to disable the Comments panel temporarily if, for example,
+ -- the connection to your server is down.
+ -- <p>This is not a blocking call. It is called from within a task created
+ -- using the <a href="LrTasks.html"><code>LrTasks</code></a> namespace. In most
+ -- cases, you should not need to start your own task within this function.</p>
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @param publishSettings (table) The settings for this publish service, as specified
+		-- by the user in the Publish Manager dialog. Any changes that you make in
+		-- this table do not persist beyond the scope of this function call.
+	-- @return (Boolean) True if comments can be added at this time.
+
+-- Sta.sh doesn't support comments at this time
+function exportServiceProvider.canAddCommentsToService( publishSettings )
+
+	return false
+
+end
+
+--------------------------------------------------------------------------------
+
 local function updateCantExportBecause( propertyTable )
 
 	if not propertyTable.validAccount then
@@ -248,7 +357,20 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
 end
 
 --------------------------------------------------------------------------------
---- (optional) This plug-in defined callback function is called when the 
+
+function exportServiceProvider.getCollectionBehaviorInfo( publishSettings )
+
+	return {
+		defaultCollectionName = LOC "$$$/Stash/DefaultCollectionName/Publish to Sta.sh=Publish to Sta.sh",
+		defaultCollectionCanBeDeleted = false,
+		canAddCollection = true,
+		maxCollectionSetDepth = 0,
+			-- Collection sets are not supported in Sta.sh.
+	}
+	
+end
+
+----------------------------------------------------------------------------------- (optional) This plug-in defined callback function is called when the 
  -- user chooses this export service provider in the Export or Publish dialog, 
  -- or when the destination is already selected when the dialog is invoked, 
  -- (remembered from the previous export operation).
