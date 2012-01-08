@@ -284,9 +284,9 @@ end
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
 	-- @name exportServiceProvider.disableRenamePublishedCollection
 	-- @class property
--- Unknown if Sta.sh allows folders to be renamed from Lightroom.
--- Web service it's possible, so need to check the folder name & grab that?
-exportServiceProvider.disableRenamePublishedCollection = true -- not used for Stash sample plug-in
+-- Sta.sh doesn't allow folders to be renamed from Lightroom
+-- In fact, trying to rename the folders resulted in the loss of images, strangely enough.
+exportServiceProvider.disableRenamePublishedCollection = true 
 
 -------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called whenever a
