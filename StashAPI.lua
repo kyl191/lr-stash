@@ -223,6 +223,10 @@ function StashAPI.uploadPhoto( params )
 		end
 	end
 
+	-- Overwriting info
+	--- Currently, assume that the user is solely managing the dA gallery from Lightroom, so Lightroom has the master copy of the description, title and keywords.
+	--- Overwrite the existing stuff each and every time.
+	
 	-- We definitely have a title, so append that
 	postUrl = postUrl .. '&title=' .. params.title
 	
