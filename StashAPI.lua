@@ -205,6 +205,24 @@ function StashAPI.uploadPhoto( params )
 	local postUrl = 'http://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
+	-- Identification on Sta.sh
+	--- Since folder support is still buggy, if we've got the stash id, just use that.
+	--- Otherwise, use the folderid if we're uploading a new photo to a known collection
+	--- Last resort, new collection, send the foldername
+
+	if not (params.stashid == nil) then
+		postUrl = postUrl .. '&stashid=' .. params.stashid
+	else
+
+		if not (params.folderid == nil) then
+			postUrl = postUrl .. '&folderid=' .. params.folderid
+		else
+			if not (params.foldername == nil) then
+				postUrl = postUrl .. '&folder=' .. params.foldername
+			end
+		end
+	end
+
 	-- We definitely have a title, so append that
 	postUrl = postUrl .. '&title=' .. params.title
 	
@@ -219,20 +237,6 @@ function StashAPI.uploadPhoto( params )
 		postUrl = postUrl .. '&artist_comments=' .. params.description
 	end
 	
-	-- Append the Sta.sh id if we're replacing it.
-	if not (params.stashid == nil) then
-		postUrl = postUrl .. '&stashid=' .. params.stashid
-	end
-
-	-- Append the folderid too if we've got it.
-	if not (params.folderid == nil) then
-		postUrl = postUrl .. '&folderid=' .. params.folderid
-	end
-
-	if not (params.foldername == nil) then
-		postUrl = postUrl .. '&folder=' .. params.foldername
-	end
-
 	
 	-- Add the photo itself
 	local mimeChunks = {}
