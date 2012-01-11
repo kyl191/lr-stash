@@ -546,6 +546,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	-- This is the case *EVEN* for exporting.
 	local folderName = "Uploaded by Lightroom"
 
+	-- Setup a variable to distinguish if we're trying to publish, or just exporting
 	local publishing = nil
 
 	if exportContext.publishService then
