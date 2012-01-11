@@ -542,8 +542,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	
 	local nPhotos = exportSession:countRenditions()
 	
-	-- Determine if we're trying to publish, or just export
+	-- By default, use the foldername "Uploaded by Lightroom" with there's more than 1 image uploaded.
+	-- This is the case *EVEN* for exporting.
+	local folderName = "Uploaded by Lightroom"
 
+	-- Setup a variable to distinguish if we're trying to publish, or just exporting
 	local publishing = nil
 
 	if exportContext.publishService then
@@ -561,7 +564,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		-- However, if the user creates a collection, we'll create a corresponding folder on Sta.sh.
 		if isDefaultCollection then
 			folderId = nil
-			folderName = "Uploaded by Lightroom"
 		else 
 			folderName = publishedCollectionInfo.name
 		end
