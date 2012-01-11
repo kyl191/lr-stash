@@ -205,34 +205,42 @@ function StashAPI.uploadPhoto( params )
 	local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'uploading photo', params.filePath )
 
+	-- Identification on Sta.sh
+	--- Since folder support is still buggy, if we've got the stash id, just use that.
+	--- Otherwise, use the folderid if we're uploading a new photo to a known collection
+	--- Last resort, new collection, send the foldername
+
+	if not (params.stashid == nil) then
+		postUrl = postUrl .. '&stashid=' .. params.stashid
+	else
+
+		if not (params.folderid == nil) then
+			postUrl = postUrl .. '&folderid=' .. params.folderid
+		else
+			if not (params.foldername == nil) then
+				postUrl = postUrl .. '&folder=' .. params.foldername
+			end
+		end
+	end
+
+	-- Overwriting info
+	--- Currently, assume that the user is solely managing the dA gallery from Lightroom, so Lightroom has the master copy of the description, title and keywords.
+	--- Overwrite the existing stuff each and every time.
+	
 	-- We definitely have a title, so append that
 	postUrl = postUrl .. '&title=' .. params.title
 	
 	-- Append the tags if present
-	if not (params.tags == nil) then
+	if not (params.tags == nil or #params.tags == 0) then
 		postUrl = postUrl .. '&keywords=' .. params.tags
 	end
 	
 	-- Append the description
 	-- Though it's short, so maybe a Memo/long description panel in Lightroom?
-	if not (params.description == nil) then
+	if not (params.description == nil or #params.description == 0) then
 		postUrl = postUrl .. '&artist_comments=' .. params.description
 	end
 	
-	-- Append the Sta.sh id if we're replacing it.
-	if not (params.stashid == nil) then
-		postUrl = postUrl .. '&stashid=' .. params.stashid
-	end
-
-	-- Append the folderid too if we've got it.
-	if not (params.folderid == nil) then
-		postUrl = postUrl .. '&folderid=' .. params.folderid
-	end
-
-	if not (params.foldername == nil) then
-		postUrl = postUrl .. '&folder=' .. params.foldername
-	end
-
 	
 	-- Add the photo itself
 	local mimeChunks = {}
