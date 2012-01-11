@@ -30,12 +30,12 @@ JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 -- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
 -- And breaking it up into 2 16 character strings results in some strange truncation
 -- So 4 8 character strings works
-client_secret_pt1 = 0x6ac9aa67
-client_secret_pt2 = 0x308019e9
-client_secret_pt3 = 0xf8a30748
-client_secret_pt4 = 0x0dadf5f4
+client_secret_pt1 = 0x5867355c
+client_secret_pt2 = 0x102d2dcb
+client_secret_pt3 = 0xcdcd8601
+client_secret_pt4 = 0xda941974
 
-client_id = 114
+client_id = 123
 
 --============================================================================--
 
