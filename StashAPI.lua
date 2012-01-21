@@ -45,6 +45,7 @@ StashAPI = {}
 
 
 -- Isn't this replacable with LrStringUtils.trimWhitespace?
+-- Nope. Possible applications include taking the filename and extracting the file basename rather than the entire filename including the extension.
 local function trim( s )
 
 	return string.gsub( s, "^%s*(.-)%s*$", "%1" )
