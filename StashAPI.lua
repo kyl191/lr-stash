@@ -139,8 +139,9 @@ function StashAPI.openAuthUrl()
 	-- Which in turn should ONLY be called from StashUser.login
 	-- Reasoning behind having a separate function?
 	-- Will combine into showAuthDialog
+	-- http://oauth2.kyl191.net/
 
-	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&redirect_uri=http://oauth2.kyl191.net/&response_type=code", client_id ))
+	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", client_id ))
 
 	return nil
 
@@ -153,8 +154,9 @@ function StashAPI.getToken(code)
 	-- Get the initial authorization token.
 	-- ONLY called by StashUser.login
 	-- And, yes, redirect_uri appears to be needed, so don't remove it
+	-- redirect_uri=http://oauth2.kyl191.net/
 
-	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&redirect_uri=http://oauth2.kyl191.net/&code=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
+	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
 
 	return token
 
