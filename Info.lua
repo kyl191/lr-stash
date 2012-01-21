@@ -5,8 +5,8 @@ Info.lua
 
 return {
 
-	LrSdkVersion = 3.0,
-	LrSdkMinimumVersion = 3.0, -- minimum SDK version required by this plug-in
+	LrSdkVersion = 3.2,
+	LrSdkMinimumVersion = 3.2, -- minimum SDK version required by this plug-in
 
 	LrToolkitIdentifier = 'net.kyl191.lightroom.export.stash.dev',
 	LrPluginName = 'Sta.sh Dev',
@@ -16,6 +16,6 @@ return {
 		file = 'StashExportServiceProvider.lua',
 	},
 
-	VERSION = { major=0, minor=2, revision=0, },
+	VERSION = { major=0, minor=2, revision=5, },
 
 }
