@@ -141,7 +141,7 @@ function StashAPI.openAuthUrl()
 	-- Will combine into showAuthDialog
 	-- http://oauth2.kyl191.net/
 
-	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", client_id ))
+	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", client_id ))
 
 	return nil
 
