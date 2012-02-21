@@ -684,9 +684,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 					--LrDialogs.message(StashInfo.stashid)
 					if type(StashInfo.stashid) == 'number' then
 						StashInfo.stashid = LrStringUtils.numberToString(StashInfo.stashid)
+						rendition:recordPublishedPhotoId(StashInfo.stashid)
+						rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
 					end
-					rendition:recordPublishedPhotoId(StashInfo.stashid)
-					rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
 				end
 				
 				folderId = LrStringUtils.numberToString(StashInfo.folderid)

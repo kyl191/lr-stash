@@ -272,6 +272,9 @@ function StashAPI.uploadPhoto( params )
 		end
 		
 	else
+		if result ~= nil then
+			LrErrors.throwUserError( "Error uploading to Sta.sh: There was no response from the server.")
+		end
 		json = JSON:decode(result)
 		if json.error ~= nil and not params.retry then
 			if json.error == ("internal_error_item" or "invalid_stashid") then
