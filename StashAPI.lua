@@ -22,7 +22,7 @@ local prefs = import 'LrPrefs'.prefsForPlugin()
 local bind = LrView.bind
 local share = LrView.share
 
-local logger = import 'LrLogger'( 'StashAPI' )
+local logger = import 'LrLogger'( 'Stash' )
 
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 

@@ -14,6 +14,7 @@ local LrView = import 'LrView'
 local LrStringUtils = import 'LrStringUtils'
 local prefs = import 'LrPrefs'.prefsForPlugin()
 local LrDate = import 'LrDate'
+local logger = import 'LrLogger'( 'Stash' )
 
 	-- Common shortcuts
 local bind = LrView.bind
