@@ -267,6 +267,13 @@ function StashAPI.uploadPhoto( params )
 	local result, hdrs = LrHttp.postMultipart( postUrl, mimeChunks )
 	
 	if not result then
+		-- 
+		-- Redo:
+		-- 1st, check that the status == 200. => tonumber(hdrs.status) == 200
+		-- If not, then error checking:
+		-- hdrs.error: Internal Lightroom errors
+		-- hdrs.status: The HTTP status code
+		-- If status ok, then json decode & related error checking
 	
 		if hdrs and hdrs.error then
 			LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
