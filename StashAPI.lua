@@ -272,6 +272,8 @@ function StashAPI.uploadPhoto( params )
 		end
 		
 	else
+		logger:enable("logfile")
+		for k,v in pairs(hdrs) do logger:info(k,v) end
 		if result ~= nil then
 			LrErrors.throwUserError( "Error uploading to Sta.sh: There was no response from the server.")
 		end
