@@ -23,6 +23,7 @@ local bind = LrView.bind
 local share = LrView.share
 
 local logger = import 'LrLogger'( 'Stash' )
+logger:enable("logfile")
 
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
@@ -272,8 +273,7 @@ function StashAPI.uploadPhoto( params )
 		end
 		
 	else
-		logger:enable("logfile")
-		for k,v in pairs(hdrs) do logger:info(k,v) end
+		StashAPI.logTable(hdrs)
 		if result ~= nil then
 			LrErrors.throwUserError( "Error uploading to Sta.sh: There was no response from the server.")
 		end
@@ -355,3 +355,17 @@ function StashAPI.getRemainingSpace()
 	return token.available_space
 
 end
+
+--------------------------------------------------------------------------------
+
+function StashAPI.logTable(table)
+	for k,v in pairs(table) do 
+		if type( v ) == 'table' then
+			StashAPI.logTable(v)
+		else
+			logger:info(k,v) 
+		end
+	end
+end
+
+--------------------------------------------------------------------------------
