@@ -148,6 +148,7 @@ function StashUser.verifyLogin( propertyTable )
 
 				prefs.username = StashAPI.getUsername()
 				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.username)
+				propertyTable.LR_cantExportBecause = nil
 
 				-- Be nice and try to show the user how much space he has left.
 				local space = StashAPI.getRemainingSpace()
