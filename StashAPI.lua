@@ -284,14 +284,14 @@ function StashAPI.uploadPhoto( params )
 				-- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
 				params.stashid = nil
 				params.retry = json.error
-				LrDialogs.message('Something wrong with the stashid, retrying with a blank id')
+				LrDialogs.message('Something wrong with the stashid, retrying with a blank id.')
 				return StashAPI.uploadPhoto(params)
 			elseif json.error == ("internal_error_missing_folder" or "invalid_folderid") then
 				-- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
 				-- Same for invalid_folderid too
 				params.folderid = nil
 				params.retry = json.error
-				LrDialogs.message('Something wrong with the folderid, retrying with a blank id')
+				LrDialogs.message('Something wrong with the folderid, retrying with a blank id.')
 				return StashAPI.uploadPhoto(params)
 			else
 				-- Haven't seen any other errors yet.
