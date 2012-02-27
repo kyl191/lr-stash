@@ -328,22 +328,26 @@ function StashAPI.getResult( postUrl )
 	-- If we didn't get a result back, that means there was a transport error
 	-- So show that error to the user
 	logger:info("Called StashAPI.getResult for " .. postUrl)
-	StashAPI.logTable(headers)
-	logger:info(result)
 
-	if hdrs and hdrs.error then
+	if headers and headers.error then
+		logger:info("Lightroom network error:")
+		StashAPI.logTable(headers)
 		LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
 	end
 
-	if hdrs and tonumber(hdrs.status) ~= 200 then
-		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. hdrs.status)
+	if headers and tonumber(headers.status) ~= 200 then
+		logger:info("Server error:")
+		StashAPI.logTable(headers)
+		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. headers.status)
 	else
 		
 		-- Now that we have valid JSON, decode it, and try to get the status of our request
 		-- If the status is error, show the error to the user, and die.
 		local decode = JSON:decode(json)
 		if decode.status and decode.status == "error" then
-			LrErrors.throwUserError ("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
+			logger:info("JSON error from Sta.sh")
+			logger:info(result)
+			LrErrors.throwUserError("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
 		end
 		return decode
 	end
