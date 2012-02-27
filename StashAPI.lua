@@ -327,13 +327,18 @@ function StashAPI.getResult( postUrl )
 
 	-- If we didn't get a result back, that means there was a transport error
 	-- So show that error to the user
-	if not json then
-	
-		if headers and headers.error then
-			LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
-		end
-		
+	logger:info("Called StashAPI.getResult for " .. postUrl)
+	StashAPI.logTable(headers)
+	logger:info(result)
+
+	if hdrs and hdrs.error then
+		LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
+	end
+
+	if hdrs and tonumber(hdrs.status) ~= 200 then
+		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. hdrs.status)
 	else
+		
 		-- Now that we have valid JSON, decode it, and try to get the status of our request
 		-- If the status is error, show the error to the user, and die.
 		local decode = JSON:decode(json)
