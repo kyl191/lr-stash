@@ -354,6 +354,7 @@ function StashAPI.getResult( postUrl )
 			logger:info(result)
 			LrErrors.throwUserError("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
 		end
+		StashAPI.logTable(decode)
 		return decode
 	end
 
