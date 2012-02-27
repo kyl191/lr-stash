@@ -305,7 +305,7 @@ function StashAPI.uploadPhoto( params )
 		elseif json.error ~= nil and params.retry then
 			LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
 		end
-		logger:info(json)
+		StashAPI.logTable(json)
 		return json
 	end
 	
