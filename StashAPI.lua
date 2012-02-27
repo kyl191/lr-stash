@@ -266,19 +266,23 @@ function StashAPI.uploadPhoto( params )
 	-- Post it and wait for confirmation.
 	local result, hdrs = LrHttp.postMultipart( postUrl, mimeChunks )
 	
-	StashAPI.logTable(hdrs)
-	logger:info(result)
-
 	if hdrs and hdrs.error then
+		logger:info("Lightroom network error:")
+		StashAPI.logTable(hdrs)
 		LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
 	end
 
 	if hdrs and tonumber(hdrs.status) ~= 200 then
+		Logger:info("Sta.sh server error:")
+		StashAPI.logTable(hdrs)
+		logger:info(result)
 		LrErrors.throwUserError( "Error uploading to Sta.sh: Server returned error code " .. hdrs.status)
 	else
 		
 		json = JSON:decode(result)
 		if json.error ~= nil and not params.retry then
+			logger:info("Error from Sta.sh:")
+			StashAPI.logTable(json)
 			if json.error == ("internal_error_item" or "invalid_stashid") then
 				-- internal_error_item seems to mean we tried uploading to a deleted stashid
 				-- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
@@ -301,6 +305,7 @@ function StashAPI.uploadPhoto( params )
 		elseif json.error ~= nil and params.retry then
 			LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
 		end
+		logger:info(json)
 		return json
 	end
 	
