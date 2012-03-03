@@ -757,6 +757,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	if publishing then
 		--LrDialogs.message(folderId)
 		exportSession:recordRemoteCollectionId(folderId)
+		logger:info("Uploaded collection to folderid: " .. folderId)
 	end
 
 	progressScope:done()

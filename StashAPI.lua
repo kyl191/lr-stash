@@ -273,7 +273,7 @@ function StashAPI.uploadPhoto( params )
 	end
 
 	if hdrs and tonumber(hdrs.status) ~= 200 then
-		Logger:info("Sta.sh server error:")
+		logger:info("Sta.sh server error:")
 		StashAPI.logTable(hdrs)
 		logger:info(result)
 		LrErrors.throwUserError( "Error uploading to Sta.sh: Server returned error code " .. hdrs.status)
@@ -355,6 +355,7 @@ function StashAPI.getResult( postUrl )
 	if headers and tonumber(headers.status) ~= 200 then
 		logger:info("Server error:")
 		StashAPI.logTable(headers)
+		logger:info(json)
 		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. headers.status)
 	else
 		
@@ -363,7 +364,7 @@ function StashAPI.getResult( postUrl )
 		local decode = JSON:decode(json)
 		if decode.status and decode.status == "error" then
 			logger:info("JSON error from Sta.sh")
-			logger:info(result)
+			logger:info(json)
 			LrErrors.throwUserError("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
 		end
 		StashAPI.logTable(decode)
