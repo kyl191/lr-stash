@@ -291,6 +291,55 @@ end
 exportServiceProvider.disableRenamePublishedCollection = true
 
 -------------------------------------------------------------------------------
+--- This plug-in callback function is called when the user has renamed a
+ -- published collection via the Publish Services panel user interface. This is
+ -- your plug-in's opportunity to make the corresponding change on the service.
+ -- <p>If your plug-in is unable to update the remote service for any reason,
+ -- you should throw a Lua error from this function; this causes Lightroom to revert the change.</p>
+ -- <p>This is not a blocking call. It is called from within a task created
+ -- using the <a href="LrTasks.html"><code>LrTasks</code></a> namespace. In most
+ -- cases, you should not need to start your own task within this function.</p>
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name publishServiceProvider.renamePublishedCollection
+	-- @class function
+	-- @param publishSettings (table) The settings for this publish service, as specified
+		-- by the user in the Publish Manager dialog. Any changes that you make in
+		-- this table do not persist beyond the scope of this function call.
+	-- @param info (table) A table with these fields:
+	 -- <ul>
+	  -- <li><b>isDefaultCollection</b>: (Boolean) True if this is the default collection.</li>
+	  -- <li><b>name</b>: (string) The new name being assigned to this collection.</li>
+		-- <li><b>parents</b>: (table) An array of information about parents of this collection, in which each element contains:
+			-- <ul>
+				-- <li><b>localCollectionId</b>: (number) The local collection ID.</li>
+				-- <li><b>name</b>: (string) Name of the collection set.</li>
+				-- <li><b>remoteCollectionId</b>: (number or string) The remote collection ID assigned by the server.</li>
+			-- </ul> </li>
+ 	  -- <li><b>publishService</b>: (<a href="LrPublishService.html"><code>LrPublishService</code></a>)
+	  -- 	The publish service object.</li>
+	  -- <li><b>publishedCollection</b>: (<a href="LrPublishedCollection.html"><code>LrPublishedCollection</code></a>
+		-- or <a href="LrPublishedCollectionSet.html"><code>LrPublishedCollectionSet</code></a>)
+	  -- 	The published collection object being renamed.</li>
+	  -- <li><b>remoteId</b>: (string or number) The ID for this published collection
+	  -- 	that was stored via <a href="LrExportSession.html#exportSession:recordRemoteCollectionId"><code>exportSession:recordRemoteCollectionId</code></a></li>
+	  -- <li><b>remoteUrl</b>: (optional, string) The URL, if any, that was recorded for the published collection via
+	  -- <a href="LrExportSession.html#exportSession:recordRemoteCollectionUrl"><code>exportSession:recordRemoteCollectionUrl</code></a>.</li>
+	 -- </ul>
+
+function publishServiceProvider.renamePublishedCollection( publishSettings, info )
+
+	if info.remoteId then
+
+		FlickrAPI.createOrUpdatePhotoset( publishSettings, {
+							photosetId = info.remoteId,
+							title = info.name,
+						} )
+
+	end
+		
+end
+
+-------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called whenever a
  -- published photo is selected in the Library module. Your implementation should
  -- return true if there is a viable connection to the publish service and
