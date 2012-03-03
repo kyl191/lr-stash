@@ -330,10 +330,7 @@ function publishServiceProvider.renamePublishedCollection( publishSettings, info
 
 	if info.remoteId then
 
-		FlickrAPI.createOrUpdatePhotoset( publishSettings, {
-							photosetId = info.remoteId,
-							title = info.name,
-						} )
+		StashAPI.renameFolder( info.remoteId, info.name )
 
 	end
 		
