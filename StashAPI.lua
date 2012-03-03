@@ -325,6 +325,18 @@ end
 
 --------------------------------------------------------------------------------
 
+function StashAPI.renameFolder(folderid, newName)
+
+	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
+
+	local token = StashAPI.getResult( "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&name=" .. newName .. "&folderid=" .. folderid )
+	
+	return token.status
+
+end
+
+--------------------------------------------------------------------------------
+
 function StashAPI.getResult( postUrl )
 
 	-- Do the request
