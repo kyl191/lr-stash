@@ -326,7 +326,7 @@ exportServiceProvider.disableRenamePublishedCollection = true
 	  -- <a href="LrExportSession.html#exportSession:recordRemoteCollectionUrl"><code>exportSession:recordRemoteCollectionUrl</code></a>.</li>
 	 -- </ul>
 
-function publishServiceProvider.renamePublishedCollection( publishSettings, info )
+function exportServiceProvider.renamePublishedCollection( publishSettings, info )
 
 	if info.remoteId then
 
