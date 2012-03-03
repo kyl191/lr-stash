@@ -288,7 +288,7 @@ end
 	-- @class property
 -- Sta.sh doesn't allow folders to be renamed from Lightroom
 -- In fact, trying to rename the folders resulted in the loss of images, strangely enough.
-exportServiceProvider.disableRenamePublishedCollection = true
+exportServiceProvider.disableRenamePublishedCollection = false
 
 -------------------------------------------------------------------------------
 --- This plug-in callback function is called when the user has renamed a
