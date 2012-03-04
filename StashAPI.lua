@@ -117,7 +117,7 @@ function StashAPI.showAuthDialog( propertyTable, message )
 		
 		if result == 'ok' then
 
-			propertyTable.code = trim( propertyTable.code )
+			propertyTable.code = LrStringUtils.trimWhitespace( propertyTable.code )
 
 		else
 		
