@@ -1,12 +1,3 @@
-<!--
-    Before use:
-    * be sure to have a 32bit luac installed
-    * configure property ${luac} including full path
-    * configure property ${svnversion} including full path
-
-    If you want to use the install target:
-    * configure property ${lrPluginFolder} including full path
--->
 <project
         name="lr-stash"
         default="dist"
@@ -14,6 +5,7 @@
 >
     <property name="build" location="build"/>
     <property name="dist"  location="dist"/>
+
 
     <property name="pluginFolderName" value="${ant.project.name}.lrplugin" />
     <property name="pluginFolder" location="${build}/${pluginFolderName}"/>
@@ -31,20 +23,17 @@
 
     <target name="modify-version">
         <tstamp />
-        <exec executable="git" outputproperty="revision" failifexecutionfails="false" errorproperty="">
+        <exec executable="${git}" outputproperty="revision" failifexecutionfails="false" errorproperty="">
             <arg value="describe"/>
             <arg value="--tags"/>
             <arg value="--always"/>
             <arg value="HEAD"/>
         </exec>
-        <property name="versionString" value="${DSTAMP} - ${TSTAMP} - ${revision})" />
-        <replaceregexp file="${src}/Info.lua"
-            match="Version:.*"
-            replace="Version: ${versionString}"
-        />
-        <replaceregexp file="${src}/Info.lua"
-            match="(VERSION.*display *= *)&quot;.*&quot;"
-            replace="\1&quot;${versionString}&quot;"
+        <property name="versionString" value="${DSTAMP} - ${TSTAMP} - ${revision}" />
+        <replaceregexp file="Info.lua"
+            match="VERSION = \{major=(\d{0,2}), minor=(\d{0,2}), revision=(\d{0,8}), build=(0[xX][0-9a-fA-F]+), display=([0-9]+ - [0-9]+ - [0-9a-fA-F]+)\},"
+            replace="VERSION = {major=\1, minor=\2, revision=${DSTAMP}, build=0x${revision}, display=${versionString},"
+            byline="true"
         />
     </target>
 
@@ -53,7 +42,7 @@
             <arg value="-s" />
             <arg value="-o" />
             <targetfile />
-            <fileset dir="${src}">
+            <fileset dir=".">
                 <include name="**/*.lua" />
             </fileset>
             <mapper type="glob" from="*.lua" to="${pluginFolder}/*.lua" />
