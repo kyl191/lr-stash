@@ -32,7 +32,7 @@
         <property name="versionString" value="${DSTAMP} - ${TSTAMP} - ${revision}" />
         <replaceregexp file="Info.lua"
             match="VERSION = \{major=([\d]+), minor=([\d]+), revision=(0[xX][0-9a-fA-F]+)(.*)"
-            replace="VERSION = {major=${DSTAMP}, minor=${TSTAMP}, revision=0x${revision}\5"
+            replace="VERSION = {major=${DSTAMP}, minor=${TSTAMP}, revision=0x${revision}\4"
             byline="true"
         />
     </target>
