@@ -31,8 +31,8 @@
         </exec>
         <property name="versionString" value="${DSTAMP} - ${TSTAMP} - ${revision}" />
         <replaceregexp file="Info.lua"
-            match="VERSION = \{major=(\d{0,2}), minor=(\d{0,2}), revision=(\d{0,8}), build=(0[xX][0-9a-fA-F]+), display=([0-9]+ - [0-9]+ - [0-9a-fA-F]+)\},"
-            replace="VERSION = {major=\1, minor=\2, revision=${DSTAMP}, build=0x${revision}, display=${versionString},"
+            match="VERSION = \{major=([\d]+), minor=([\d]+), revision=([\d]+), build=(0[xX][0-9a-fA-F]+)(.*)"
+            replace="VERSION = {major=\1, minor=\2, revision=${DSTAMP}${TSTAMP}, build=0x${revision}\5"
             byline="true"
         />
     </target>
