@@ -19,6 +19,7 @@
     <target name="init" depends="clean">
         <mkdir dir="${pluginFolder}" />
         <mkdir dir="${dist}"/>
+        <copy overwrite="true" file="logo.png" tofile="${pluginFolder}/logo.png" />
     </target>
 
     <target name="modify-version">
@@ -37,7 +38,7 @@
         />
     </target>
 
-    <target name="compile">
+    <target name="compile" depends="init">
         <apply executable="${luac}" type="file" verbose="true">
             <arg value="-s" />
             <arg value="-o" />
@@ -51,7 +52,6 @@
 
     <target name="dist" depends="modify-version, compile">
         <zip destfile="${pluginDeploymentUnit}" basedir="${build}">
-            <include name="${pluginFolderName}/**" />
         </zip>
     </target>
 
