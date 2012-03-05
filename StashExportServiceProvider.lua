@@ -257,8 +257,6 @@ exportServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPu
 	-- @return (Boolean) True if the name is acceptable, false if not
 	-- @return (string) If the name is not acceptable, a string that describes the reason, suitable for display.
 
---[[ Not used for Stash plug-in. --]]
-
 -- Unknown what the Sta.sh API allows as a folder name. Assuming it's only ASCII
 function exportServiceProvider.validatePublishedCollectionName( proposedName )
 	return LrStringUtils.isOnlyAscii( proposedName )
