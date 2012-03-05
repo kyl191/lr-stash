@@ -16,6 +16,7 @@ local logger = import 'LrLogger'( 'StashAPI' )
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
 require 'StashAPI'
+require 'Utils'
 
 --============================================================================--
 

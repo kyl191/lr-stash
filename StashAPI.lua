@@ -25,6 +25,7 @@ local share = LrView.share
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
+--Utils = (loadfile (LrPathUtils.child(_PLUGIN.path, "Utils.lua")))()
 require 'Utils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 

@@ -24,6 +24,7 @@ local share = LrView.share
 	-- Stash plug-in
 require 'StashAPI'
 require 'StashUser'
+require 'Utils'
 
 
 
@@ -466,6 +467,7 @@ end
 
 function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
+    Utils.md5Files()
 	return {
 	
 		{
