@@ -25,6 +25,7 @@ local share = LrView.share
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
+require 'Utils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 -- client secret is 6ac9aa67308019e9f8a307480dadf5f4
@@ -230,6 +231,7 @@ function StashAPI.uploadPhoto( params )
 	-- Overwriting info
 	--- Currently, assume that the user is solely managing the dA gallery from Lightroom, so Lightroom has the master copy of the description, title and keywords.
 	--- Overwrite the existing stuff each and every time.
+    -- This'll be changed to a checkbox in the options screen, as soon as I learn how to use it.
 	
 	-- We definitely have a title, so append that
 	postUrl = postUrl .. '&title=' .. params.title
@@ -268,13 +270,13 @@ function StashAPI.uploadPhoto( params )
 	
 	if hdrs and hdrs.error then
 		logger:info("Lightroom network error:")
-		StashAPI.logTable(hdrs)
+		Utils.logTable(hdrs)
 		LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
 	end
 
 	if hdrs and tonumber(hdrs.status) ~= 200 then
 		logger:info("Sta.sh server error:")
-		StashAPI.logTable(hdrs)
+		Utils.logTable(hdrs)
 		logger:info(result)
 		LrErrors.throwUserError( "Error uploading to Sta.sh: Server returned error code " .. hdrs.status)
 	else
@@ -282,7 +284,7 @@ function StashAPI.uploadPhoto( params )
 		json = JSON:decode(result)
 		if json.error ~= nil and not params.retry then
 			logger:info("Error from Sta.sh:")
-			StashAPI.logTable(json)
+			Utils.logTable(json)
 			if json.error == ("internal_error_item" or "invalid_stashid") then
 				-- internal_error_item seems to mean we tried uploading to a deleted stashid
 				-- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
@@ -305,7 +307,7 @@ function StashAPI.uploadPhoto( params )
 		elseif json.error ~= nil and params.retry then
 			LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
 		end
-		StashAPI.logTable(json)
+		Utils.logTable(json)
 		return json
 	end
 	
@@ -348,13 +350,13 @@ function StashAPI.getResult( postUrl )
 
 	if headers and headers.error then
 		logger:info("Lightroom network error:")
-		StashAPI.logTable(headers)
+		Utils.logTable(headers)
 		LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
 	end
 
 	if headers and tonumber(headers.status) ~= 200 then
 		logger:info("Server error:")
-		StashAPI.logTable(headers)
+		Utils.logTable(headers)
 		logger:info(json)
 		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. headers.status)
 	else
@@ -367,7 +369,7 @@ function StashAPI.getResult( postUrl )
 			logger:info(json)
 			LrErrors.throwUserError("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
 		end
-		StashAPI.logTable(decode)
+		Utils.logTable(decode)
 		return decode
 	end
 
@@ -386,14 +388,3 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.logTable(table)
-	for k,v in pairs(table) do 
-		if type( v ) == 'table' then
-			StashAPI.logTable(v)
-		else
-			logger:info(k,v) 
-		end
-	end
-end
-
---------------------------------------------------------------------------------
