@@ -284,8 +284,7 @@ end
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
 	-- @name exportServiceProvider.disableRenamePublishedCollection
 	-- @class property
--- Sta.sh doesn't allow folders to be renamed from Lightroom
--- In fact, trying to rename the folders resulted in the loss of images, strangely enough.
+
 exportServiceProvider.disableRenamePublishedCollection = false
 
 -------------------------------------------------------------------------------
