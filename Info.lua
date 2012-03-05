@@ -17,6 +17,6 @@ return {
 		file = 'StashExportServiceProvider.lua',
 	},
 
-	VERSION = {major=20120304, minor=1658, revision=0xf2709a5, },
+	VERSION = {major=20120305, minor=1030, revision=0x7ed1744, },
 
 }
