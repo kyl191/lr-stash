@@ -79,14 +79,33 @@ function Utils.networkComms( action, url )
 
     -- Do the request
     if action == "post" then
-        local data, headers = LrHttp.post(url, "")
+        import "LrTasks".startAsyncTask( function()
+            local payload, headers = LrHttp.post(url, nil)
+            local data = Utils.checkResponse( payload, headers, url )
+            if data ~= nil then
+                return data
+            else
+                return nil
+            end
+        end )
     else
-        local data, headers = LrHttp.get(url, "")
+        import "LrTasks".startAsyncTask( function()
+            local payload, headers = LrHttp.get(url, nil)
+            local data = Utils.checkResponse( payload, headers, url )
+            if data ~= nil then
+                return data
+            else
+                return nil
+            end
+        end )
     end
 
-    -- If we didn't get a result back, that means there was a transport error
-    -- So show that error to the user
+end
+--------------------------------------------------------------------------------
 
+function Utils.checkResponse( data, headers, url )
+
+    -- If headers.error is set, that means Lightroom had an error.
     if headers and headers.error then
         logger:info("Lightroom network error:")
         Utils.logTable(headers)
@@ -104,13 +123,9 @@ function Utils.networkComms( action, url )
         if data ~= nil then
             return data
         else
-            logger:info("Response for " .. postUrl .. " was empty.")
+            logger:info("Response for " .. url .. " was empty.")
             return nil
         end
     end
-
-    return nil
-
 end
---------------------------------------------------------------------------------
 return Utils
