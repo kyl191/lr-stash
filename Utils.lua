@@ -63,7 +63,7 @@ function Utils.getJSON( postUrl )
         LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
     end
 
-    if headers and tonumber(headers.status[1]) ~= 2 then
+    if headers and tonumber(headers.status) > 299 then
         logger:info("Server error:")
         Utils.logTable(headers)
         logger:info(json)
