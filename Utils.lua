@@ -12,6 +12,9 @@ logger:enable("logfile")
 local LrPathUtils = import 'LrPathUtils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
+local LrHttp = import 'LrHttp'
+local LrErrors = import 'LrErrors'
+
 Utils = {}
 
 function Utils.logTable(table)
