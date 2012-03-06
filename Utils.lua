@@ -52,9 +52,10 @@ function Utils.getJSON( postUrl )
 
     json = Utils.post( postUrl )
 
-    if json == nil
+    if json == nil then
         logger:info(postUrl .. " was supposed to return JSON, but didn't.")
         LrErrors.throwUserError("Server problem! \n Response from server was empty, but we were expecting a JSON response!")
+    end
 
     -- Now that we have valid JSON, decode it, and try to get the status of our request
     -- If the status is error, show the error to the user, and die.
@@ -94,11 +95,12 @@ function Utils.post( postUrl )
         logger:info(data)
         LrErrors.throwUserError( "Remote server returned error code " .. headers.status)
     else
-        if data ~= nil
+        if data ~= nil then
             return data
         else
             logger:info("Response for " .. postUrl .. " was empty.")
             return nil
+        end
     end
 
     return nil
