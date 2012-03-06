@@ -9,6 +9,7 @@ local LrFileUtils = import 'LrFileUtils'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
+local LrPathUtils = import 'LrPathUtils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 Utils = {}
