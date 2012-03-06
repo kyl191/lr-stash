@@ -286,7 +286,8 @@ end
 	-- @name exportServiceProvider.disableRenamePublishedCollection
 	-- @class property
 
-exportServiceProvider.disableRenamePublishedCollection = false
+-- Sta.sh allows renames, but the API is currently broken.
+exportServiceProvider.disableRenamePublishedCollection = true
 
 -------------------------------------------------------------------------------
 --- This plug-in callback function is called when the user has renamed a
