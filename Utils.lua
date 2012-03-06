@@ -32,7 +32,6 @@ function Utils.md5Files()
         local data = file:read("*all")
 
         local md5sum = LrMD5.digest(data)
-        logger:info("MD5sum of " .. filePath .. ": " .. md5sum)
         digests[#digests+1] = {filePath = filePath, md5 = md5sum}
     end
 
