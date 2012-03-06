@@ -159,7 +159,7 @@ function StashAPI.getToken(code)
 	-- And, yes, redirect_uri appears to be needed, so don't remove it
 	-- redirect_uri=http://oauth2.kyl191.net/
 
-	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
+	local token = Utils.getJSON(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
 
 	return token
 
@@ -172,7 +172,7 @@ function StashAPI.refreshAuth()
 	-- Refresh the auth token
 	-- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-	local token = StashAPI.getResult(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
+	local token = Utils.getJSON(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
 
 	StashAPI.processToken( token, nil)
 
@@ -320,7 +320,7 @@ function StashAPI.getUsername()
 
 	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
-	local token = StashAPI.getResult( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
+	local token = Utils.getJSON( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
 	
 	return token.symbol .. token.username
 
@@ -332,56 +332,20 @@ function StashAPI.renameFolder(folderid, newName)
 
 	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
-	local token = StashAPI.getResult( "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&name=" .. newName .. "&folderid=" .. folderid )
+	local token = Utils.getJSON( "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&name=" .. newName .. "&folderid=" .. folderid )
 	
 	return token.status
 
 end
 
---------------------------------------------------------------------------------
 
-function StashAPI.getResult( postUrl )
-
-	-- Do the request
-	local json, headers = LrHttp.post(postUrl, "")
-
-	-- If we didn't get a result back, that means there was a transport error
-	-- So show that error to the user
-	logger:info("Called StashAPI.getResult for " .. postUrl)
-
-	if headers and headers.error then
-		logger:info("Lightroom network error:")
-		Utils.logTable(headers)
-		LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
-	end
-
-	if headers and tonumber(headers.status) ~= 200 then
-		logger:info("Server error:")
-		Utils.logTable(headers)
-		logger:info(json)
-		LrErrors.throwUserError( "Error connecting to Sta.sh: Server returned error code " .. headers.status)
-	else
-		
-		-- Now that we have valid JSON, decode it, and try to get the status of our request
-		-- If the status is error, show the error to the user, and die.
-		local decode = JSON:decode(json)
-		if decode.status and decode.status == "error" then
-			logger:info("JSON error from Sta.sh")
-			logger:info(json)
-			LrErrors.throwUserError("Error with a JSON response! \n" .. decode.error .. "\n" ..decode.error_description)
-		end
-		Utils.logTable(decode)
-		return decode
-	end
-
-end	
 --------------------------------------------------------------------------------
 
 function StashAPI.getRemainingSpace()
 
 	-- Get the amount of space left in the sta.sh quota for the user
 
-	local token = StashAPI.getResult("https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token)
+	local token = Utils.getJSON("https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token)
 
 	return token.available_space
 
