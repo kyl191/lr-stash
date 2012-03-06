@@ -16,6 +16,9 @@ return {
 		title = 'Sta.sh Dev',
 		file = 'StashExportServiceProvider.lua',
 	},
+    LrPluginInfoProvider = "PluginInfoProvider.lua",
+
+    LrHelpMenuItems = { title = "Sta.s&h Testing", file = "Testing.lua"},
 
 	VERSION = {major=20120305, minor=1030, revision=0x7ed1744, },
 

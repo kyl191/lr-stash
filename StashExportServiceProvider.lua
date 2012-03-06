@@ -467,8 +467,7 @@ end
 
 function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
-    Utils.md5Files()
-	return {
+    return {
 	
 		{
 			title = "Sta.sh account",
