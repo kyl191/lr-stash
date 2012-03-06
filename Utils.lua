@@ -23,11 +23,11 @@ end
 
 --------------------------------------------------------------------------------
 
-function Utils.md5Files()
+function Utils.md5Files(path)
 
-    logger:info("Running md5files for directory " .. _PLUGIN.path)
+    logger:info("Running md5files for directory " .. path)
     local digests = {}
-    for filePath in LrFileUtils.recursiveFiles( _PLUGIN.path ) do
+    for filePath in LrFileUtils.recursiveFiles( path ) do
         local file = assert(io.open(filePath, "rb"))
         local data = file:read("*all")
 
