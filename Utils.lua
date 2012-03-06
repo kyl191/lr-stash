@@ -50,7 +50,7 @@ end
 
 function Utils.getJSON( postUrl )
 
-    json = Utils.post( postUrl )
+    json = Utils.networkComms( "post", postUrl )
 
     if json == nil then
         logger:info(postUrl .. " was supposed to return JSON, but didn't.")
@@ -73,10 +73,16 @@ end
 
 --------------------------------------------------------------------------------
 
-function Utils.post( postUrl )
+function Utils.networkComms( action, url )
+
+    logger:info("Called Utils.networkComms for " .. url)
+
     -- Do the request
-    local data, headers = LrHttp.post(postUrl, "")
-    logger:info("Called Utils.post for " .. postUrl)
+    if action == "post" then
+        local data, headers = LrHttp.post(url, "")
+    else
+        local data, headers = LrHttp.get(url, "")
+    end
 
     -- If we didn't get a result back, that means there was a transport error
     -- So show that error to the user
@@ -84,7 +90,7 @@ function Utils.post( postUrl )
     if headers and headers.error then
         logger:info("Lightroom network error:")
         Utils.logTable(headers)
-        LrErrors.throwUserError( "Network error: " .. hdrs.error.nativeCode )
+        LrErrors.throwUserError( "Network error: " .. headers.error.errorCode .. "\n" .. headers.error.name )
     end
 
     -- Alternatively, the server could throw back an error.
