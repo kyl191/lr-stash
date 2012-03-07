@@ -79,25 +79,16 @@ function Utils.networkComms( action, url )
 
     -- Do the request
     if action == "post" then
-        import "LrTasks".startAsyncTask( function()
-            local payload, headers = LrHttp.post(url, nil)
-            local data = Utils.checkResponse( payload, headers, url )
-            if data ~= nil then
-                return data
-            else
-                return nil
-            end
-        end )
+        local payload, headers = LrHttp.post(url, nil)
     else
-        import "LrTasks".startAsyncTask( function()
-            local payload, headers = LrHttp.get(url, nil)
-            local data = Utils.checkResponse( payload, headers, url )
-            if data ~= nil then
-                return data
-            else
-                return nil
-            end
-        end )
+        local payload, headers = LrHttp.get(url, nil)
+    end
+
+    local data = Utils.checkResponse( payload, headers, url )
+    if data ~= nil then
+        return data
+    else
+        return nil
     end
 
 end
