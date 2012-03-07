@@ -183,6 +183,7 @@ function StashAPI.processToken( token, context )
 		prefs.expire = LrDate.currentTime() + token.expires_in
 	
 	-- If the token has anything other than status = success, oops, we've got a problem
+    -- Function context comes from StashUser.login
 	else 
 		LrDialogs.attachErrorDialogToFunctionContext(context)
 		LrErrors.throwUserError( "Unable to authenticate" )
