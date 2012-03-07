@@ -164,7 +164,7 @@ function StashAPI.refreshAuth()
 
 	local token = Utils.getJSON(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
 
-	StashAPI.processToken( token, nil)
+	StashAPI.processToken( token, nil )
 
 end
 
