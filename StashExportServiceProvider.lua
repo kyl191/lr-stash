@@ -590,7 +590,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	local nPhotos = exportSession:countRenditions()
 	
 	-- By default, use the foldername "Lightroom Exports" with there's more than 1 image uploaded.
-	-- This is the case *EVEN* for exporting.
+	-- This is the case for exporting.
 	-- For publishing, the name becomes "Uploaded by Lightroom"
 	local folderName = "Lightroom Exports"
 
@@ -621,7 +621,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 	end
 
-	-- Set progress title depending on whether we're exporting or publishing.
+	-- Set progress title depending on whether we're exporting or publishing,
+	-- and if we're exporting/publishing more than one photo.
 
 	local progressScope = nil
 	
