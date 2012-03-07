@@ -79,9 +79,9 @@ function Utils.networkComms( action, url )
 
     -- Do the request
     if action == "post" then
-        local payload, headers = LrHttp.post(url, nil)
+        local payload, headers = LrHttp.post(url, "")
     else
-        local payload, headers = LrHttp.get(url, nil)
+        local payload, headers = LrHttp.get(url)
     end
 
     local data = Utils.checkResponse( payload, headers, url )
