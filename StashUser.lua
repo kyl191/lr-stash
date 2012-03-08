@@ -42,6 +42,7 @@ local function notLoggedIn( propertyTable )
 	prefs.refresh_token = nil
 	prefs.expire = nil
 	prefs.username = nil
+    prefs.userSymbol = nil
 
 	-- Show the user a 'Log In' button in the Export/Publish menu
 
@@ -152,8 +153,10 @@ function StashUser.verifyLogin( propertyTable )
 				propertyTable.loginButtonEnabled = true
 			    propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
 
-				prefs.username = StashAPI.getUsername()
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.username)
+				local user = StashAPI.getUsername()
+                prefs.userSymbol = user.symbol
+                prefs.username = user.name
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.userSymbol .. prefs.username)
 				propertyTable.LR_cantExportBecause = nil
 
 				-- Be nice and try to show the user how much space he has left.
@@ -161,7 +164,7 @@ function StashUser.verifyLogin( propertyTable )
 				if space ~= nil then
 					space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
 				end
-				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", prefs.username, space )
+				propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", prefs.userSymbol .. prefs.username, space )
 			
 				-- If the user's editing an existing connection, we can't allow him to switch users, 
 				-- otherwise we'll get an error when trying to republish under a different user.

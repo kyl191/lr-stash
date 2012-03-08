@@ -313,7 +313,7 @@ function StashAPI.getUsername()
 
 	local token = Utils.getJSON( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
 	
-	return token.symbol .. token.username
+	return { symbol = token.symbol, name = token.username }
 
 end
 
