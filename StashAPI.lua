@@ -283,7 +283,7 @@ function StashAPI.uploadPhoto( params )
 
     result = Utils.checkResponse(result, headers, postUrl)
 
-    if result.error then
+    if result.status and result.status == "error" then
 
         if result.from == "lightroom" then
             -- We can't do much about a Lightroom error.
@@ -309,7 +309,7 @@ function StashAPI.uploadPhoto( params )
             end
 
 
-            local validJSON, message = LrTasks.pcall( function() return JSON:decode(result) end)
+            local validJSON, message = LrTasks.pcall( function() return JSON:decode(result.payload) end)
 
             -- If it's valid JSON, try to identify the error and reupload.
             if validJSON then
