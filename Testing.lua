@@ -2,8 +2,10 @@
 
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
+local LrPathUtils = import 'LrPathUtils'
+JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
---Utils.md5Files(_PLUGIN.path)
+--
 import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', function(context)
 
     context:addCleanupHandler(function(result,message)
@@ -14,7 +16,10 @@ import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', func
         logger:error("Testing: Error message: " .. message)
     end)
 
-    Utils.logTable(Utils.getJSON("http://kyl191.net/"))
+    local md5s = JSON:encode(Utils.md5Files(_PLUGIN.path))
+    logger:info(md5s)
+
+    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. md5s))
 
 end)
 
