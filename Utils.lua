@@ -89,8 +89,7 @@ function Utils.getJSON( postUrl, errorMessage )
         end)
         context:addOperationTitleForError( "Error parsing a JSON response" )
 
-        local json = JSON:decode(data)
-        return json
+        return JSON:decode(data)
     end,
         data)
 
