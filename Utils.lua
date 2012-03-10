@@ -43,7 +43,10 @@ function Utils.logTable(x, label)
         end
     end
 
-    log:info (label .. ":")
+    if label ~= nil then
+        log:info (label .. ":")
+    end
+
     dump1 (x, 0, {})
 end
 
