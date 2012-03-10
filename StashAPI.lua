@@ -16,6 +16,7 @@ local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrView = import 'LrView'
 local LrStringUtils = import 'LrStringUtils'
+local LrTasks = import 'LrTasks'
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
@@ -275,38 +276,66 @@ function StashAPI.uploadPhoto( params )
     --]]
 
     result = Utils.checkResponse(result, headers, postUrl)
-	if result.error then
-        -- do stuff
-    else
-    	json = JSON:decode(result)
-		if json.error ~= nil and not params.retry then
-			logger:info("Error from Sta.sh:")
-			Utils.logTable(json)
-			if json.error == ("internal_error_item" or "invalid_stashid") then
-				-- internal_error_item seems to mean we tried uploading to a deleted stashid
-				-- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
-				params.stashid = nil
-				params.retry = json.error
-				LrDialogs.message('Something wrong with the stashid, retrying with a blank id.')
-				return StashAPI.uploadPhoto(params)
-			elseif json.error == ("internal_error_missing_folder" or "invalid_folderid" or "internal_error_missing_metadata") then
-				-- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
-				-- Same for invalid_folderid too
-				params.folderid = nil
-				params.retry = json.error
-				LrDialogs.message('Something wrong with the folderid, retrying with a blank id.')
-				return StashAPI.uploadPhoto(params)
-			else
-				-- Haven't seen any other errors yet.
-				-- Suppose we could try uploading again.
-				LrDialogs.message( "Error uploading to Sta.sh: " .. json.error .. " : " .. json.error_description .. "\n Automatically retrying.")
-			end
-		elseif json.error ~= nil and params.retry then
-			LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
-		end
-		Utils.logTable(json)
-		return json
-	end
+
+    if result.error then
+
+        if result.from == "lightroom" then
+            -- We can't do much about a Lightroom error.
+            LrErrors.throwUserError ("Lightroom network error while uploading to Sta.sh: " .. result.code .. "\n" .. result.description)
+
+        elseif result.from == "server" then
+            -- However, a server error? That we need to check - Sta.sh returns an error code if something goes wrong.
+            local validJSON, message = LrTasks.pcall( function() return JSON:decode(result) end)
+
+            -- If it's valid JSON, try to identify the error and reupload.
+            if validJSON then
+                json = JSON:decode(result)
+
+                if json.error ~= nil and not params.retry then
+                    logger:error("Error from Sta.sh:")
+                    Utils.logTable(json)
+
+                    if json.error == ("internal_error_item" or "invalid_stashid") then
+                        -- internal_error_item seems to mean we tried uploading to a deleted stashid
+                        -- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
+                        params.stashid = nil
+                        params.retry = json.error
+                        logger:info('Something wrong with the stashid, retrying with a blank id.')
+                        return StashAPI.uploadPhoto(params)
+
+                    elseif json.error == ("internal_error_missing_folder" or "invalid_folderid" or "internal_error_missing_metadata") then
+                        -- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
+                        -- Same for invalid_folderid too
+                        params.folderid = nil
+                        params.retry = json.error
+                        logger:info('Something wrong with the folderid, retrying with a blank id.')
+                        return StashAPI.uploadPhoto(params)
+
+                    else
+                        -- Haven't seen any other errors yet.
+                        -- Suppose we could try uploading again.
+                        LrDialogs.message( "Error uploading to Sta.sh: " .. json.error .. " : " .. json.error_description .. "\n Automatically retrying.")
+
+                    end
+
+                elseif json.error ~= nil and params.retry then
+                    logger:error("Retried once, still got an error. Giving up.")
+                    Utils.logTable(json, "JSON from Sta.sh")
+                    LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
+
+                end
+
+            -- If it's not, throw the error up to the user
+            else
+                LrErrors.throwUserError ("Lightroom error while uploading to Sta.sh: " .. result.code .. "\n" .. result.description)
+            end
+        end
+
+    end
+
+    -- And of course, if there's no error, return the parsed JSON object
+    Utils.logTable(json)
+    return json
 	
 end
 
