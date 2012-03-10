@@ -143,7 +143,7 @@ function Utils.checkResponse( data, headers, url )
         if data ~= nil then
             return data
         else
-            logger:info("checkResponse: Response for " .. url .. " was empty.")
+            logger:error("checkResponse: Response for " .. url .. " was empty.")
             return { status = "error", from = "server", code = "empty", payload = data }
         end
     end
