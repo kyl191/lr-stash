@@ -97,7 +97,7 @@ function StashUser.login( propertyTable )
 		propertyTable.code = nil
 
 		-- json token is similarly one-time use
-		local token = Utils.getJSON(auth_code)
+		local token = StashAPI.getToken(auth_code)
 
         if token.status == "error" then
 
