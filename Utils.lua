@@ -6,6 +6,7 @@ Common code for Lightroom plugins
 ------------------------------------------------------------------------------]]
 local LrMD5 = import 'LrMD5'
 local LrFileUtils = import 'LrFileUtils'
+local LrTasks = import 'LrTasks'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
@@ -78,28 +79,37 @@ function Utils.getJSON( postUrl )
     if data.status and data.status == "error" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't.")
         -- Pass the error up the chain
-        return data
+        -- That's for the future.
+        -- For now, throw an error.
+        -- -- return data
+        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but didn't. Wait a while, and try again.")
     end
 
     -- Now that we have valid JSON, decode it, and try to get the status of our request
     -- If the status is error, show the error to the user, and die.
-    logger:info("About to pass data to JSON.decode.")
-    local decode = JSON:decode(data)
-    Utils.logTable(decode, "Result from JSON decode: " .. decode)
+    local ok, decode = LrTasks.pcall( function() return JSON:decode(data) end)
 
-    if decode.error and decode.error == "error" then
-        logger.error("getJSON: JSON error: " .. decode.errorText)
-        return {status = "error", from = "json"}
-    elseif decode.status and decode.status == "error" then
-        logger:error("getJSON: JSON error from " .. postUrl)
-        logger:info(data)
-        return decode
-    elseif decode.status and decode.status == "success" then
-        logger:info("getJSON for " .. postUrl)
-        Utils.logTable(decode)
-        return decode
+    -- If the JSON parsing failed, throw the error up the chain
+    -- That's for the future.
+    -- For now, throw an error.
+    if not ok then
+        logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
+        --return {status = "error", from = "json" }
+        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but got some garbage . Wait a while, and try again.")
+    else
+
+        Utils.logTable(decode, "Result from JSON decode")
+
+       if decode.status and decode.status == "error" then
+            logger:error("getJSON: JSON error from " .. postUrl)
+            logger:info(data)
+            return decode
+        elseif decode.status and decode.status == "success" then
+            logger:info("getJSON for " .. postUrl)
+            Utils.logTable(decode)
+            return decode
+        end
     end
-
 
 end
 

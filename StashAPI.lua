@@ -150,7 +150,10 @@ function StashAPI.getToken(code)
 	-- And, yes, redirect_uri appears to be needed, so don't remove it
 	-- redirect_uri=http://oauth2.kyl191.net/
 
-	local token = Utils.getJSON(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code))
+    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code)
+    local error = "contacting the sta.sh server to get access"
+
+    local token = Utils.getJSON(postUrl, error)
 
 	return token
 
@@ -163,7 +166,10 @@ function StashAPI.refreshAuth()
 	-- Refresh the auth token
 	-- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-	local token = Utils.getJSON(string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token))
+	local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%08x%08x%08x%08x&refresh_token=%s",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4, prefs.refresh_token)
+    local error = "renewing the authorization"
+
+    local token = Utils.getJSON(postUrl, error)
 
 	StashAPI.processToken( token, nil )
 
@@ -345,7 +351,10 @@ function StashAPI.getUsername()
 
 	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
-	local token = Utils.getJSON( "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token )
+    local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token
+    local error = "retriving user details"
+
+    local token = Utils.getJSON(postUrl, error)
 	
 	return { symbol = token.symbol, name = token.username }
 
@@ -355,9 +364,12 @@ end
 
 function StashAPI.renameFolder(folderid, newName)
 
-	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
+	-- Rename a folder
 
-	local token = Utils.getJSON( "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&name=" .. newName .. "&folderid=" .. folderid )
+    local postUrl = "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&name=" .. newName .. "&folderid=" .. folderid
+    local error = "renaming a folder"
+
+    local token = Utils.getJSON(postUrl, error)
 	
 	return token.status
 
@@ -370,7 +382,10 @@ function StashAPI.getRemainingSpace()
 
 	-- Get the amount of space left in the sta.sh quota for the user
 
-	local token = Utils.getJSON("https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token)
+    local postUrl = "https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token
+    local error = "getting amount of space in Sta.sh"
+
+    local token = Utils.getJSON(postUrl, error)
 
 	return token.available_space
 
