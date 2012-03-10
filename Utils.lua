@@ -26,16 +26,16 @@ Utils = {}
 function Utils.logTable(x, label)
     local function dump1 (x, indent, visited)
         if type (x) ~= "table" then
-            log:info (string.rep (" ", indent) .. tostring (x))
+            logger:info (string.rep (" ", indent) .. tostring (x))
             return
         end
 
         visited [x] = true
         if indent == 0 then
-            log:info (string.rep (" ", indent) .. tostring (x))
+            logger:info (string.rep (" ", indent) .. tostring (x))
         end
         for k, v in pairs (x) do
-            log:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " ..
+            logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " ..
                     tostring (v))
             if type (v) == "table" and not visited [v] then
                 dump1 (v, indent + 4, visited)
@@ -44,7 +44,7 @@ function Utils.logTable(x, label)
     end
 
     if label ~= nil then
-        log:info (label .. ":")
+        logger:info (label .. ":")
     end
 
     dump1 (x, 0, {})
