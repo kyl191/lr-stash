@@ -69,7 +69,7 @@ end
 
 --------------------------------------------------------------------------------
 
-function Utils.getJSON( postUrl )
+function Utils.getJSON( postUrl, errorMessage )
 
     data = Utils.networkComms( "post", postUrl )
 
