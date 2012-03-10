@@ -20,6 +20,7 @@
         <mkdir dir="${pluginFolder}" />
         <mkdir dir="${dist}"/>
         <copy overwrite="true" file="logo.png" tofile="${pluginFolder}/logo.png" />
+        <copy overwrite="true" file="README.txt" tofile="${pluginFolder}/README.txt" />
     </target>
 
     <target name="modify-version">
