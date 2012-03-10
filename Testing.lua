@@ -5,5 +5,5 @@ logger:enable("logfile")
 
 --Utils.md5Files(_PLUGIN.path)
 import "LrTasks".startAsyncTask( function()
-    logger:info(Utils.getJSON("http://kyl191.net/"))
+    Utils.logTable(Utils.getJSON("http://kyl191.net/"))
     end)
