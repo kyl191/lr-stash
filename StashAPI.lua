@@ -314,7 +314,7 @@ function StashAPI.uploadPhoto( params )
             -- If it's valid JSON, try to identify the error and reupload.
             if validJSON then
                 json = message
-                
+
                 if json.error ~= nil and not params.retry then
                     logger:error("Error from Sta.sh:")
                     Utils.logTable(json, "JSON from Sta.sh")
