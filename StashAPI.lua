@@ -258,9 +258,9 @@ function StashAPI.uploadPhoto( params )
 	end
 
 	-- Post it and wait for confirmation.
-	local result, hdrs = LrHttp.postMultipart( postUrl, mimeChunks )
+	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 	
-	if hdrs and hdrs.error then
+	--[[--if hdrs and hdrs.error then
 		logger:info("Lightroom network error:")
 		Utils.logTable(hdrs)
 		LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
@@ -271,7 +271,10 @@ function StashAPI.uploadPhoto( params )
 		Utils.logTable(hdrs)
 		logger:info(result)
 		LrErrors.throwUserError( "Error uploading to Sta.sh: Server returned error code " .. hdrs.status)
-	else
+    else
+    --]]
+
+    result = Utils.checkResponse(result, headers, postUrl)
 		
 		json = JSON:decode(result)
 		if json.error ~= nil and not params.retry then
@@ -284,7 +287,7 @@ function StashAPI.uploadPhoto( params )
 				params.retry = json.error
 				LrDialogs.message('Something wrong with the stashid, retrying with a blank id.')
 				return StashAPI.uploadPhoto(params)
-			elseif json.error == ("internal_error_missing_folder" or "invalid_folderid") then
+			elseif json.error == ("internal_error_missing_folder" or "invalid_folderid" or "internal_error_missing_metadata") then
 				-- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
 				-- Same for invalid_folderid too
 				params.folderid = nil
