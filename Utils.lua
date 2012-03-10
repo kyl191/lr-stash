@@ -16,9 +16,7 @@ local LrErrors = import 'LrErrors'
 
 --------------------------------------------------------------------------------
 -- Suppress JSON parsing errors
-JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
-
-JSON = JSON:new({assert = function(result, message)
+JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))({assert = function(result, message)
     logger:error("Failure parsing JSON: " .. message)
 end})
 
