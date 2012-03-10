@@ -6,7 +6,7 @@ Common code for Lightroom plugins
 ------------------------------------------------------------------------------]]
 local LrMD5 = import 'LrMD5'
 local LrFileUtils = import 'LrFileUtils'
-local LrTasks = import 'LrTasks'
+local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
@@ -83,7 +83,18 @@ function Utils.getJSON( postUrl, errorMessage )
 
     -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
     -- Other systems should *also* return JSON - this is getJSON after all.
-    local ok, decode = LrTasks.pcall( function() return JSON:decode(data) end)
+    logger:info("About to try parsing the supposed returned JSON: " .. data)
+    local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
+        context:addFailureHandler( function(status,message)
+            logger:error("Error parsing JSON: " .. message)
+        end)
+        context:addOperationTitleForError( "Error parsing a JSON response" )
+
+        logger:info("Got the data... " .. data)
+        local json = JSON:decode(data)
+        return json
+    end,
+        data)
 
     -- If the JSON parsing failed, throw an error.
     if not ok then
@@ -91,13 +102,13 @@ function Utils.getJSON( postUrl, errorMessage )
         LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
         -- Otherwise, try parsing the error.
-        -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error and status == success, but this is the primary target right now...
+        -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error, but this is the primary target right now...
         if decode.status and decode.status == "error" then
             logger:error("getJSON: JSON error from " .. postUrl)
             Utils.logTable(decode, "Result from JSON decode")
             LrErrors.throwUserError("Oh dear. The server didn't like us " .. errorMessage .. ", it said " .. decode.error .. ", which apparently means \"".. decode.error_description .. "\". \nThis might be a permanent error if you repeatedly get this message.")
-        elseif decode.status and decode.status == "success" then
-            logger:info("getJSON was a success for " .. postUrl)
+        else
+            logger:info("Assuming getJSON was a success for " .. postUrl)
             return decode
         end
     end
