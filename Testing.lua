@@ -5,6 +5,8 @@ logger:enable("logfile")
 local LrPathUtils = import 'LrPathUtils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
+local Info = require 'Info'
+
 --
 import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', function(context)
 
@@ -16,10 +18,11 @@ import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', func
         logger:error("Testing: Error message: " .. message)
     end)
 
-    local md5s = Utils.md5Files(_PLUGIN.path)
-    local json = JSON:encode(md5s)
+    local json = JSON:encode(Utils.md5Files(_PLUGIN.path))
+    Utils.logTable(Info.VERSION, "Plugin version")
+    local version = JSON:encode(Info.VERSION)
 
-    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. json), "POSTbin response")
+    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. json .. "&version=" .. version), "POSTbin response")
 
 end)
 
