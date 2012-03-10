@@ -85,21 +85,24 @@ function Utils.getJSON( postUrl, errorMessage )
     -- Other systems should *also* return JSON - this is getJSON after all.
     local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
         context:addFailureHandler( function(status,message)
-            logger:error("Error parsing JSON: " .. message)
+            logger:error("Error parsing JSON: " )
         end)
         context:addOperationTitleForError( "Error parsing a JSON response" )
 
         return JSON:decode(data)
     end,
         data)
+    Utils.logTable(ok, "status")
+    logger:info(type(ok))
 
     -- If the JSON parsing failed, throw an error.
-    if not ok then
+    if ok == nil then
         logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
         LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
         -- Otherwise, try parsing the error.
         -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error, but this is the primary target right now...
+        logger:info("Apparently, we parsed the JSON successfully.")
         if decode.status and decode.status == "error" then
             logger:error("getJSON: JSON error from " .. postUrl)
             Utils.logTable(decode, "Result from JSON decode")
