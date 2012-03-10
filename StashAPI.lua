@@ -362,7 +362,6 @@ function StashAPI.uploadPhoto( params )
     local ok, json = LrTasks.pcall(function() return JSON:decode(result) end)
 
     -- And of course, if there's no error, return the parsed JSON object
-    Utils.logTable(json)
     return json
 	
 end

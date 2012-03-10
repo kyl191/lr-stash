@@ -83,14 +83,12 @@ function Utils.getJSON( postUrl, errorMessage )
 
     -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
     -- Other systems should *also* return JSON - this is getJSON after all.
-    logger:info("About to try parsing the supposed returned JSON: " .. data)
     local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
         context:addFailureHandler( function(status,message)
             logger:error("Error parsing JSON: " .. message)
         end)
         context:addOperationTitleForError( "Error parsing a JSON response" )
 
-        logger:info("Got the data... " .. data)
         local json = JSON:decode(data)
         return json
     end,
