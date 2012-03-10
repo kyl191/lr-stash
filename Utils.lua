@@ -92,11 +92,11 @@ function Utils.getJSON( postUrl, errorMessage )
         return JSON:decode(data)
     end,
         data)
-    Utils.logTable(ok, "status")
+    Utils.logTable(getmetatable(ok), "metatable")
     logger:info(type(ok))
 
     -- If the JSON parsing failed, throw an error.
-    if ok == nil then
+    if ok ~= true then
         logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
         LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
