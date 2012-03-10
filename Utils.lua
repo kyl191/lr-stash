@@ -64,9 +64,7 @@ function Utils.md5Files(path)
         digests[#digests+1] = {filePath = LrPathUtils.makeRelative(filePath, path), md5 = md5sum}
     end
 
-    Utils.logTable(digests)
-
-
+    return digests
 end
 
 --------------------------------------------------------------------------------
