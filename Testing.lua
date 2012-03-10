@@ -19,10 +19,12 @@ import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', func
     end)
 
     local json = JSON:encode(Utils.md5Files(_PLUGIN.path))
-    Utils.logTable(Info.VERSION, "Plugin version")
+    --Utils.logTable(Info.VERSION, "Plugin version")
     local version = JSON:encode(Info.VERSION)
 
-    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. json .. "&version=" .. version), "POSTbin response")
+    --Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. json .. "&version=" .. version), "POSTbin response")
+
+    Utils.getJSON("http://kyl191.net")
 
 end)
 
