@@ -14,7 +14,7 @@ import "LrFunctionContext".callWithContext( 'Getting remote file', function(cont
         logger:error("Testing: Cleanup: " .. message)
     end)
 
-    import "LrTasks".startAsyncTaskWithoutErrorHandler( function()
+    import "LrTasks".startAsyncTask( function()
         --Utils.logTable(Utils.getJSON("http://kyl191.net/"))
         logger:info("Going to call the assert!")
         assert(false, "For some reason I never see this.")
