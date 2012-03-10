@@ -99,12 +99,7 @@ function StashUser.login( propertyTable )
 		-- json token is similarly one-time use
 		local token = StashAPI.getToken(auth_code)
 
-        if token.status == "error" then
-
-        end
-
-
-		StashAPI.processToken(token, context)
+        StashAPI.processToken(token, context)
 
 		-- User has OK'd authentication. Get the user info.
 		
