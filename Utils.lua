@@ -16,7 +16,6 @@ local LrHttp = import 'LrHttp'
 local LrErrors = import 'LrErrors'
 
 --------------------------------------------------------------------------------
--- Suppress JSON parsing errors
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 --------------------------------------------------------------------------------
