@@ -77,10 +77,6 @@ function Utils.getJSON( postUrl )
 
     if data.status and data.status == "error" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't.")
-        -- Pass the error up the chain
-        -- That's for the future.
-        -- For now, throw an error.
-        -- -- return data
         LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but didn't. Wait a while, and try again.")
     end
 
@@ -88,13 +84,10 @@ function Utils.getJSON( postUrl )
     -- If the status is error, show the error to the user, and die.
     local ok, decode = LrTasks.pcall( function() return JSON:decode(data) end)
 
-    -- If the JSON parsing failed, throw the error up the chain
-    -- That's for the future.
-    -- For now, throw an error.
+    -- If the JSON parsing failed, throw an error.
     if not ok then
         logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
-        --return {status = "error", from = "json" }
-        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but got some garbage . Wait a while, and try again.")
+        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but got some garbage. Wait a while, and try again.")
     else
 
         Utils.logTable(decode, "Result from JSON decode")
