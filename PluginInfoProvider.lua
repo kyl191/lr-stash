@@ -18,6 +18,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
     local f = viewfactory
 
     local contents = f:column{
+        space = f:label_spacing(),
         f:row{
             bind_to_object = prefs,
             spacing = f:control_spacing(),
