@@ -291,6 +291,24 @@ function StashAPI.uploadPhoto( params )
 
         elseif result.from == "server" then
             -- However, a server error? That we need to check - Sta.sh returns an error code if something goes wrong.
+            -- We can recover from certain errors.
+
+            -- If it's an empty result, reset and try again
+            if result.code == "empty" then
+
+                -- But check to see if this is a retry first, and die if so.
+                if params.retry and params.retry == "empty" then
+                    logger:error("Got an empty result from Sta.sh again, giving up.")
+                    LrErrors.throwUserError("Sorry, but Sta.sh is just giving me a blank file, even though I re-tried twice. I'm giving up now. :(")
+                else
+                    params.retry = "empty"
+                    return StashAPI.uploadPhoto(params)
+                end
+
+
+            end
+
+
             local validJSON, message = LrTasks.pcall( function() return JSON:decode(result) end)
 
             -- If it's valid JSON, try to identify the error and reupload.
@@ -299,7 +317,7 @@ function StashAPI.uploadPhoto( params )
 
                 if json.error ~= nil and not params.retry then
                     logger:error("Error from Sta.sh:")
-                    Utils.logTable(json)
+                    Utils.logTable(json, "JSON from Sta.sh")
 
                     if json.error == ("internal_error_item" or "invalid_stashid") then
                         -- internal_error_item seems to mean we tried uploading to a deleted stashid
@@ -311,7 +329,7 @@ function StashAPI.uploadPhoto( params )
 
                     elseif json.error == ("internal_error_missing_folder" or "invalid_folderid" or "internal_error_missing_metadata") then
                         -- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
-                        -- Same for invalid_folderid too
+                        -- Same for invalid_folderid and internal_error_missing_metadata too
                         params.folderid = nil
                         params.retry = json.error
                         logger:info('Something wrong with the folderid, retrying with a blank id.')
@@ -319,8 +337,10 @@ function StashAPI.uploadPhoto( params )
 
                     else
                         -- Haven't seen any other errors yet.
-                        -- Suppose we could try uploading again.
-                        LrDialogs.message( "Error uploading to Sta.sh: " .. json.error .. " : " .. json.error_description .. "\n Automatically retrying.")
+                        -- Try uploading again.
+                        params.retry = json.error
+                        logger:info("Got a JSON error I haven't seen before, automatically retrying")
+                        return StashAPI.uploadPhoto(params)
 
                     end
 
@@ -331,13 +351,15 @@ function StashAPI.uploadPhoto( params )
 
                 end
 
-            -- If it's not, throw the error up to the user
+            -- If it's not valid JSON, throw the error up to the user.
             else
-                LrErrors.throwUserError ("Lightroom error while uploading to Sta.sh: " .. result.code .. "\n" .. result.description)
+                LrErrors.throwUserError ("We weren't expecting this error, I'm not sure how to handle it, so I'm just giving up: " .. result.code .. "\n" .. result.description)
             end
         end
 
     end
+
+    local ok, json = LrTasks.pcall(function() return JSON:decode(result) end)
 
     -- And of course, if there's no error, return the parsed JSON object
     Utils.logTable(json)
