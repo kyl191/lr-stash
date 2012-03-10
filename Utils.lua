@@ -67,10 +67,10 @@ function Utils.getJSON( postUrl )
     -- If the status is error, show the error to the user, and die.
     local decode = JSON:decode(data)
     if decode.error == "error" then
-        logger.error("JSON error: " .. decode.errorText)
+        logger.error("getJSON: JSON error: " .. decode.errorText)
         return {status = "error", from = "json"}
     elseif decode.status and decode.status == "error" then
-        logger:error("JSON error from " .. postUrl)
+        logger:error("getJSON: JSON error from " .. postUrl)
         logger:info(data)
         return decode
     elseif decode.status and decode.status == "success" then
