@@ -13,7 +13,7 @@ import "LrFunctionContext".callWithContext( 'Getting remote file', function(cont
         logger:error("Testing: Error message: " .. message)
     end)
 
-    import "LrTasks".startAsyncTask( function()
+    import "LrTasks".startAsyncTaskWithoutErrorHandler( function()
         Utils.logTable(Utils.getJSON("http://kyl191.net/"))
     end)
 
