@@ -319,7 +319,7 @@ function StashAPI.uploadPhoto( params )
                     logger:error("Error from Sta.sh:")
                     Utils.logTable(json, "JSON from Sta.sh")
 
-                    if json.error == ("internal_error_item" or "invalid_stashid") then
+                    if json.error == "internal_error_item" or json.error == "invalid_stashid" then
                         -- internal_error_item seems to mean we tried uploading to a deleted stashid
                         -- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
                         params.stashid = nil
@@ -327,7 +327,7 @@ function StashAPI.uploadPhoto( params )
                         logger:info('Something wrong with the stashid, retrying with a blank id.')
                         return StashAPI.uploadPhoto(params)
 
-                    elseif json.error == ("internal_error_missing_folder" or "invalid_folderid" or "internal_error_missing_metadata") then
+                    elseif json.error == "internal_error_missing_folder" or json.error == "invalid_folderid" or json.error == "internal_error_missing_metadata" then
                         -- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
                         -- Same for invalid_folderid and internal_error_missing_metadata too
                         params.folderid = nil
