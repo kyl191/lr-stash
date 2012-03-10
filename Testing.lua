@@ -4,7 +4,7 @@ local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 
 --Utils.md5Files(_PLUGIN.path)
-import "LrFunctionContext".callWithContext( 'Getting remote file', function(context)
+import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', function(context)
 
     context:addFailureHandler(function(result,message)
         logger:error("Testing: Error message: " .. message)
@@ -14,12 +14,7 @@ import "LrFunctionContext".callWithContext( 'Getting remote file', function(cont
         logger:error("Testing: Cleanup: " .. message)
     end)
 
-    import "LrTasks".startAsyncTask( function()
-        --Utils.logTable(Utils.getJSON("http://kyl191.net/"))
-        logger:info("Going to call the assert!")
-        assert(false, "For some reason I never see this.")
-        logger:info("Called the assert.")
-    end)
+    Utils.logTable(Utils.getJSON("http://kyl191.net/"))
 
 end)
 
