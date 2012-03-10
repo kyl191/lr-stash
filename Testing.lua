@@ -16,10 +16,10 @@ import "LrFunctionContext".postAsyncTaskWithContext( 'Getting remote file', func
         logger:error("Testing: Error message: " .. message)
     end)
 
-    local md5s = JSON:encode(Utils.md5Files(_PLUGIN.path))
-    logger:info(md5s)
+    local md5s = Utils.md5Files(_PLUGIN.path)
+    local json = JSON:encode(md5s)
 
-    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. md5s))
+    Utils.logTable(Utils.networkComms("post", "http://postbin.heroku.com/67def530?md5=" .. json), "POSTbin response")
 
 end)
 
