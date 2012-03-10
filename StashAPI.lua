@@ -275,8 +275,10 @@ function StashAPI.uploadPhoto( params )
     --]]
 
     result = Utils.checkResponse(result, headers, postUrl)
-		
-		json = JSON:decode(result)
+	if result.error then
+        -- do stuff
+    else
+    	json = JSON:decode(result)
 		if json.error ~= nil and not params.retry then
 			logger:info("Error from Sta.sh:")
 			Utils.logTable(json)
