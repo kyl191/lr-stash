@@ -22,14 +22,29 @@ JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 Utils = {}
 --------------------------------------------------------------------------------
-function Utils.logTable(table)
-    for k,v in pairs(table) do
-        if type( v ) == 'table' then
-            Utils.logTable(v)
-        else
-            logger:info(k,v)
+-- variation of http://forums.adobe.com/message/3146133#3146133
+function Utils.logTable(x, label)
+    local function dump1 (x, indent, visited)
+        if type (x) ~= "table" then
+            log:info (string.rep (" ", indent) .. tostring (x))
+            return
+        end
+
+        visited [x] = true
+        if indent == 0 then
+            log:info (string.rep (" ", indent) .. tostring (x))
+        end
+        for k, v in pairs (x) do
+            log:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " ..
+                    tostring (v))
+            if type (v) == "table" and not visited [v] then
+                dump1 (v, indent + 4, visited)
+            end
         end
     end
+
+    log:info (label .. ":")
+    dump1 (x, 0, {})
 end
 
 --------------------------------------------------------------------------------
@@ -69,8 +84,7 @@ function Utils.getJSON( postUrl )
     -- If the status is error, show the error to the user, and die.
     logger:info("About to pass data to JSON.decode.")
     local decode = JSON:decode(data)
-    logger:info("Result from JSON decode: " .. decode)
-    Utils.logTable(decode)
+    Utils.logTable(decode, "Result from JSON decode: " .. decode)
 
     if decode.error and decode.error == "error" then
         logger.error("getJSON: JSON error: " .. decode.errorText)
