@@ -18,13 +18,6 @@ local LrErrors = import 'LrErrors'
 -- Suppress JSON parsing errors
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
-function JSON.assert(message)
-    LrErrors.throwUserError("Internal Error: " .. message)
-end
-
-JSON = JSON:new()
-
-
 --------------------------------------------------------------------------------
 
 Utils = {}

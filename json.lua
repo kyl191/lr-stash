@@ -234,11 +234,7 @@ function OBJDEF:onDecodeError(message, text, location, etc)
       message = message .. " (" .. OBJDEF:encode(etc) .. ")"
    end
 
-   if self.assert then
-      self.assert(false, message)
-   else
-      assert(false, message)
-   end
+    return { error = "error", errorText = message }
 end
 
 OBJDEF.onDecodeOfNilError  = OBJDEF.onDecodeError
