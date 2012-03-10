@@ -5,5 +5,5 @@ logger:enable("logfile")
 
 --Utils.md5Files(_PLUGIN.path)
 import "LrTasks".startAsyncTask( function()
-    logger:info(Utils.networkComms("get", "http://kyl191.net/"))
+    logger:info(Utils.getJSON("http://kyl191.net/"))
     end)
