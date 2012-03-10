@@ -57,6 +57,8 @@ function Utils.getJSON( postUrl )
 
     data = Utils.networkComms( "post", postUrl )
 
+    logger:info("getJSON: Got data back from networkComms.")
+
     if data.status and data.status == "error" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't.")
         -- Pass the error up the chain
@@ -65,8 +67,12 @@ function Utils.getJSON( postUrl )
 
     -- Now that we have valid JSON, decode it, and try to get the status of our request
     -- If the status is error, show the error to the user, and die.
+    logger:info("About to pass data to JSON.decode.")
     local decode = JSON:decode(data)
-    if decode.error == "error" then
+    logger:info("Result from JSON decode: " .. decode)
+    Utils.logTable(decode)
+
+    if decode.error and decode.error == "error" then
         logger.error("getJSON: JSON error: " .. decode.errorText)
         return {status = "error", from = "json"}
     elseif decode.status and decode.status == "error" then
