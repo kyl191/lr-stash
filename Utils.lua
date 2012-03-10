@@ -75,30 +75,29 @@ function Utils.getJSON( postUrl, errorMessage )
 
     logger:info("getJSON: Got data back from networkComms.")
 
-    if data.status and data.status == "error" then
+    -- We can't do anything about a Lightroom transport error!
+    if data.status and data.status == "error" and data.from == "lightroom" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't.")
-        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but didn't. Wait a while, and try again.")
+        LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but Lightroom had a problem:\n" .. data.description)
     end
 
-    -- Now that we have valid JSON, decode it, and try to get the status of our request
-    -- If the status is error, show the error to the user, and die.
+    -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
+    -- Other systems should *also* return JSON - this is getJSON after all.
     local ok, decode = LrTasks.pcall( function() return JSON:decode(data) end)
 
     -- If the JSON parsing failed, throw an error.
     if not ok then
         logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
-        LrErrors.throwUserError("Huh. We were supposed to get JSON back from the server, but got some garbage. Wait a while, and try again.")
+        LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
-
-        Utils.logTable(decode, "Result from JSON decode")
-
-       if decode.status and decode.status == "error" then
+        -- Otherwise, try parsing the error.
+        -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error and status == success, but this is the primary target right now...
+        if decode.status and decode.status == "error" then
             logger:error("getJSON: JSON error from " .. postUrl)
-            logger:info(data)
-            return decode
+            Utils.logTable(decode, "Result from JSON decode")
+            LrErrors.throwUserError("Oh dear. The server didn't like us " .. errorMessage .. ", it said " .. decode.error .. ", which apparently means \"".. decode.error_description .. "\". \nThis might be a permanent error if you repeatedly get this message.")
         elseif decode.status and decode.status == "success" then
-            logger:info("getJSON for " .. postUrl)
-            Utils.logTable(decode)
+            logger:info("getJSON was a success for " .. postUrl)
             return decode
         end
     end
