@@ -1,6 +1,6 @@
 <project
         name="lr-stash"
-        default="dist"
+        default="install"
         basedir="."
 >
     <property name="build" location="build"/>
