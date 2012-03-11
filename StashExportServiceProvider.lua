@@ -743,7 +743,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										stashid = stashId or nil,
 										folderid = folderId or nil,
 										foldername = folderName or nil,
-                                        overwriteMetadata = overwriteMetadata or nil,
+                                        overwriteMetadata = exportSettings.overwriteMetadata or nil,
 									} )
 
 				--LrDialogs.message("Publishing: " .. tostring(publishing))
