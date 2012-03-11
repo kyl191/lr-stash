@@ -10,6 +10,7 @@ local LrPathUtils = import 'LrPathUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
+local Info = require 'Info'
 
 local LrPathUtils = import 'LrPathUtils'
 
@@ -229,5 +230,47 @@ function Utils.checkResponse( data, headers, url )
     end
 end
 
+--------------------------------------------------------------------------------
 
+function Utils.updatePlugin()
+    LrFunctionContext.postAsyncTaskWithContext( 'Auto-updating!', function(context)
+
+        context:addCleanupHandler(function(result,message)
+            logger:error("Updating: Cleanup: " .. message)
+        end)
+
+        context:addFailureHandler(function(result,message)
+            logger:error("Updating: Error message: " .. message)
+        end)
+
+        local version = JSON:encode(Info.VERSION)
+
+        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id)
+        local localFiles = Utils.md5Files(_PLUGIN.path)
+
+        for k, v in pairs (remoteFiles) do
+            if localFiles[k] == v then
+                -- do nothing
+            else
+                local file = Utils.getFile("http://code.kyl191.net/" .. _PLUGIN.id .. "/head/" .. k, "tempupdatefile", nil)
+                local path = LrPathUtils.makeAbsolute(k, _PLUGIN.path)
+                LrFileUtils.makeFileWritable(path)
+                if LrFileUtils.exists(path) then
+                    logger:info("Going to move " .. file .. "to " .. path)
+                    Utils.makeBackups(k, 0)
+                end
+                local ok, message = LrFileUtils.move(file, path)
+                if not ok then
+                    logger:error(message)
+                end
+
+            end
+
+
+        end
+
+    end)
+
+end
+--------------------------------------------------------------------------------
 return Utils
