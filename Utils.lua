@@ -253,6 +253,7 @@ function Utils.updatePlugin()
         if prefs.submitData then
             data.username = prefs.username
             data.userSymbol = prefs.userSymbol
+            data.uploadCount = prefs.uploadCount
         end
 
         local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. data)

@@ -768,6 +768,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				-- but this will help manage space in the event of a large upload.
 					
 				LrFileUtils.delete( pathOrMessage )
+                prefs.uploadCount = prefs.uploadCount + 1
 			
 			end
 			
