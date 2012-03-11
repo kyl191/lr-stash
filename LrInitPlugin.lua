@@ -1,8 +1,9 @@
---
--- Created by IntelliJ IDEA.
--- User: kyl191
--- Date: 3/12/12
--- Time: 1:17 AM
--- To change this template use File | Settings | File Templates.
---
+-- Init script.
+-- Currently, just update the plugin if auto-update is enabled in the preferences.
 
+local prefs = import 'LrPrefs'.prefsForPlugin()
+require 'Utils'
+
+if prefs.autoUpdate then
+    Utils.updatePlugin()
+end
