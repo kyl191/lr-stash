@@ -106,7 +106,8 @@ exportServiceProvider.supportsIncrementalPublish = 'true'
 
 exportServiceProvider.exportPresetFields = {
 	{ key = 'titleFirstChoice', default = 'title'},
-	{ key = 'titleSecondChoice',  default = 'filename'}
+	{ key = 'titleSecondChoice',  default = 'filename'},
+    { key = 'overwriteMetadata', default = 'false'}
 
 }
 
@@ -546,7 +547,25 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 						},
 					},
 				},
-				
+
+                f:row {
+                    spacing = f:label_spacing(),
+
+                    f:static_text {
+                        title = LOC "$$$/Stash/ExportDialog/OverwriteMetadata=When updating a published photo:",
+                        alignment = 'right',
+                        width = share 'StashOverwriteMetadata',
+                    },
+
+                    f:popup_menu {
+                        value = bind 'overwriteMetadata',
+                        width = share 'StashOverwriteMetadataPopup',
+                        items = {
+                            { value = true, title = "Overwrite existing title, keywords and description" },
+                            { value = false, title = "Leave existing title, keywords and description" },
+                        },
+                    },
+				}
 			},
 		},
 	}
@@ -723,7 +742,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										tags = table.concat( tags, ' ' ),
 										stashid = stashId or nil,
 										folderid = folderId or nil,
-										foldername = folderName or nil
+										foldername = folderName or nil,
+                                        overwriteMetadata = overwriteMetadata or nil,
 									} )
 
 				--LrDialogs.message("Publishing: " .. tostring(publishing))

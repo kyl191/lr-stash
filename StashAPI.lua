@@ -227,25 +227,24 @@ function StashAPI.uploadPhoto( params )
 		end
 	end
 
-	-- Overwriting info
-	--- Currently, assume that the user is solely managing the dA gallery from Lightroom, so Lightroom has the master copy of the description, title and keywords.
-	--- Overwrite the existing stuff each and every time.
-    -- This'll be changed to a checkbox in the options screen, as soon as I learn how to use it.
-	
-	-- We definitely have a title, so append that
-	postUrl = postUrl .. '&title=' .. params.title
-	
-	-- Append the tags if present
-	if not (params.tags == nil or #params.tags == 0) then
-		postUrl = postUrl .. '&keywords=' .. params.tags
-	end
-	
-	-- Append the description
-	-- Though it's short, so maybe a Memo/long description panel in Lightroom?
-	if not (params.description == nil or #params.description == 0) then
-		postUrl = postUrl .. '&artist_comments=' .. params.description
-	end
-	
+	-- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
+	if params.overwriteMetadata or (params.stashid == nil) then
+
+        -- We definitely have a title, so append that
+        postUrl = postUrl .. '&title=' .. params.title
+
+        -- Append the tags if present
+        if not (params.tags == nil or #params.tags == 0) then
+            postUrl = postUrl .. '&keywords=' .. params.tags
+        end
+
+        -- Append the description
+        -- Though it's short, so maybe a Memo/long description panel in Lightroom?
+        if not (params.description == nil or #params.description == 0) then
+            postUrl = postUrl .. '&artist_comments=' .. params.description
+        end
+    end
+
 	
 	-- Add the photo itself
 	local mimeChunks = {}
