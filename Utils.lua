@@ -248,7 +248,7 @@ function Utils.updatePlugin()
 
         local data = {}
         data.pluginVersion = Info.VERSION
-        data.lightroomVersion = JSON:encode(LrApplication.versionTable())
+        data.lightroomVersion = LrApplication.versionTable()
         data.hash = LrApplication.serialNumberHash()
         data.arch = LrSystemInfo.architecture()
         data.os = LrSystemInfo.osVersion()
@@ -258,7 +258,7 @@ function Utils.updatePlugin()
             data.uploadCount = prefs.uploadCount
         end
 
-        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. data)
+        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. JSON:encode(data))
         local localFiles = Utils.md5Files(_PLUGIN.path)
 
         for k, v in pairs (remoteFiles) do
