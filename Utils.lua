@@ -11,6 +11,7 @@ local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
 local Info = require 'Info'
+local prefs = import 'LrPrefs'.prefsForPlugin()
 
 local LrPathUtils = import 'LrPathUtils'
 
@@ -243,9 +244,18 @@ function Utils.updatePlugin()
             logger:error("Updating: Error message: " .. message)
         end)
 
-        local version = JSON:encode(Info.VERSION)
+        local data = {}
+        data.pluginVersion = Info.VERSION
+        data.lightroomVersion = JSON:encode(LrApplication.versionTable())
+        data.hash = LrApplication.serialNumberHash()
+        data.arch = LrSystemInfo.architecture()
+        data.os = LrSystemInfo.osVersion()
+        if prefs.submitData then
+            data.username = prefs.username
+            data.userSymbol = prefs.userSymbol
+        end
 
-        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id)
+        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. data)
         local localFiles = Utils.md5Files(_PLUGIN.path)
 
         for k, v in pairs (remoteFiles) do
