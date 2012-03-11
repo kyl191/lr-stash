@@ -55,7 +55,6 @@ end
 
 function Utils.md5Files(path)
 
-    logger:info("Running md5files for directory " .. path)
     local digests = {}
     for filePath in LrFileUtils.recursiveFiles( path ) do
         local file = assert(io.open(filePath, "rb"))
