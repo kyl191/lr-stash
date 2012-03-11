@@ -62,7 +62,7 @@ function Utils.md5Files(path)
         local data = file:read("*all")
 
         local md5sum = LrMD5.digest(data)
-        digests[#digests+1] = {filePath = LrPathUtils.makeRelative(filePath, path), md5 = md5sum}
+        digests[LrPathUtils.makeRelative(filePath, path)] = md5sum
     end
 
     return digests
