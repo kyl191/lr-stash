@@ -500,7 +500,7 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 		},
 	
 		{
-			title = LOC "$$$/Stash/ExportDialog/Title=Stash Title",
+			title = LOC "$$$/Stash/ExportDialog/Title=Sta.sh Options",
 			
 			synopsis = function( props )
 				if props.titleFirstChoice == 'title' then
