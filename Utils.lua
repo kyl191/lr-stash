@@ -158,7 +158,13 @@ end
 -- Same for 2.
 -- Recursive!
 function Utils.makeBackups(file, iteration)
-    local srcPath = LrPathUtils.makeAbsolute(file, _PLUGIN.path)
+    local srcPath = nil
+    if LrPathUtils.isRelative(file) then
+        srcPath = LrPathUtils.makeAbsolute(file, _PLUGIN.path)
+    else
+        srcPath = file
+    end
+
     local destPath = LrPathUtils.replaceExtension(srcPath, "backup" .. (iteration + 1))
 
     if iteration > 2 then
