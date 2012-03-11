@@ -128,7 +128,6 @@ function Utils.getFile(url, path, errorMessage)
     path = LrPathUtils.standardizePath(path)
 
     if LrPathUtils.isRelative(path) then
-        logger:info("Path " .. path .. " is relative.")
         path = LrPathUtils.makeAbsolute(path, _PLUGIN.path)
     end
 
