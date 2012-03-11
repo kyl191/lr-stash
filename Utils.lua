@@ -92,8 +92,6 @@ function Utils.getJSON( postUrl, errorMessage )
         return JSON:decode(data)
     end,
         data)
-    Utils.logTable(getmetatable(ok), "metatable")
-    logger:info(type(ok))
 
     -- If the JSON parsing failed, throw an error.
     if ok ~= true then
