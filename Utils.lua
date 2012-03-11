@@ -60,6 +60,7 @@ function Utils.md5Files(path)
     for filePath in LrFileUtils.recursiveFiles( path ) do
         local file = assert(io.open(filePath, "rb"))
         local data = file:read("*all")
+        assert(file:close())
 
         local md5sum = LrMD5.digest(data)
         digests[LrPathUtils.makeRelative(filePath, path)] = md5sum
