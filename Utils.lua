@@ -125,15 +125,18 @@ function Utils.getFile(url, path, errorMessage)
         LrErrors.throwUserError("Oh dear. There was a problem getting " .. errorMessage .. ". \nLightroom had a problem:\n" .. data.description)
     end
 
+    path = LrPathUtils.standardizePath(path)
+
     if LrPathUtils.isRelative(path) then
-        LrPathUtils.makeAbsolute(path, _PLUGIN.path)
+        logger:info("Path " .. path .. " is relative.")
+        path = LrPathUtils.makeAbsolute(path, _PLUGIN.path)
     end
 
     if LrFileUtils.exists(path) then
         path = LrFileUtils.chooseUniqueFileName(path)
     end
 
-    if LrFileUtils.isWritable(path) then
+    if LrFileUtils.isWritable(path) or (not LrFileUtils.exists(path) )then
 
         local out = assert(io.open(path, "wb"))
         out:write(data)
@@ -141,6 +144,7 @@ function Utils.getFile(url, path, errorMessage)
         return path
 
     else
+        logger:info("Path " .. path .. " isn't writable.")
         return nil
     end
 
