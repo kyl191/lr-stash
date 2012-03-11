@@ -230,18 +230,27 @@ function StashAPI.uploadPhoto( params )
 	-- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
 	if params.overwriteMetadata or (params.stashid == nil) then
 
-        -- We definitely have a title, so append that
-        postUrl = postUrl .. '&title=' .. params.title
-
-        -- Append the tags if present
-        if not (params.tags == nil or #params.tags == 0) then
-            postUrl = postUrl .. '&keywords=' .. params.tags
+        -- If we're overwriting, there might be a case where the user removes everything in Lightroom,
+        -- so force an overwrite, even if the variables are empty by appending an empty POST field.
+        -- But by not appending a value UNLESS there *is* a value, we avoid a "concating a nil" error
+        -- Reported at http://comments.deviantart.com/1/278275666/2450524379
+        postUrl = postUrl .. '&title='
+        -- We might have a title, so append that
+        if not (params.title == nil or #params.title == 0) then
+            postUrl = postUrl .. params.title
         end
 
+        postUrl = postUrl .. '&keywords='
+        -- Append the tags if present
+        if not (params.tags == nil or #params.tags == 0) then
+            postUrl = postUrl .. params.tags
+        end
+
+        postUrl = postUrl .. '&artist_comments='
         -- Append the description
         -- Though it's short, so maybe a Memo/long description panel in Lightroom?
         if not (params.description == nil or #params.description == 0) then
-            postUrl = postUrl .. '&artist_comments=' .. params.description
+            postUrl = postUrl .. params.description
         end
     end
 
