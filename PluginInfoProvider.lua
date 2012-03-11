@@ -28,7 +28,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             },
             f:checkbox{
                 title = "",
-                value = bind 'auto_update',
+                value = bind 'autoUpdate',
                 checked_value = true,
                 unchecked_value = false
             }
