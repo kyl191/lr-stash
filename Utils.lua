@@ -150,6 +150,37 @@ function Utils.getFile(url, path, errorMessage)
 end
 
 --------------------------------------------------------------------------------
+
+-- Takes a particular file, and moves it to file.backup.1.
+-- If file.backup.1 exists, move the existing file.backup.1 to file.backup.2
+-- and move file.backup.1 to file.backup.2
+-- Same for 2.
+-- Recursive!
+function Utils.makeBackups(file, iteration)
+    local srcPath = LrPathUtils.makeAbsolute(file, _PLUGIN.path)
+    local destPath = LrPathUtils.replaceExtension(srcPath, "backup" .. (iteration + 1))
+
+    if iteration > 2 then
+        logger:info("Terminating at iteration 2 for file " .. file)
+        LrFileUtils.moveToTrash(srcPath)
+        return nil
+    end
+
+    if LrFileUtils.exists(path) then
+        logger:info("Moving to iteration " .. (iteration + 1) .. " for file " .. file)
+        makeBackups(file,(iteration + 1))
+    end
+
+    logger:info("Moving " .. srcPath .. " to " .. destPath)
+    local ok, message = LrFileUtils.move(srcPath, destPath)
+    if not ok then
+        logger:error(message)
+    end
+
+end
+
+--------------------------------------------------------------------------------
+
 function Utils.networkComms( action, url )
 
     logger:info("Called Utils.networkComms for " .. url)
