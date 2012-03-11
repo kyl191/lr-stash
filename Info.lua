@@ -18,6 +18,8 @@ return {
 	},
     LrPluginInfoProvider = "PluginInfoProvider.lua",
 
+    LrInitPlugin = "LrInitPlugin.lua",
+
     LrHelpMenuItems = { title = "Sta.s&h Dev Testing", file = "Testing.lua"},
 
 	VERSION = {major=20120311, minor=0141, revision=0x67de384, },
