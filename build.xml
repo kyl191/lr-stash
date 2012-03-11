@@ -1,6 +1,6 @@
 <project
         name="lr-stash"
-        default="install"
+        default="install-dev"
         basedir="."
 >
     <property name="build" location="build"/>
@@ -8,6 +8,7 @@
 
 
     <property name="pluginFolderName" value="${ant.project.name}.lrplugin" />
+    <property name="pluginDevFolderName" value="${ant.project.name}.lrdevplugin" />
     <property name="pluginFolder" location="${build}/${pluginFolderName}"/>
     <property name="pluginDeploymentUnit"  location="${dist}/${pluginFolderName}.zip"/>
 
@@ -54,6 +55,10 @@
     <target name="dist" depends="modify-version, compile">
         <zip destfile="${pluginDeploymentUnit}" basedir="${build}">
         </zip>
+    </target>
+
+    <target name="install-dev" depends="dist">
+        <unzip src="${pluginDeploymentUnit}" dest="${lrDevPluginFolder}" overwrite="true" />
     </target>
 
     <target name="install" depends="dist">
