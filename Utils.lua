@@ -6,6 +6,7 @@ Common code for Lightroom plugins
 ------------------------------------------------------------------------------]]
 local LrMD5 = import 'LrMD5'
 local LrFileUtils = import 'LrFileUtils'
+local LrPathUtils = import 'LrPathUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 logger:enable("logfile")
@@ -115,6 +116,37 @@ end
 
 --------------------------------------------------------------------------------
 
+function Utils.getFile(url, path, errorMessage)
+    data = Utils.networkComms( "get", url)
+
+    -- We can't do anything about a Lightroom transport error!
+    if data.status and data.status == "error" and data.from == "lightroom" then
+        logger:error(url .. " had a problem.")
+        LrErrors.throwUserError("Oh dear. There was a problem getting " .. errorMessage .. ". \nLightroom had a problem:\n" .. data.description)
+    end
+
+    if LrPathUtils.isRelative(path) then
+        LrPathUtils.makeAbsolute(path, _PLUGIN.path)
+    end
+
+    if LrFileUtils.exists(path) then
+        path = LrFileUtils.chooseUniqueFileName(path)
+    end
+
+    if LrFileUtils.isWritable(path) then
+
+        local out = assert(io.open(path, "wb"))
+        out:write(data)
+        assert(out:close())
+        return path
+
+    else
+        return nil
+    end
+
+end
+
+--------------------------------------------------------------------------------
 function Utils.networkComms( action, url )
 
     logger:info("Called Utils.networkComms for " .. url)
