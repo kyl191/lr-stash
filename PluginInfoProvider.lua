@@ -61,7 +61,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
         {
             title = "Configure the Sta.sh Plugin",
 
-            synopsis = "Testing",
+            synopsis = "Configuration",
 
             contents
         }
