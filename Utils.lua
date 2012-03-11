@@ -167,9 +167,9 @@ function Utils.makeBackups(file, iteration)
         return nil
     end
 
-    if LrFileUtils.exists(path) then
-        logger:info("Moving to iteration " .. (iteration + 1) .. " for file " .. file)
-        makeBackups(file,(iteration + 1))
+    if LrFileUtils.exists(destPath) then
+        logger:info("Moving to iteration " .. (iteration + 1) .. " for file " .. destPath)
+        Utils.makeBackups(destPath,(iteration + 1))
     end
 
     logger:info("Moving " .. srcPath .. " to " .. destPath)
