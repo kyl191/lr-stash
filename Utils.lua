@@ -17,6 +17,8 @@ local LrPathUtils = import 'LrPathUtils'
 
 local LrHttp = import 'LrHttp'
 local LrErrors = import 'LrErrors'
+local LrApplication = import 'LrApplication'
+local LrSystemInfo = import 'LrSystemInfo'
 
 --------------------------------------------------------------------------------
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
