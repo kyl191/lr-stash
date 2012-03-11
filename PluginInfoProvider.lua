@@ -35,7 +35,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             },
             f:push_button {
                 title = "Click here to update now.",
-                enabled = LrBinding.keyEquals( 'autoUpdate', false ),
+                visible = LrBinding.keyEquals( 'autoUpdate', false ),
                 action = function()
                     Utils.updatePlugin()
                 end
