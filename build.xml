@@ -27,7 +27,6 @@
         <tstamp />
         <exec executable="${git}" outputproperty="revision" failifexecutionfails="false" errorproperty="">
             <arg value="describe"/>
-            <arg value="--tags"/>
             <arg value="--always"/>
             <arg value="HEAD"/>
         </exec>
