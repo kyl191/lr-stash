@@ -418,7 +418,8 @@ function exportServiceProvider.getCollectionBehaviorInfo( publishSettings )
 	
 end
 
------------------------------------------------------------------------------------ (optional) This plug-in defined callback function is called when the 
+-----------------------------------------------------------------------------------
+ -- (optional) This plug-in defined callback function is called when the
  -- user chooses this export service provider in the Export or Publish dialog, 
  -- or when the destination is already selected when the dialog is invoked, 
  -- (remembered from the previous export operation).
