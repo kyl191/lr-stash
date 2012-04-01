@@ -33,9 +33,18 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
                 checked_value = true,
                 unchecked_value = false
             },
-            f:push_button {
-                title = "Click here to update now.",
+        },
+        f:row{
+            bind_to_object = prefs,
+            spacing = f:label_spacing(),
+            f:static_text{
                 visible = LrBinding.keyEquals( 'autoUpdate', false ),
+                title = "Prefer to do manual updates? No problem.",
+                alignment = 'right',
+            },
+            f:push_button {
+                visible = LrBinding.keyEquals( 'autoUpdate', false ),
+                title = "Click here to update now.",
                 action = function()
                     Utils.updatePlugin()
                 end
