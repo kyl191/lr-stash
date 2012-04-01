@@ -204,7 +204,7 @@ function StashAPI.uploadPhoto( params )
 	-- Prepare to upload.
 	-- Make sure that we got a table of parameters
 	assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
-	
+
 	local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
 	logger:info( 'Uploading photo', params.filePath )
 
