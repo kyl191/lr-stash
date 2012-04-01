@@ -2,7 +2,20 @@
 -- Currently, just update the plugin if auto-update is enabled in the preferences.
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
+local LrFileUtils = import 'LrFileUtils'
+local LrPathUtils = import 'LrPathUtils'
+local logger = import 'LrLogger'( 'Stash' )
+
 require 'Utils'
+
+local logPath = LrPathUtils.child(LrPathUtils.getStandardFilePath('documents'), "Stash.log")
+if LrFileUtils.exists( logPath ) then
+	local success, reason = LrFileUtils.delete( logPath )
+	if not success then
+		logger:error("Error deleting existing logfile!" .. reason)
+	end
+end
+
 
 if prefs.uploadCount == nil then
     prefs.uploadCount = 0
