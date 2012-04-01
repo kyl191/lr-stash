@@ -25,8 +25,8 @@ if prefs.debugLogging then
 else
 	logger:disable()
 	logger:enable({
-		"fatal" = "logfile",
-		"error" = "logfile",
+		fatal = "logfile",
+		error = "logfile",
 		})
 end
 
