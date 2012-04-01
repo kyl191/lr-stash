@@ -26,6 +26,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             f:static_text{
                 title = "Allow automatic updates",
                 alignment = 'right',
+                tooltip = "Note that as part of the update process, information like the plugin version, your Lightroom version and your OS is submitted."
             },
             f:checkbox{
                 title = "",
@@ -45,8 +46,9 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             bind_to_object = prefs,
             spacing = f:control_spacing(),
             f:static_text{
-                title = "Submit error logs and usage information",
+                title = "Submit usage information with update check",
                 alignment = 'right',
+                tooltip = "When checked, the plugin will submit the number of photos you've uploaded, along with your dA username as part of the update check. This is purely to get a sense of who's using the plugin, and how much you're using it.",
             },
             f:checkbox{
                 title = "",
