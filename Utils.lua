@@ -9,7 +9,6 @@ local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
-logger:enable("logfile")
 local Info = require 'Info'
 local prefs = import 'LrPrefs'.prefsForPlugin()
 

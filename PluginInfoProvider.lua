@@ -5,7 +5,6 @@ local bind = LrView.bind
 local LrBinding = import 'LrBinding'
 
 local logger = import 'LrLogger'( 'Stash' )
-logger:enable("logfile")
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
