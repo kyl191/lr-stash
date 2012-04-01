@@ -16,6 +16,18 @@ if LrFileUtils.exists( logPath ) then
 	end
 end
 
+if prefs.debugLogging == nil then
+	prefs.debugLogging = false
+end
+
+if prefs.debugLogging then
+	logger:enable("logfile")
+else
+	logger:disable()
+	logger:enable({
+		"fatal" = "logfile",
+		"error" = "logfile",
+end
 
 if prefs.uploadCount == nil then
     prefs.uploadCount = 0

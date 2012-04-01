@@ -55,6 +55,21 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
                 checked_value = true,
                 unchecked_value = false
             }
+        },
+        f:row{
+            bind_to_object = prefs,
+            spacing = f:control_spacing(),
+            f:static_text{
+                title = "Enable debug logging",
+                alignment = 'right',
+                tooltip = "When checked, the plugin will write internal logging to a file. The file will be cleared every time Lightroom opens.",
+            },
+            f:checkbox{
+                title = "",
+                value = bind 'debugLogging',
+                checked_value = true,
+                unchecked_value = false
+            }
         }
     }
 
