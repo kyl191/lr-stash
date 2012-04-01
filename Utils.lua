@@ -170,7 +170,7 @@ function Utils.makeBackups(file, iteration)
     local destPath = LrPathUtils.replaceExtension(srcPath, "backup" .. (iteration + 1))
 
     if iteration > 2 then
-        logger:info("Terminating at iteration 2 for file " .. file)
+        logger:info("Terminating at iteration 3 for file " .. file)
         LrFileUtils.moveToTrash(srcPath)
         return nil
     end
