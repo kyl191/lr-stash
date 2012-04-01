@@ -1,0 +1,62 @@
+<project
+        name="lr-stash"
+        default="install"
+        basedir="."
+>
+    <property name="build" location="build"/>
+    <property name="dist"  location="dist"/>
+
+
+    <property name="pluginFolderName" value="${ant.project.name}.lrplugin" />
+    <property name="pluginFolder" location="${build}/${pluginFolderName}"/>
+    <property name="pluginDeploymentUnit"  location="${dist}/${pluginFolderName}.zip"/>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${pluginFolder}" />
+        <mkdir dir="${dist}"/>
+        <copy overwrite="true" file="logo.png" tofile="${pluginFolder}/logo.png" />
+        <copy overwrite="true" file="README.txt" tofile="${pluginFolder}/README.txt" />
+    </target>
+
+    <target name="modify-version">
+        <tstamp />
+        <exec executable="${git}" outputproperty="revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+        <property name="versionString" value="${DSTAMP} - ${TSTAMP} - ${revision}" />
+        <replaceregexp file="Info.lua"
+            match="VERSION = \{major=([\d]+), minor=([\d]+), revision=(0[xX][0-9a-fA-F]+)(.*)"
+            replace="VERSION = {major=${DSTAMP}, minor=${TSTAMP}, revision=0x${revision}\4"
+            byline="true"
+        />
+    </target>
+
+    <target name="compile" depends="init">
+        <apply executable="${luac}" type="file" verbose="true">
+            <arg value="-s" />
+            <arg value="-o" />
+            <targetfile />
+            <fileset dir=".">
+                <include name="**/*.lua" />
+                <exclude name="Info.lua" />
+            </fileset>
+            <mapper type="glob" from="*.lua" to="${pluginFolder}/*.lua" />
+        </apply>
+    </target>
+
+    <target name="dist" depends="modify-version, compile">
+        <zip destfile="${pluginDeploymentUnit}" basedir="${build}">
+        </zip>
+    </target>
+
+    <target name="install" depends="dist">
+        <unzip src="${pluginDeploymentUnit}" dest="${lrPluginFolder}" overwrite="true" />
+    </target>
+</project>

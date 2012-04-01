@@ -14,6 +14,7 @@ local LrView = import 'LrView'
 local LrStringUtils = import 'LrStringUtils'
 local prefs = import 'LrPrefs'.prefsForPlugin()
 local LrDate = import 'LrDate'
+local logger = import 'LrLogger'( 'Stash' )
 
 	-- Common shortcuts
 local bind = LrView.bind
@@ -22,6 +23,7 @@ local share = LrView.share
 	-- Stash plug-in
 require 'StashAPI'
 require 'StashUser'
+require 'Utils'
 
 
 
@@ -103,7 +105,8 @@ local exportServiceProvider = {}
 
 exportServiceProvider.exportPresetFields = {
 	{ key = 'titleFirstChoice', default = 'title'},
-	{ key = 'titleSecondChoice',  default = 'filename'}
+	{ key = 'titleSecondChoice',  default = 'filename'},
+    { key = 'overwriteMetadata', default = 'false'}
 
 }
 
@@ -255,8 +258,6 @@ exportServiceProvider.titleForGoToPublishedPhoto = LOC "$$$/Stash/TitleForGoToPu
 	-- @return (Boolean) True if the name is acceptable, false if not
 	-- @return (string) If the name is not acceptable, a string that describes the reason, suitable for display.
 
---[[ Not used for Stash plug-in. --]]
-
 -- Unknown what the Sta.sh API allows as a folder name. Assuming it's only ASCII
 function exportServiceProvider.validatePublishedCollectionName( proposedName )
 	return LrStringUtils.isOnlyAscii( proposedName )
@@ -284,9 +285,55 @@ end
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
 	-- @name exportServiceProvider.disableRenamePublishedCollection
 	-- @class property
--- Sta.sh doesn't allow folders to be renamed from Lightroom
--- In fact, trying to rename the folders resulted in the loss of images, strangely enough.
+
+-- Sta.sh allows renames, but the API is currently broken.
 exportServiceProvider.disableRenamePublishedCollection = true
+
+-------------------------------------------------------------------------------
+--- This plug-in callback function is called when the user has renamed a
+ -- published collection via the Publish Services panel user interface. This is
+ -- your plug-in's opportunity to make the corresponding change on the service.
+ -- <p>If your plug-in is unable to update the remote service for any reason,
+ -- you should throw a Lua error from this function; this causes Lightroom to revert the change.</p>
+ -- <p>This is not a blocking call. It is called from within a task created
+ -- using the <a href="LrTasks.html"><code>LrTasks</code></a> namespace. In most
+ -- cases, you should not need to start your own task within this function.</p>
+ -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
+	-- @name publishServiceProvider.renamePublishedCollection
+	-- @class function
+	-- @param publishSettings (table) The settings for this publish service, as specified
+		-- by the user in the Publish Manager dialog. Any changes that you make in
+		-- this table do not persist beyond the scope of this function call.
+	-- @param info (table) A table with these fields:
+	 -- <ul>
+	  -- <li><b>isDefaultCollection</b>: (Boolean) True if this is the default collection.</li>
+	  -- <li><b>name</b>: (string) The new name being assigned to this collection.</li>
+		-- <li><b>parents</b>: (table) An array of information about parents of this collection, in which each element contains:
+			-- <ul>
+				-- <li><b>localCollectionId</b>: (number) The local collection ID.</li>
+				-- <li><b>name</b>: (string) Name of the collection set.</li>
+				-- <li><b>remoteCollectionId</b>: (number or string) The remote collection ID assigned by the server.</li>
+			-- </ul> </li>
+ 	  -- <li><b>publishService</b>: (<a href="LrPublishService.html"><code>LrPublishService</code></a>)
+	  -- 	The publish service object.</li>
+	  -- <li><b>publishedCollection</b>: (<a href="LrPublishedCollection.html"><code>LrPublishedCollection</code></a>
+		-- or <a href="LrPublishedCollectionSet.html"><code>LrPublishedCollectionSet</code></a>)
+	  -- 	The published collection object being renamed.</li>
+	  -- <li><b>remoteId</b>: (string or number) The ID for this published collection
+	  -- 	that was stored via <a href="LrExportSession.html#exportSession:recordRemoteCollectionId"><code>exportSession:recordRemoteCollectionId</code></a></li>
+	  -- <li><b>remoteUrl</b>: (optional, string) The URL, if any, that was recorded for the published collection via
+	  -- <a href="LrExportSession.html#exportSession:recordRemoteCollectionUrl"><code>exportSession:recordRemoteCollectionUrl</code></a>.</li>
+	 -- </ul>
+
+function exportServiceProvider.renamePublishedCollection( publishSettings, info )
+
+	if info.remoteId then
+
+		StashAPI.renameFolder( info.remoteId, info.name )
+
+	end
+		
+end
 
 -------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called whenever a
@@ -370,7 +417,8 @@ function exportServiceProvider.getCollectionBehaviorInfo( publishSettings )
 	
 end
 
------------------------------------------------------------------------------------ (optional) This plug-in defined callback function is called when the 
+-----------------------------------------------------------------------------------
+ -- (optional) This plug-in defined callback function is called when the
  -- user chooses this export service provider in the Export or Publish dialog, 
  -- or when the destination is already selected when the dialog is invoked, 
  -- (remembered from the previous export operation).
@@ -421,7 +469,7 @@ end
 
 function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
-	return {
+    return {
 	
 		{
 			title = "Sta.sh account",
@@ -451,7 +499,7 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 		},
 	
 		{
-			title = LOC "$$$/Stash/ExportDialog/Title=Stash Title",
+			title = LOC "$$$/Stash/ExportDialog/Title=Sta.sh Options",
 			
 			synopsis = function( props )
 				if props.titleFirstChoice == 'title' then
@@ -499,7 +547,25 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 						},
 					},
 				},
-				
+
+                f:row {
+                    spacing = f:label_spacing(),
+
+                    f:static_text {
+                        title = LOC "$$$/Stash/ExportDialog/OverwriteMetadata=When updating a published photo:",
+                        alignment = 'right',
+                        width = share 'StashOverwriteMetadata',
+                    },
+
+                    f:popup_menu {
+                        value = bind 'overwriteMetadata',
+                        width = share 'StashOverwriteMetadataPopup',
+                        items = {
+                            { value = true, title = "Overwrite existing title, keywords and description" },
+                            { value = false, title = "Leave existing title, keywords and description" },
+                        },
+                    },
+				}
 			},
 		},
 	}
@@ -543,7 +609,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	local nPhotos = exportSession:countRenditions()
 	
 	-- By default, use the foldername "Lightroom Exports" with there's more than 1 image uploaded.
-	-- This is the case *EVEN* for exporting.
+	-- This is the case for exporting.
 	-- For publishing, the name becomes "Uploaded by Lightroom"
 	local folderName = "Lightroom Exports"
 
@@ -574,7 +640,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 	end
 
-	-- Set progress title depending on whether we're exporting or publishing.
+	-- Set progress title depending on whether we're exporting or publishing,
+	-- and if we're exporting/publishing more than one photo.
 
 	local progressScope = nil
 	
@@ -675,18 +742,23 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 										tags = table.concat( tags, ' ' ),
 										stashid = stashId or nil,
 										folderid = folderId or nil,
-										foldername = folderName or nil
+										foldername = folderName or nil,
+                                        overwriteMetadata = exportSettings.overwriteMetadata or nil,
 									} )
 
 				--LrDialogs.message("Publishing: " .. tostring(publishing))
 
 				if publishing then 
-					--LrDialogs.message(StashInfo.stashid)
+					
 					if type(StashInfo.stashid) == 'number' then
+						logger:info("Stashid is a number")
 						StashInfo.stashid = LrStringUtils.numberToString(StashInfo.stashid)
 					end
+
+					logger:info("Uploaded photo to " .. StashInfo.stashid)
 					rendition:recordPublishedPhotoId(StashInfo.stashid)
 					rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
+					
 				end
 				
 				folderId = LrStringUtils.numberToString(StashInfo.folderid)
@@ -695,6 +767,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				-- but this will help manage space in the event of a large upload.
 					
 				LrFileUtils.delete( pathOrMessage )
+                prefs.uploadCount = prefs.uploadCount + 1
 			
 			end
 			
@@ -705,6 +778,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	if publishing then
 		--LrDialogs.message(folderId)
 		exportSession:recordRemoteCollectionId(folderId)
+		logger:info("Uploaded collection to folderid: " .. folderId)
 	end
 
 	progressScope:done()

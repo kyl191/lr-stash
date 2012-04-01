@@ -11,7 +11,7 @@ local OBJDEF = { VERSION = VERSION }
 -- http://www.json.org/
 --
 --
---   JSON = (loadfile "JSON.lua")() -- one-time load of the routines
+--   JSON = loadfile "JSON.lua" -- one-time load of the routines
 --
 --   local lua_value = JSON:decode(raw_json_text)
 --
@@ -21,7 +21,7 @@ local OBJDEF = { VERSION = VERSION }
 --
 -- DECODING
 --
---   JSON = (loadfile "JSON:lua")() -- one-time load of the routines
+--   JSON = (loadfile "JSON.lua")() -- one-time load of the routines
 --
 --   local lua_value = JSON:decode(raw_json_text)
 --
@@ -108,7 +108,7 @@ local OBJDEF = { VERSION = VERSION }
 --
 --   However, if you enable strictTypes, e.g.
 --
---      JSON = (loadfile "JSON:lua")() --load the routines
+--      JSON = (loadfile "JSON.lua")() --load the routines
 --      JSON.strictTypes = true
 --
 --   then the Lua table resulting from the decoding of a JSON object or JSON array is marked via Lua
