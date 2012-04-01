@@ -8,6 +8,11 @@ if prefs.uploadCount == nil then
     prefs.uploadCount = 0
 end
 
-if prefs.autoUpdate then
-    Utils.updatePlugin()
+if prefs.autoUpdate == true then
+	Utils.updatePlugin()
+elseif prefs.autoUpdate == false then
+	-- do nothing
+else
+	prefs.autoUpdate = true
+	Utils.updatePlugin()
 end
