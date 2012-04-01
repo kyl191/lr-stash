@@ -27,6 +27,7 @@ else
 	logger:enable({
 		"fatal" = "logfile",
 		"error" = "logfile",
+		})
 end
 
 if prefs.uploadCount == nil then
