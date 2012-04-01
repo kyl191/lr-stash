@@ -285,4 +285,9 @@ function Utils.updatePlugin()
 
 end
 --------------------------------------------------------------------------------
+
+function Utils.getVersion()
+    return string.format("%i.%i.%07x", Info.VERSION.major, Info.VERSION.minor, Info.VERSION.revision)
+end
+
 return Utils
