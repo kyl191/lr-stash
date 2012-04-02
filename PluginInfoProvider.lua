@@ -74,7 +74,15 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
                 value = bind 'debugLogging',
                 checked_value = true,
                 unchecked_value = false
-            }
+            },
+            f:push_button {
+                visible = LrBinding.keyEquals( 'debugLogging', true ),
+                enabled = import 'LrFileUtils'.exists( import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log") ),
+                title = "Show log",
+                action = function()
+                    import 'LrShell'.revealInShell(import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log"))
+                end
+            },
         }
     }
 
