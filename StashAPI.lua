@@ -6,7 +6,6 @@ Common code to initiate Stash API requests
 ------------------------------------------------------------------------------]]
 
 	-- Lightroom SDK
-local LrDate = import 'LrDate'
 local LrDialogs = import 'LrDialogs'
 local LrErrors = import 'LrErrors'
 local LrFunctionContext = import 'LrFunctionContext'
@@ -101,7 +100,7 @@ function StashAPI.processToken( token, context )
 	if token.status == "success" then
 		prefs.access_token = token.access_token
 		prefs.refresh_token = token.refresh_token
-		prefs.expire = LrDate.currentTime() + token.expires_in
+		prefs.expire = import 'LrDate'.currentTime() + token.expires_in
 	
 	-- If the token has anything other than status = success, oops, we've got a problem
     -- Function context comes from StashUser.login
