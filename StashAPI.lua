@@ -16,6 +16,7 @@ local logger = import 'LrLogger'( 'Stash' )
 
 --Utils = (loadfile (LrPathUtils.child(_PLUGIN.path, "Utils.lua")))()
 require 'Utils'
+require 'Auth'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 --============================================================================--
@@ -23,19 +24,6 @@ JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 StashAPI = {}
 
 --------------------------------------------------------------------------------
-StashAPI.client_id = 114
-
--- client secret is 6ac9aa67308019e9f8a307480dadf5f4
--- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
--- And breaking it up into 2 16 character strings results in some strange truncation
--- So 4 8 character strings works
-local client_secret_pt1 = 0x6ac9aa67
-local client_secret_pt2 = 0x308019e9
-local client_secret_pt3 = 0xf8a30748
-local client_secret_pt4 = 0x0dadf5f4
-
-local client_secret = string.format("%08x%08x%08x%08x", client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4)
-
 
 function StashAPI.getToken(code)
 
@@ -44,7 +32,7 @@ function StashAPI.getToken(code)
 	-- And, yes, redirect_uri appears to be needed, so don't remove it
 	-- redirect_uri=http://oauth2.kyl191.net/
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", StashAPI.client_id, client_secret,code)
+    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", Auth.client_id, Auth.client_secret,code)
 
     local error = "contacting the sta.sh server to get access"
 
@@ -61,7 +49,7 @@ function StashAPI.refreshAuth()
 	-- Refresh the auth token
 	-- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-	local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", StashAPI.client_id, client_secret, prefs.refresh_token)
+	local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
     local error = "renewing the authorization"
 
     local token = Utils.getJSON(postUrl, error)
