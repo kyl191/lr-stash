@@ -8,7 +8,6 @@ Common code to initiate Stash API requests
 	-- Lightroom SDK
 local LrErrors = import 'LrErrors'
 local LrHttp = import 'LrHttp'
-local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrStringUtils = import 'LrStringUtils'
 local LrTasks = import 'LrTasks'
@@ -177,7 +176,7 @@ function StashAPI.uploadPhoto( params )
 	
 	-- Before uploading, check to make sure that there's enough space to upload
 	local space = StashAPI.getRemainingSpace()
-	local fileAttribs = LrFileUtils.fileAttributes(filePath)
+	local fileAttribs = import 'LrFileUtils'.fileAttributes(filePath)
 	
 	if tonumber(space) < tonumber(fileAttribs.fileSize) then
 		LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
