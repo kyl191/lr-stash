@@ -6,7 +6,6 @@ Common code to initiate Stash API requests
 ------------------------------------------------------------------------------]]
 
 	-- Lightroom SDK
-local LrBinding = import 'LrBinding'
 local LrDate = import 'LrDate'
 local LrDialogs = import 'LrDialogs'
 local LrErrors = import 'LrErrors'
