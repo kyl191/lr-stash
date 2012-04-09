@@ -31,7 +31,7 @@ else
 end
 
 logger:info("LR/Stash loading.")
-logger:info("Version " .. Utils.getVersion() .. " running on " .. import 'LrSystemInfo'.summaryString())
+logger:info("Version " .. Utils.getVersion() .. " in Lightroom " .. import 'LrApplication'.versionString() .. " running on " .. import 'LrSystemInfo'.summaryString())
 
 if prefs.uploadCount == nil then
     prefs.uploadCount = 0

@@ -67,14 +67,22 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             f:static_text{
                 title = "Enable debug logging",
                 alignment = 'right',
-                tooltip = "When checked, the plugin will write internal logging to a file. The file will be cleared every time Lightroom opens.",
+                tooltip = "When checked, the plugin will log events to " .. import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log") .. ". The file will be cleared every time Lightroom opens.",
             },
             f:checkbox{
                 title = "",
                 value = bind 'debugLogging',
                 checked_value = true,
                 unchecked_value = false
-            }
+            },
+            f:push_button {
+                visible = LrBinding.keyEquals( 'debugLogging', true ),
+                enabled = import 'LrFileUtils'.exists( import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log") ),
+                title = "Show log",
+                action = function()
+                    import 'LrShell'.revealInShell(import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log"))
+                end
+            },
         }
     }
 
