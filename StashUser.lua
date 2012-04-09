@@ -118,7 +118,7 @@ function StashUser.login( propertyTable )
 				f:edit_field { 
 					fill_horizonal = 1,
 					width_in_chars = 19, 
-					value = bind { key = 'code', object = propertyTable },
+					value = bind { key = 'auth_code', object = propertyTable },
 				},
 			},
 		}
@@ -136,7 +136,7 @@ function StashUser.login( propertyTable )
 		
 		if result == 'ok' then
 
-			propertyTable.code = LrStringUtils.trimWhitespace( propertyTable.code )
+			propertyTable.auth_code = LrStringUtils.trimWhitespace( propertyTable.auth_code )
 
 		else
 		
