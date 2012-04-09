@@ -5,6 +5,6 @@ return {
        url = url:gsub('^"(.*)"$', "%1")
 
        -- Work with url here...
-       import 'LrDialog'.message(url)
+       StashUser.urlHandler(url)
    end
 }

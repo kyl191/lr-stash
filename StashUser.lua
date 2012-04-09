@@ -273,3 +273,7 @@ function StashUser.verifyLogin( propertyTable )
 end
 
 --------------------------------------------------------------------------------
+
+function StashUser:urlHandler(url)
+	LrDialogs.message(url)
+end
