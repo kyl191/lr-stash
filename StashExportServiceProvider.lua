@@ -673,8 +673,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		-- Get next photo.
 
 		local photo = rendition.photo
-		progressScope:setCaption("Rendering " .. photo:getFormattedMetadata('fileName'))
-
+		
 		if publishing and rendition.publishedPhotoId then
 			stashId = rendition.publishedPhotoId	
 		end
@@ -697,8 +696,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				-- Build up common metadata for this photo.
 				
 				local title = getStashTitle( photo, exportSettings, pathOrMessage )
-				progressScope:setCaption("Uploading " .. title .. " to Sta.sh")
-		
+				
 				local description = photo:getFormattedMetadata( 'caption' )
 				local keywordTags = photo:getFormattedMetadata( 'keywordTagsForExport' )
 				
