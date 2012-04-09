@@ -61,6 +61,7 @@ end
 
 local doingLogin = false
 
+local f = LrView.osFactory()
 local auth_dialog_contents = nil 
 function StashUser.login( propertyTable )
 
@@ -159,8 +160,6 @@ function StashUser.login( propertyTable )
 		
 	end )
 
-	return propertyTable.code
-	
 end
 
 --------------------------------------------------------------------------------
