@@ -61,6 +61,7 @@ end
 
 local doingLogin = false
 
+StashUser.auth_dialog_contents = nil 
 function StashUser.login( propertyTable )
 
 	-- Prevent race conditions where we're already logging in
@@ -124,7 +125,7 @@ function StashUser.login( propertyTable )
 		
 		local result = LrDialogs.presentModalDialog {
 				title = LOC "$$$/Stash/ApiKeyDialog/Title=Enter Your Sta.sh Code", 
-				contents = contents,
+				contents = auth_dialog_contents,
 				accessoryView = f:push_button {
 					title = LOC "$$$/Stash/ApiKeyDialog/GoToStash=Authorize at Sta.sh...",
 					action = function()
