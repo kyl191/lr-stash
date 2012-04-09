@@ -61,6 +61,7 @@ end
 
 local doingLogin = false
 
+local client_id = StashAPI.client_id
 local f = LrView.osFactory()
 local auth_dialog_contents = nil 
 function StashUser.login( propertyTable )
