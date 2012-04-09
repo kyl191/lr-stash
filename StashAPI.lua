@@ -18,18 +18,6 @@ require 'Utils'
 local Auth = require 'Auth'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
-
--- client secret is 6ac9aa67308019e9f8a307480dadf5f4
--- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
--- And breaking it up into 2 16 character strings results in some strange truncation
--- So 4 8 character strings works
-client_secret_pt1 = 0x5867355c
-client_secret_pt2 = 0x102d2dcb
-client_secret_pt3 = 0xcdcd8601
-client_secret_pt4 = 0xda941974
-
-client_id = 123
-
 --============================================================================--
 
 StashAPI = {}
