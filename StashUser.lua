@@ -21,7 +21,7 @@ local share = LrView.share
 
 require 'StashAPI'
 require 'Utils'
-require 'Auth'
+local Auth = require 'Auth'
 
 --============================================================================--
 

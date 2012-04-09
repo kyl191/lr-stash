@@ -15,7 +15,7 @@ local prefs = import 'LrPrefs'.prefsForPlugin()
 local logger = import 'LrLogger'( 'Stash' )
 
 require 'Utils'
-require 'Auth'
+local Auth = require 'Auth'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 --============================================================================--
