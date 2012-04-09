@@ -6,7 +6,6 @@ Common code to initiate Stash API requests
 ------------------------------------------------------------------------------]]
 
 	-- Lightroom SDK
-local LrDialogs = import 'LrDialogs'
 local LrErrors = import 'LrErrors'
 local LrFunctionContext = import 'LrFunctionContext'
 local LrHttp = import 'LrHttp'
@@ -105,7 +104,7 @@ function StashAPI.processToken( token, context )
 	-- If the token has anything other than status = success, oops, we've got a problem
     -- Function context comes from StashUser.login
 	else 
-		LrDialogs.attachErrorDialogToFunctionContext(context)
+		import 'LrDialogs'.attachErrorDialogToFunctionContext(context)
 		LrErrors.throwUserError( "Unable to authenticate" )
 	end
 
