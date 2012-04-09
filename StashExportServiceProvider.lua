@@ -590,7 +590,6 @@ end
 function exportServiceProvider.processRenderedPhotos( functionContext, exportContext )
 	
 	-- Ensure that the auth tokens are still good
-
 	if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
 		StashAPI.refreshAuth()
 	end
@@ -600,12 +599,10 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	end
 
 	-- Make a local reference to the export parameters.
-	
 	local exportSession = exportContext.exportSession
 	local exportSettings = assert( exportContext.propertyTable )
 		
 	-- Get the # of photos.
-	
 	local nPhotos = exportSession:countRenditions()
 	
 	-- By default, use the foldername "Lightroom Exports" with there's more than 1 image uploaded.
@@ -709,17 +706,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 					local keywordIter = string.gfind( keywordTags, "[^,]+" )
 
 					for keyword in keywordIter do
-					
-						--[[ Seems to be removing a single leading space if present
-						if string.sub( keyword, 1, 1 ) == ' ' then
-							keyword = string.sub( keyword, 2, -1 )
-						end
-						
-						-- If the keyword has a space in it, put it in quotations
-						if string.find( keyword, ' ' ) ~= nil then
-							keyword = '"' .. keyword .. '"'
-						end
-						]]
 
 						-- Strip non-alphanumeric characters from keyword
 						if string.find( keyword, "[^%w*]") ~= nil then
@@ -734,8 +720,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
 				-- Upload or replace the photo.
 
-
-
 				StashInfo = StashAPI.uploadPhoto( {
 										filePath = pathOrMessage,
 										title = title,
@@ -747,8 +731,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                                         overwriteMetadata = exportSettings.overwriteMetadata or nil,
 									} )
 
-				--LrDialogs.message("Publishing: " .. tostring(publishing))
-
+				
 				if publishing then 
 					
 					if type(StashInfo.stashid) == 'number' then
@@ -766,7 +749,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 				
 				-- When done with photo, delete temp file. There is a cleanup step that happens later,
 				-- but this will help manage space in the event of a large upload.
-					
 				LrFileUtils.delete( pathOrMessage )
                 prefs.uploadCount = prefs.uploadCount + 1
 			
@@ -777,7 +759,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	end
 
 	if publishing then
-		--LrDialogs.message(folderId)
 		exportSession:recordRemoteCollectionId(folderId)
 		logger:info("Uploaded collection to folderid: " .. folderId)
 	end
