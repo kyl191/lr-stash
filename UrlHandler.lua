@@ -5,6 +5,6 @@ return {
        url = url:gsub('^"(.*)"$', "%1")
 
        -- Work with url here...
-       LrDialog.message(url)
+       import 'LrDialog'.message(url)
    end
 }
