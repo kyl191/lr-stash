@@ -3,6 +3,7 @@
 local LrView = import "LrView"
 local bind = LrView.bind
 local LrBinding = import 'LrBinding'
+local LrPathUtils = import 'LrPathUtils'
 
 local logger = import 'LrLogger'( 'Stash' )
 
@@ -16,6 +17,8 @@ PluginInfoProvider = {}
 PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
 
     local f = viewfactory
+
+    local logPath = LrPathUtils.child( LrPathUtils.getStandardFilePath('documents'), "Stash.log")
 
     local contents = f:column{
         spacing = f:label_spacing(),
@@ -67,7 +70,7 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             f:static_text{
                 title = "Enable debug logging",
                 alignment = 'right',
-                tooltip = "When checked, the plugin will log events to " .. import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log") .. ". The file will be cleared every time Lightroom opens.",
+                tooltip = "When checked, the plugin will log events to " .. logPath .. ". The file will be cleared every time Lightroom opens.",
             },
             f:checkbox{
                 title = "",
@@ -77,10 +80,10 @@ PluginInfoProvider.sectionsForTopOfDialog = function(viewfactory, propertyTable)
             },
             f:push_button {
                 visible = LrBinding.keyEquals( 'debugLogging', true ),
-                enabled = import 'LrFileUtils'.exists( import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log") ),
+                enabled = import 'LrFileUtils'.exists( logPath ),
                 title = "Show log",
                 action = function()
-                    import 'LrShell'.revealInShell(import 'LrPathUtils'.child( import 'LrPathUtils'.getStandardFilePath('documents'), "Stash.log"))
+                    import 'LrShell'.revealInShell(logPath)
                 end
             },
         }
