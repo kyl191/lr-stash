@@ -86,7 +86,6 @@ function StashUser.login( propertyTable )
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/LoggingIn=Logging in..."
 		propertyTable.loginButtonEnabled = false
 		
-		LrDialogs.attachErrorDialogToFunctionContext( context )
 		
 		-- Make sure login is valid when done, or if it's invalid, reset the status
 		
