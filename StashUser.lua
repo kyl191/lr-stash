@@ -143,15 +143,6 @@ function StashUser.showAuthDialog( propertyTable, message )
 				height_in_lines = 2,
 				size = 'small',
 			},
-	
-			message and f:static_text {
-				title = message,
-				fill_horizontal = 1,
-				width_in_chars = 55,
-				height_in_lines = 2,
-				size = 'small',
-				text_color = import 'LrColor'( 1, 0, 0 ),
-			} or 'skipped item',
 			
 			f:row {
 				spacing = f:label_spacing(),
