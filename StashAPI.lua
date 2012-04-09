@@ -18,16 +18,6 @@ local logger = import 'LrLogger'( 'Stash' )
 require 'Utils'
 JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
--- client secret is 6ac9aa67308019e9f8a307480dadf5f4
--- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
--- And breaking it up into 2 16 character strings results in some strange truncation
--- So 4 8 character strings works
-client_secret_pt1 = 0x6ac9aa67
-client_secret_pt2 = 0x308019e9
-client_secret_pt3 = 0xf8a30748
-client_secret_pt4 = 0x0dadf5f4
-
-
 --============================================================================--
 
 StashAPI = {}
@@ -35,7 +25,16 @@ StashAPI = {}
 --------------------------------------------------------------------------------
 StashAPI.client_id = 114
 
+-- client secret is 6ac9aa67308019e9f8a307480dadf5f4
+-- Breaking it up isn't intentional, but because the full 32 character string exceeds Lua's max value
+-- And breaking it up into 2 16 character strings results in some strange truncation
+-- So 4 8 character strings works
+local client_secret_pt1 = 0x6ac9aa67
+local client_secret_pt2 = 0x308019e9
+local client_secret_pt3 = 0xf8a30748
+local client_secret_pt4 = 0x0dadf5f4
 
+local client_secret = string.format("%08x%08x%08x%08x", client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4)
 
 
 function StashAPI.getToken(code)
@@ -45,7 +44,8 @@ function StashAPI.getToken(code)
 	-- And, yes, redirect_uri appears to be needed, so don't remove it
 	-- redirect_uri=http://oauth2.kyl191.net/
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%08x%08x%08x%08x&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret_pt1, client_secret_pt2, client_secret_pt3, client_secret_pt4,code)
+    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/",client_id, client_secret,code)
+    
     local error = "contacting the sta.sh server to get access"
 
     local token = Utils.getJSON(postUrl, error)
