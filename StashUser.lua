@@ -61,7 +61,7 @@ end
 
 local doingLogin = false
 
-StashUser.auth_dialog_contents = nil 
+local auth_dialog_contents = nil 
 function StashUser.login( propertyTable )
 
 	-- Prevent race conditions where we're already logging in
@@ -94,7 +94,7 @@ function StashUser.login( propertyTable )
 
 		end )
 
-		StashUser.auth_dialog_contents = f:column {
+		auth_dialog_contents = f:column {
 			spacing = f:control_spacing(),
 			fill = 1,
 
