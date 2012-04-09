@@ -15,6 +15,10 @@ local LrStringUtils = import 'LrStringUtils'
 local logger = import 'LrLogger'( 'StashAPI' )
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
+local LrView = import 'LrView'
+local bind = LrView.bind
+local share = LrView.share
+
 require 'StashAPI'
 require 'Utils'
 

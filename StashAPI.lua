@@ -14,15 +14,10 @@ local LrFunctionContext = import 'LrFunctionContext'
 local LrHttp = import 'LrHttp'
 local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
-local LrView = import 'LrView'
 local LrStringUtils = import 'LrStringUtils'
 local LrTasks = import 'LrTasks'
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
-
-local bind = LrView.bind
-local share = LrView.share
-
 local logger = import 'LrLogger'( 'Stash' )
 
 --Utils = (loadfile (LrPathUtils.child(_PLUGIN.path, "Utils.lua")))()
