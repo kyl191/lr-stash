@@ -78,17 +78,13 @@ function StashUser.login( propertyTable )
 	function( context )
 
 		-- Clear any existing login info, we're getting a new set of tokens.
-
 		notLoggedIn( propertyTable )
 
 		-- Give the user a status message and disable the login button
-
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/LoggingIn=Logging in..."
 		propertyTable.loginButtonEnabled = false
 		
-		
 		-- Make sure login is valid when done, or if it's invalid, reset the status
-		
 		context:addCleanupHandler( function()
 
 			doingLogin = false
@@ -149,15 +145,12 @@ function StashUser.login( propertyTable )
 		
 		end
 
-		-- json token is similarly one-time use
 		local token = StashAPI.getToken(propertyTable.auth_code)
 
         StashAPI.processToken(token, context)
 
-		-- User has OK'd authentication. Get the user info.
-		
-		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
-
+		-- User has OK'd authentication. Tell them that we're getting their user info.
+		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for a response from Sta.sh..."
 		
 		-- Verify that the login was successful, and update the menus.
 		StashUser.verifyLogin( propertyTable )
