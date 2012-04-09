@@ -35,22 +35,8 @@ StashAPI = {}
 
 --------------------------------------------------------------------------------
 
-function StashAPI.openAuthUrl()
 
-	-- Send the user to the dA approve application screen
-	-- Called from StashAPI.showAuthDialog
-	-- Which in turn should ONLY be called from StashUser.login
-	-- Reasoning behind having a separate function?
-	-- Will combine into showAuthDialog
-	-- http://oauth2.kyl191.net/
 
-	LrHttp.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", client_id ))
-
-	return nil
-
-end
-
---------------------------------------------------------------------------------
 
 function StashAPI.getToken(code)
 

@@ -174,7 +174,7 @@ function StashUser.showAuthDialog( propertyTable, message )
 				accessoryView = f:push_button {
 					title = LOC "$$$/Stash/ApiKeyDialog/GoToStash=Authorize at Sta.sh...",
 					action = function()
-						StashAPI.openAuthUrl()
+						import 'LrHttp'.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", client_id ))
 					end
 				},
 			}
