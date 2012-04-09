@@ -9,7 +9,6 @@ Common code to initiate Stash API requests
 local LrErrors = import 'LrErrors'
 local LrHttp = import 'LrHttp'
 local LrPathUtils = import 'LrPathUtils'
-local LrStringUtils = import 'LrStringUtils'
 local LrTasks = import 'LrTasks'
 
 local prefs = import 'LrPrefs'.prefsForPlugin()
