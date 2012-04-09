@@ -92,50 +92,11 @@ function StashUser.login( propertyTable )
 			end
 
 		end )
-		
-		-- auth_code is one-time use, don't bother storing it in the propertyTable
-		local auth_code = StashAPI.showAuthDialog(propertyTable, '')
 
-		-- But, the UI wants to be attached to a table, and I gave it propertyTable
-		-- So, wipe out the code that was stored in the table
-		propertyTable.code = nil
-
-		-- json token is similarly one-time use
-		local token = StashAPI.getToken(auth_code)
-
-        StashAPI.processToken(token, context)
-
-		-- User has OK'd authentication. Get the user info.
-		
-		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
-
-		
-		-- Verify that the login was successful, and update the menus.
-		StashUser.verifyLogin( propertyTable )
-		
-	end )
-
-end
-
---------------------------------------------------------------------------------
-
-local client_id = StashAPI.client_id
-
-function StashUser.showAuthDialog( propertyTable, message )
-
-	-- I'm not touching this thing till I know what it does!
-
-	LrFunctionContext.callWithContext( 'StashUser.showAuthDialog', function( context )
-
-		local f = LrView.osFactory()
-	
-		local properties = propertyTable
-
-		local contents = f:column {
-			--bind_to_object = properties,
+		StashUser.auth_dialog_contents = f:column {
 			spacing = f:control_spacing(),
 			fill = 1,
-	
+
 			f:static_text {
 				title = "In order to use this plug-in, you must authorize the plugin to access your Sta.sh account. Please click Authorize at Sta.sh to get the code.",
 				fill_horizontal = 1,
@@ -181,7 +142,20 @@ function StashUser.showAuthDialog( propertyTable, message )
 			LrErrors.throwCanceled()
 		
 		end
-	
+
+		-- json token is similarly one-time use
+		local token = StashAPI.getToken(propertyTable.auth_code)
+
+        StashAPI.processToken(token, context)
+
+		-- User has OK'd authentication. Get the user info.
+		
+		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
+
+		
+		-- Verify that the login was successful, and update the menus.
+		StashUser.verifyLogin( propertyTable )
+		
 	end )
 
 	return propertyTable.code
