@@ -21,6 +21,7 @@ return {
 
     LrInitPlugin = "LrInitPlugin.lua",
 
-	VERSION = {major=20120401, minor=1441, revision=0xdc0b9fe, },
+
+	VERSION = {major=20120408, minor=2203, revision=0xda90ef8, },
 
 }
