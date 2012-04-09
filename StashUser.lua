@@ -119,6 +119,8 @@ end
 
 --------------------------------------------------------------------------------
 
+local client_id = StashAPI.client_id
+
 function StashUser.showAuthDialog( propertyTable, message )
 
 	-- I'm not touching this thing till I know what it does!
