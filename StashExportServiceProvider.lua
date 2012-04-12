@@ -759,8 +759,10 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 	end
 
 	if publishing then
-		exportSession:recordRemoteCollectionId(folderId)
 		logger:info("Uploaded collection to folderid: " .. folderId)
+		if folderId ~= nil then
+			exportSession:recordRemoteCollectionId(folderId)
+		end
 	end
 
 	progressScope:done()
