@@ -45,7 +45,6 @@
             <targetfile />
             <fileset dir=".">
                 <include name="**/*.lua" />
-                <exclude name="Info.lua" />
             </fileset>
             <mapper type="glob" from="*.lua" to="${pluginFolder}/*.lua" />
         </apply>
