@@ -400,7 +400,9 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
             logger:debug("Title built from filename, metadata title was empty")
 		end
 
-	end
+    else
+        title = "Untitled"
+    end
 				
 	return title
 
