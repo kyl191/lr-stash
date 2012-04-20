@@ -23,6 +23,6 @@ return {
 
     LrHelpMenuItems = { title = "Sta.s&h Dev Testing", file = "Testing.lua"},
 
-	VERSION = {major=20120408, minor=2203, revision=0xda90ef8, },
+	VERSION = {major=20120420, minor=2136, revision=0xe4461c0, },
 
 }
