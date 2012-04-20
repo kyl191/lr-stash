@@ -77,8 +77,6 @@ function Utils.getJSON( postUrl, errorMessage )
 
     data = Utils.networkComms( "post", postUrl )
 
-    logger:info("getJSON: Got data back from networkComms.")
-
     -- We can't do anything about a Lightroom transport error!
     if data.status and data.status == "error" and data.from == "lightroom" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't.")
@@ -192,7 +190,7 @@ end
 
 function Utils.networkComms( action, url )
 
-    logger:info("Called Utils.networkComms for " .. url)
+    logger:info("Utils.networkComms: Called for " .. url)
     local payload, headers = nil
     -- Do the request
     if action == "post" then

@@ -388,13 +388,16 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
 	if exportSettings.titleFirstChoice == 'filename' then
 				
 		title = LrPathUtils.leafName( pathOrMessage )
+        logger:debug("Title built from filename")
 				
 	elseif exportSettings.titleFirstChoice == 'title' then
 				
 		title = photo:getFormattedMetadata 'title'
+        logger:debug("Title built from metadata title")
 				
 		if ( not title or #title == 0 ) and exportSettings.titleSecondChoice == 'filename' then
 			title = LrPathUtils.leafName( pathOrMessage )
+            logger:debug("Title built from filename, metadata title was empty")
 		end
 
 	end
@@ -673,6 +676,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		
 		if publishing and rendition.publishedPhotoId then
 			stashId = rendition.publishedPhotoId	
+            logger:debug("Found existing stash id: " .. stashId)
 		end
 		
 		if not rendition.wasSkipped then

@@ -155,6 +155,7 @@ function StashAPI.uploadPhoto( params )
 	end
 
 	-- Post it and wait for confirmation.
+    logger:info("Uploading photo to: " .. postUrl)
 	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 	
 	--[[--if hdrs and hdrs.error then
@@ -207,7 +208,7 @@ function StashAPI.uploadPhoto( params )
 
                 if json.error ~= nil and not params.retry then
                     logger:error("Error from Sta.sh:")
-                    Utils.logTable(json, "JSON from Sta.sh")
+                    Utils.logTable(json, "Parsed JSON from Sta.sh, 1st try at uploading photo")
 
                     if json.error == "internal_error_item" or json.error == "invalid_stashid" then
                         -- internal_error_item seems to mean we tried uploading to a deleted stashid
@@ -236,7 +237,7 @@ function StashAPI.uploadPhoto( params )
 
                 elseif json.error ~= nil and params.retry then
                     logger:error("Retried once, still got an error. Giving up.")
-                    Utils.logTable(json, "JSON from Sta.sh")
+                    Utils.logTable(json, "Parsed JSON from Sta.sh, 2nd try at uploading photo")
                     LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
 
                 end
