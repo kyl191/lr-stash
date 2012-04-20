@@ -1,4 +1,4 @@
-<?php
+<?php include("db.php")
 
 function md5Files($dirpath){
 	$files=array();
@@ -39,6 +39,16 @@ if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroo
 	}
 } else {
 	print_r($_GET);
+}
+
+if(isset($_GET['data']) && $db){
+	try{
+		$data = @json_decode($_GET['data'])
+		$pluginVersion = $data['pluginVersion']
+
+		} catch (Exception e) {
+			//do nothing, we don't care too much about the db
+		}
 }
 
 ?>
