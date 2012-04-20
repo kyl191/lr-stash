@@ -12,7 +12,7 @@ local LrTasks = import 'LrTasks'
 local LrDate = import 'LrDate'
 local LrStringUtils = import 'LrStringUtils'
 
-local logger = import 'LrLogger'( 'StashAPI' )
+local logger = import 'LrLogger'( 'Stash' )
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
 local LrView = import 'LrView'
