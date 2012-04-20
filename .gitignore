@@ -2,3 +2,4 @@
 build/*
 dist/*
 prod_build.xml
+*.backup*

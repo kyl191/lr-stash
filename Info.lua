@@ -10,7 +10,7 @@ return {
 
 	LrToolkitIdentifier = 'net.kyl191.lightroom.export.stash.dev',
 	LrPluginName 		= 'Sta.sh Dev',
-	UrlHandler			= "UrlHandler.lua",
+	URLHandler			= "UrlHandler.lua",
 	LrPluginInfoUrl     = "http://kyl191.net/code-and-stuff/lightroom-export-to-sta-sh/",
 	LrExportServiceProvider = {
 		title = 'Sta.sh Dev',
@@ -23,6 +23,6 @@ return {
 
     LrHelpMenuItems = { title = "Sta.s&h Dev Testing", file = "Testing.lua"},
 
-	VERSION = {major=20120311, minor=0141, revision=0x67de384, },
+	VERSION = {major=20120408, minor=2203, revision=0xda90ef8, },
 
 }

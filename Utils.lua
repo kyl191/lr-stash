@@ -9,7 +9,6 @@ local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
-logger:enable("logfile")
 local Info = require 'Info'
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
@@ -171,7 +170,7 @@ function Utils.makeBackups(file, iteration)
     local destPath = LrPathUtils.replaceExtension(srcPath, "backup" .. (iteration + 1))
 
     if iteration > 2 then
-        logger:info("Terminating at iteration 2 for file " .. file)
+        logger:info("Terminating at iteration 3. Deleting file " .. file)
         LrFileUtils.moveToTrash(srcPath)
         return nil
     end
@@ -286,4 +285,9 @@ function Utils.updatePlugin()
 
 end
 --------------------------------------------------------------------------------
+
+function Utils.getVersion()
+    return string.format("%i.%i.%07x", Info.VERSION.major, Info.VERSION.minor, Info.VERSION.revision)
+end
+
 return Utils

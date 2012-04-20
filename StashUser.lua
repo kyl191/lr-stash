@@ -15,8 +15,13 @@ local LrStringUtils = import 'LrStringUtils'
 local logger = import 'LrLogger'( 'StashAPI' )
 local prefs = import 'LrPrefs'.prefsForPlugin()
 
+local LrView = import 'LrView'
+local bind = LrView.bind
+local share = LrView.share
+
 require 'StashAPI'
 require 'Utils'
+local Auth = require 'Auth'
 
 --============================================================================--
 
@@ -57,6 +62,13 @@ end
 
 local doingLogin = false
 
+local client_id = StashAPI.client_id
+
+local f = LrView.osFactory()
+
+local auth_dialog_contents = nil 
+
+
 function StashUser.login( propertyTable )
 
 	-- Prevent race conditions where we're already logging in
@@ -67,18 +79,13 @@ function StashUser.login( propertyTable )
 	function( context )
 
 		-- Clear any existing login info, we're getting a new set of tokens.
-
 		notLoggedIn( propertyTable )
 
 		-- Give the user a status message and disable the login button
-
 		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/LoggingIn=Logging in..."
 		propertyTable.loginButtonEnabled = false
 		
-		LrDialogs.attachErrorDialogToFunctionContext( context )
-		
 		-- Make sure login is valid when done, or if it's invalid, reset the status
-		
 		context:addCleanupHandler( function()
 
 			doingLogin = false
@@ -88,23 +95,63 @@ function StashUser.login( propertyTable )
 			end
 
 		end )
+
+		auth_dialog_contents = f:column {
+			spacing = f:control_spacing(),
+			fill = 1,
+
+			f:static_text {
+				title = "In order to use this plug-in, you must authorize the plugin to access your Sta.sh account. Please click Authorize at Sta.sh to get the code.",
+				fill_horizontal = 1,
+				width_in_chars = 55,
+				height_in_lines = 2,
+				size = 'small',
+			},
+			
+			f:row {
+				spacing = f:label_spacing(),
+				
+				f:static_text {
+					title = "Code:",
+					alignment = 'right',
+					width = share 'title_width',
+				},
+				
+				f:edit_field { 
+					fill_horizonal = 1,
+					width_in_chars = 19, 
+					value = bind { key = 'auth_code', object = propertyTable },
+				},
+			},
+		}
 		
-		-- auth_code is one-time use, don't bother storing it in the propertyTable
-		local auth_code = StashAPI.showAuthDialog(propertyTable, '')
+		local result = LrDialogs.presentModalDialog {
+				title = LOC "$$$/Stash/ApiKeyDialog/Title=Enter Your Sta.sh Code", 
+				contents = auth_dialog_contents,
+				accessoryView = f:push_button {
+					title = LOC "$$$/Stash/ApiKeyDialog/GoToStash=Authorize at Sta.sh...",
+					action = function()
+						import 'LrHttp'.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id ))
+					end
+				},
+			}
+		
+		if result == 'ok' then
 
-		-- But, the UI wants to be attached to a table, and I gave it propertyTable
-		-- So, wipe out the code that was stored in the table
-		propertyTable.code = nil
+			propertyTable.auth_code = LrStringUtils.trimWhitespace( propertyTable.auth_code )
 
-		-- json token is similarly one-time use
-		local token = StashAPI.getToken(auth_code)
+		else
+		
+			LrErrors.throwCanceled()
+		
+		end
+
+		local token = StashAPI.getToken(propertyTable.auth_code)
 
         StashAPI.processToken(token, context)
 
-		-- User has OK'd authentication. Get the user info.
-		
-		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for response from Sta.sh..."
-
+		-- User has OK'd authentication. Tell them that we're getting their user info.
+		propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for a response from Sta.sh..."
 		
 		-- Verify that the login was successful, and update the menus.
 		StashUser.verifyLogin( propertyTable )
@@ -189,3 +236,7 @@ function StashUser.verifyLogin( propertyTable )
 end
 
 --------------------------------------------------------------------------------
+
+function StashUser:urlHandler(url)
+	LrDialogs.message(url)
+end
