@@ -675,7 +675,12 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 		-- Get next photo.
 
 		local photo = rendition.photo
-		
+        -- Keep StashID local to each iteration of the loop, otherwise Lua will make it persist across loops
+        -- Bad Thing because Lightroom seems to upload changed images before moving onto new ones, so the new ones will
+        -- constantly overwrite the last image that was modified.
+        -- Fixes https://github.com/kyl191/lr-stash/issues/1
+        local stashId = nil
+
 		if publishing and rendition.publishedPhotoId then
 			stashId = rendition.publishedPhotoId	
             logger:debug("Found existing stash id: " .. stashId)
