@@ -137,13 +137,10 @@ function StashUser.login( propertyTable )
 			}
 		
 		if result == 'ok' then
-
 			propertyTable.auth_code = LrStringUtils.trimWhitespace( propertyTable.auth_code )
-
 		else
-		
-			LrErrors.throwCanceled()
-		
+			logger:info("StashUser.login: Auth cancelled")
+            LrErrors.throwCanceled()
 		end
 
 		local token = StashAPI.getToken(propertyTable.auth_code)
@@ -168,16 +165,13 @@ function StashUser.verifyLogin( propertyTable )
 
 	local function updateStatus()
 	
-		logger:trace( "verifyLogin: updateStatus() was triggered." )
-		
 		LrTasks.startAsyncTask( function()
-			logger:trace( "verifyLogin: updateStatus() is executing." )
+			logger:info( "StashUser.verifyLogin: updateStatus() is executing." )
 			
 			-- Start off assuming the user hasn't logged in before
 			propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Sign In?"
 			propertyTable.loginButtonEnabled = true
 			propertyTable.LR_cantExportBecause = "Waiting for you to log into Sta.sh..." 
-
 
 			-- If there's a record of a past login, check if the credentials have expired
 			-- If so, refresh them
@@ -186,7 +180,6 @@ function StashUser.verifyLogin( propertyTable )
 			end
 
 			if StashUser.storedCredentialsAreValid( propertyTable ) then
-				
 				-- We think the user is a valid one, so try accessing a protected resource
 				-- Activate the login button because if the authenticated call fails, the entire process bombs out,
 				-- and we can't login because the login button is disabled.
