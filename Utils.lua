@@ -82,9 +82,12 @@ function Utils.getJSON( postUrl, errorMessage )
     if data.status and data.status == "error" and data.from == "lightroom" then
         logger:error(postUrl .. " was supposed to return JSON, but didn't. We got a lightroom error instad.")
         LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but Lightroom had a problem:\n" .. data.description)
+    elseif data.status and data.status == "error" and data.from == "server" then
+        -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
+        logger:error(postUrl .. " was supposed to return JSON, but didn't. We got a server error instead.")
+        LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but the server had a problem:\n" .. data.code)
     end
 
-    -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
     -- Other systems should *also* return JSON - this is getJSON after all.
     local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
         context:addFailureHandler( function(status,message)
