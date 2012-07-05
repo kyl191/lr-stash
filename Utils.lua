@@ -211,11 +211,10 @@ function Utils.checkResponse( data, headers, url )
         logger:error("checkResponse: Lightroom network error for url: " .. url)
         Utils.logTable(headers, "checkResponse headers")
         return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name }
-    end
-
+    
     -- Alternatively, the server could throw back an error.
     -- Only return data if we're sure
-    if headers and tonumber(headers.status) > 299 then
+    elseif headers and tonumber(headers.status) > 299 then
         logger:error("checkResponse: Server error " .. headers.status .. " for url: " .. url)
         Utils.logTable(headers)
         logger:info(data)
