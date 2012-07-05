@@ -99,7 +99,6 @@ function StashAPI.uploadPhoto( params )
     if not (params.stashid == nil) then
         postUrl = postUrl .. '&stashid=' .. params.stashid
     else
-
         if not (params.folderid == nil) then
             postUrl = postUrl .. '&folderid=' .. params.folderid
         else
@@ -136,7 +135,6 @@ function StashAPI.uploadPhoto( params )
         end
     end
 
-    
     -- Add the photo itself
     local mimeChunks = {}
 
@@ -183,9 +181,7 @@ function StashAPI.uploadPhoto( params )
                     return StashAPI.uploadPhoto(params)
                 end
 
-
             end
-
 
             local validJSON, message = LrTasks.pcall( function() return JSON:decode(result.payload) end)
 
