@@ -85,7 +85,7 @@ function Utils.getJSON( postUrl, errorMessage )
         LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but Lightroom had a problem:\n" .. data.description)
     else
         -- We're assuming that the remote system has returned JSON - this is getJSON after all.
-        local validJSON, decode = LrTasks.pcall( function() return JSON:decode(result.payload) end)
+        local validJSON, decode = LrTasks.pcall( function() return JSON:decode(data) end)
 
         -- If the JSON parsing failed, check if the server returned an error, or it's a problem with the encoding.
         -- We're not checking before because our error message changes based on whether the server sent an error code or not, and we don't want to repllicate the decoding later.
