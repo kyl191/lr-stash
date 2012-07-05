@@ -267,7 +267,7 @@ function Utils.updatePlugin()
                 local path = LrPathUtils.makeAbsolute(k, _PLUGIN.path)
                 LrFileUtils.makeFileWritable(path)
                 if LrFileUtils.exists(path) then
-                    logger:info("Going to move " .. file .. "to " .. path)
+                    logger:info("Going to move " .. file .. " to " .. path)
                     Utils.makeBackups(k, 0)
                 end
                 local ok, message = LrFileUtils.move(file, path)
