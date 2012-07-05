@@ -104,7 +104,7 @@ function StashAPI.uploadPhoto( params )
             postUrl = postUrl .. '&folderid=' .. params.folderid
         else
             if not (params.foldername == nil) then
-                postUrl = postUrl .. '&folder=' .. params.foldername
+                postUrl = postUrl .. '&folder=' .. Utils.urlEncode(params.foldername)
             end
         end
     end
