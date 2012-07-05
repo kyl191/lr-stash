@@ -256,7 +256,7 @@ function Utils.updatePlugin()
             data.uploadCount = prefs.uploadCount
         end
 
-        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. JSON:encode(data))
+        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. Utils.urlEncode(JSON:encode(data)))
         local localFiles = Utils.md5Files(_PLUGIN.path)
 
         for k, v in pairs (remoteFiles) do
