@@ -288,5 +288,17 @@ end
 function Utils.getVersion()
     return string.format("%i.%i.%07x", Info.VERSION.major, Info.VERSION.minor, Info.VERSION.revision)
 end
+--------------------------------------------------------------------------------
+
+-- URLEncode function from http://lua-users.org/wiki/StringRecipes
+function Utils.urlEncode(str)
+    if (str) then
+        str = string.gsub (str, "\n", "\r\n")
+        str = string.gsub (str, "([^%w ])",
+            function (c) return string.format ("%%%02X", string.byte(c)) end)
+        str = string.gsub (str, " ", "+")
+        end
+    return str
+end
 
 return Utils
