@@ -119,20 +119,20 @@ function StashAPI.uploadPhoto( params )
         postUrl = postUrl .. '&title='
         -- We might have a title, so append that
         if not (params.title == nil or #params.title == 0) then
-            postUrl = postUrl .. params.title
+            postUrl = postUrl .. Utils.urlEncode(params.title)
         end
 
         postUrl = postUrl .. '&keywords='
         -- Append the tags if present
         if not (params.tags == nil or #params.tags == 0) then
-            postUrl = postUrl .. params.tags
+            postUrl = postUrl .. Utils.urlEncode(params.tags)
         end
 
         postUrl = postUrl .. '&artist_comments='
         -- Append the description
         -- Though it's short, so maybe a Memo/long description panel in Lightroom?
         if not (params.description == nil or #params.description == 0) then
-            postUrl = postUrl .. params.description
+            postUrl = postUrl .. Utils.urlEncode(params.description)
         end
     end
 
@@ -156,8 +156,6 @@ function StashAPI.uploadPhoto( params )
 
 	-- Post it and wait for confirmation.
     logger:info("Uploading photo to: " .. postUrl)
-    postUrl = Utils.urlEncode(postUrl)
-    logger:info("Clean version of URL: " .. postUrl)
     
 	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 	
