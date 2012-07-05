@@ -11,6 +11,7 @@ local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 local Info = require 'Info'
 local prefs = import 'LrPrefs'.prefsForPlugin()
+local LrTasks = import 'LrTasks'
 
 local LrPathUtils = import 'LrPathUtils'
 
