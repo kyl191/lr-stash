@@ -219,6 +219,8 @@ function Utils.checkResponse( data, headers, url )
         Utils.logTable(headers)
         logger:info(data)
         return { status = "error", from = "server", code = headers.status, payload = data }
+    
+    -- Finally we can test to make sure the response actually has data.
     else
         if data ~= nil then
             return data
