@@ -156,6 +156,9 @@ function StashAPI.uploadPhoto( params )
 
 	-- Post it and wait for confirmation.
     logger:info("Uploading photo to: " .. postUrl)
+    postUrl = Utils.urlEncode(postUrl)
+    logger:info("Clean version of URL: " .. postUrl)
+    
 	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 	
 	--[[--if hdrs and hdrs.error then
