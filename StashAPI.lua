@@ -5,7 +5,7 @@ Common code to initiate Stash API requests
 
 ------------------------------------------------------------------------------]]
 
-	-- Lightroom SDK
+    -- Lightroom SDK
 local LrErrors = import 'LrErrors'
 local LrHttp = import 'LrHttp'
 local LrPathUtils = import 'LrPathUtils'
@@ -26,10 +26,10 @@ StashAPI = {}
 
 function StashAPI.getToken(code)
 
-	-- Get the initial authorization token.
-	-- ONLY called by StashUser.login
-	-- And, yes, redirect_uri appears to be needed, so don't remove it
-	-- redirect_uri=http://oauth2.kyl191.net/
+    -- Get the initial authorization token.
+    -- ONLY called by StashUser.login
+    -- And, yes, redirect_uri appears to be needed, so don't remove it
+    -- redirect_uri=http://oauth2.kyl191.net/
 
     local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", Auth.client_id, Auth.client_secret,code)
 
@@ -37,7 +37,7 @@ function StashAPI.getToken(code)
 
     local token = Utils.getJSON(postUrl, error)
 
-	return token
+    return token
 
 end
 
@@ -45,15 +45,15 @@ end
 
 function StashAPI.refreshAuth()
 
-	-- Refresh the auth token
-	-- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
+    -- Refresh the auth token
+    -- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-	local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
+    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
     local error = "renewing the authorization"
 
     local token = Utils.getJSON(postUrl, error)
 
-	StashAPI.processToken( token, nil )
+    StashAPI.processToken( token, nil )
 
 end
 
@@ -61,22 +61,22 @@ end
 
 function StashAPI.processToken( token, context )
 
-	-- Token gets to here after passing through getResult, with the attendant network error checking
-	-- So no need for network errors
-	-- Also, one of the checks was to see if the status was 'error', so the default case that we assume is that status == success
-	
-	-- Setup the various plugin preferences
-	if token.status == "success" then
-		prefs.access_token = token.access_token
-		prefs.refresh_token = token.refresh_token
-		prefs.expire = import 'LrDate'.currentTime() + token.expires_in
-	
-	-- If the token has anything other than status = success, oops, we've got a problem
+    -- Token gets to here after passing through getResult, with the attendant network error checking
+    -- So no need for network errors
+    -- Also, one of the checks was to see if the status was 'error', so the default case that we assume is that status == success
+    
+    -- Setup the various plugin preferences
+    if token.status == "success" then
+        prefs.access_token = token.access_token
+        prefs.refresh_token = token.refresh_token
+        prefs.expire = import 'LrDate'.currentTime() + token.expires_in
+    
+    -- If the token has anything other than status = success, oops, we've got a problem
     -- Function context comes from StashUser.login
-	else 
-		import 'LrDialogs'.attachErrorDialogToFunctionContext(context)
-		LrErrors.throwUserError( "Unable to authenticate" )
-	end
+    else 
+        import 'LrDialogs'.attachErrorDialogToFunctionContext(context)
+        LrErrors.throwUserError( "Unable to authenticate" )
+    end
 
 end
 
@@ -84,33 +84,33 @@ end
 
 function StashAPI.uploadPhoto( params )
 
-	-- Prepare to upload.
-	-- Make sure that we got a table of parameters
-	assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
+    -- Prepare to upload.
+    -- Make sure that we got a table of parameters
+    assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 
-	local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
-	logger:info( 'Uploading photo', params.filePath )
+    local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
+    logger:info( 'Uploading photo', params.filePath )
 
-	-- Identification on Sta.sh
-	--- Since folder support is still buggy, if we've got the stash id, just use that.
-	--- Otherwise, use the folderid if we're uploading a new photo to a known collection
-	--- Last resort, new collection, send the foldername
+    -- Identification on Sta.sh
+    --- Since folder support is still buggy, if we've got the stash id, just use that.
+    --- Otherwise, use the folderid if we're uploading a new photo to a known collection
+    --- Last resort, new collection, send the foldername
 
-	if not (params.stashid == nil) then
-		postUrl = postUrl .. '&stashid=' .. params.stashid
-	else
+    if not (params.stashid == nil) then
+        postUrl = postUrl .. '&stashid=' .. params.stashid
+    else
 
-		if not (params.folderid == nil) then
-			postUrl = postUrl .. '&folderid=' .. params.folderid
-		else
-			if not (params.foldername == nil) then
-				postUrl = postUrl .. '&folder=' .. params.foldername
-			end
-		end
-	end
+        if not (params.folderid == nil) then
+            postUrl = postUrl .. '&folderid=' .. params.folderid
+        else
+            if not (params.foldername == nil) then
+                postUrl = postUrl .. '&folder=' .. params.foldername
+            end
+        end
+    end
 
-	-- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
-	if params.overwriteMetadata or (params.stashid == nil) then
+    -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
+    if params.overwriteMetadata or (params.stashid == nil) then
 
         -- If we're overwriting, there might be a case where the user removes everything in Lightroom,
         -- so force an overwrite, even if the variables are empty by appending an empty POST field.
@@ -136,28 +136,28 @@ function StashAPI.uploadPhoto( params )
         end
     end
 
-	
-	-- Add the photo itself
-	local mimeChunks = {}
+    
+    -- Add the photo itself
+    local mimeChunks = {}
 
-	local filePath = assert( params.filePath )
-	
-	local fileName = LrPathUtils.leafName( filePath )
+    local filePath = assert( params.filePath )
+    
+    local fileName = LrPathUtils.leafName( filePath )
 
-	mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
-	
-	-- Before uploading, check to make sure that there's enough space to upload
-	local space = StashAPI.getRemainingSpace()
-	local fileAttribs = import 'LrFileUtils'.fileAttributes(filePath)
-	
-	if tonumber(space) < tonumber(fileAttribs.fileSize) then
-		LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
-	end
+    mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
+    
+    -- Before uploading, check to make sure that there's enough space to upload
+    local space = StashAPI.getRemainingSpace()
+    local fileAttribs = import 'LrFileUtils'.fileAttributes(filePath)
+    
+    if tonumber(space) < tonumber(fileAttribs.fileSize) then
+        LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
+    end
 
-	-- Post it and wait for confirmation.
+    -- Post it and wait for confirmation.
     logger:info("Uploading photo to: " .. postUrl)
     
-	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
+    local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 
     result = Utils.checkResponse(result, headers, postUrl)
 
@@ -241,21 +241,21 @@ function StashAPI.uploadPhoto( params )
 
     -- And of course, if there's no error, return the parsed JSON object
     return json
-	
+    
 end
 
 --------------------------------------------------------------------------------
 
 function StashAPI.getUsername()
 
-	-- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
+    -- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
     local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token
     local error = "retriving user details"
 
     local token = Utils.getJSON(postUrl, error)
-	
-	return { symbol = token.symbol, name = token.username }
+    
+    return { symbol = token.symbol, name = token.username }
 
 end
 
@@ -263,12 +263,12 @@ end
 
 function StashAPI.renameFolder(folderid, newName)
 
-	-- Rename a folder after escaping characters in the new folder name.
+    -- Rename a folder after escaping characters in the new folder name.
     local postUrl = "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&folder=" .. Utils.urlEncode(newName) .. "&folderid=" .. folderid
     local error = "renaming a folder"
 
     local token = Utils.getJSON(postUrl, error)
-	return token.status
+    return token.status
 
 end
 
@@ -277,14 +277,14 @@ end
 
 function StashAPI.getRemainingSpace()
 
-	-- Get the amount of space left in the sta.sh quota for the user
+    -- Get the amount of space left in the sta.sh quota for the user
 
     local postUrl = "https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token
     local error = "getting amount of space in Sta.sh"
 
     local token = Utils.getJSON(postUrl, error)
 
-	return token.available_space
+    return token.available_space
 
 end
 
