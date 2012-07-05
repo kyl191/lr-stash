@@ -244,7 +244,7 @@ function StashAPI.uploadPhoto( params )
 
             -- If it's not valid JSON, throw the error up to the user.
             else
-                LrErrors.throwUserError ("We weren't expecting this error, I'm not sure how to handle it, so I'm just giving up: " .. result.code .. "\n" .. result.description)
+                LrErrors.throwUserError ("Sta.sh gave us a server error, and I'm not sure how to handle it, so I'm just giving up: " .. result.code)
             end
         end
 
