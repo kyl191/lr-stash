@@ -89,18 +89,10 @@ function Utils.getJSON( postUrl, errorMessage )
     end
 
     -- Other systems should *also* return JSON - this is getJSON after all.
-    local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
-        context:addFailureHandler( function(status,message)
-            logger:error("Error parsing JSON: " )
-        end)
-        context:addOperationTitleForError( "Error parsing a JSON response" )
-
-        return JSON:decode(data)
-    end,
-        data)
+    local validJSON, message = LrTasks.pcall( function() return JSON:decode(result.payload) end)
 
     -- If the JSON parsing failed, throw an error.
-    if ok ~= true then
+    if not validJSON then
         logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
         LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
