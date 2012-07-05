@@ -158,20 +158,6 @@ function StashAPI.uploadPhoto( params )
     logger:info("Uploading photo to: " .. postUrl)
     
 	local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
-	
-	--[[--if hdrs and hdrs.error then
-		logger:info("Lightroom network error:")
-		Utils.logTable(hdrs)
-		LrErrors.throwUserError( "Network error when uploading: " .. hdrs.error.nativeCode )
-	end
-
-	if hdrs and tonumber(hdrs.status) ~= 200 then
-		logger:info("Sta.sh server error:")
-		Utils.logTable(hdrs)
-		logger:info(result)
-		LrErrors.throwUserError( "Error uploading to Sta.sh: Server returned error code " .. hdrs.status)
-    else
-    --]]
 
     result = Utils.checkResponse(result, headers, postUrl)
 
