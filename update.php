@@ -32,6 +32,7 @@ if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroo
 			@file_put_contents($filelist,$md5,LOCK_EX);
 			//header('Content-type: application/json');
 			echo $md5;
+			flush();
 		}
 	} else {
 			//header('Content-type: application/json');
