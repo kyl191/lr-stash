@@ -81,8 +81,8 @@ if(isset($_GET['data']) && $db ){
 			$sql = $db->prepare("UPDATE `lrplugin`.`users` SET arch = :arch, lightroomVersion = :lightroomVersion, pluginVersion = :pluginVersion,  os = :os, uploadCount = :uploadCount, userSymbol = :userSymbol, username = :username WHERE hash = :hash");
 		} else {
 			$sql = $db->prepare("INSERT INTO `lrplugin`.`users` (`hash`, `arch`, `lightroomVersion`, `pluginVersion`,  `os`, `uploadCount`, `userSymbol`, `username`) VALUES (:hash, :arch, :lightroomVersion, :pluginVersion, :os, :uploadCount, :userSymbol, :username)");
-			$sql->execute($vars);
 		}
+		$sql->execute($vars);
 		$sql->closeCursor();
 		
 	} catch (Exception $e) {
