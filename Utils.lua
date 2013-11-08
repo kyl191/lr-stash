@@ -11,6 +11,7 @@ local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 local Info = require 'Info'
 local prefs = import 'LrPrefs'.prefsForPlugin()
+local LrTasks = import 'LrTasks'
 
 local LrPathUtils = import 'LrPathUtils'
 
@@ -75,44 +76,40 @@ end
 
 function Utils.getJSON( postUrl, errorMessage )
 
+    -- data is either the data, or a table of messages
     data = Utils.networkComms( "post", postUrl )
-
-    logger:info("getJSON: Got data back from networkComms.")
-
+    
     -- We can't do anything about a Lightroom transport error!
     if data.status and data.status == "error" and data.from == "lightroom" then
-        logger:error(postUrl .. " was supposed to return JSON, but didn't.")
+        logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a lightroom error instad.")
         LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but Lightroom had a problem:\n" .. data.description)
-    end
-
-    -- Other problem is a server error. Sta.sh tries to return errors in JSON, so try parsing it.
-    -- Other systems should *also* return JSON - this is getJSON after all.
-    local ok, decode = LrFunctionContext.pcallWithContext("parsing json", function(context, data)
-        context:addFailureHandler( function(status,message)
-            logger:error("Error parsing JSON: " )
-        end)
-        context:addOperationTitleForError( "Error parsing a JSON response" )
-
-        return JSON:decode(data)
-    end,
-        data)
-
-    -- If the JSON parsing failed, throw an error.
-    if ok ~= true then
-        logger.error("getJSON: JSON error for url : ".. postUrl .. "\n" .. decode)
-        LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
     else
-        -- Otherwise, try parsing the error.
-        -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error, but this is the primary target right now...
-        logger:info("Apparently, we parsed the JSON successfully.")
-        if decode.status and decode.status == "error" then
-            logger:error("getJSON: JSON error from " .. postUrl)
-            Utils.logTable(decode, "Result from JSON decode")
-            LrErrors.throwUserError("Oh dear. The server didn't like us " .. errorMessage .. ", it said " .. decode.error .. ", which apparently means \"".. decode.error_description .. "\". \nThis might be a permanent error if you repeatedly get this message.")
+        -- We're assuming that the remote system has returned JSON - this is getJSON after all.
+        local validJSON, decode = LrTasks.pcall( function() return JSON:decode(data) end)
+
+        -- If the JSON parsing failed, check if the server returned an error, or it's a problem with the encoding.
+        -- We're not checking before because our error message changes based on whether the server sent an error code or not, and we don't want to repllicate the decoding later.
+        if not validJSON then
+            if data.status and data.status == "error" and data.from == "server" then
+                logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a server error instead: " .. data.code)
+                LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but the server had a problem:\n" .. data.code)
+            else
+                logger.error("getJSON: JSON encoding error for url : ".. postUrl .. "\n" .. decode)
+                LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
+            end
         else
-            logger:info("Assuming getJSON was a success for " .. postUrl)
-            return decode
+            -- JSON was parsed successfully, now check if the server returned an error message in JSON.
+            -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error, but that is the primary target right now.
+            if decode.status and decode.status == "error" then
+                logger:error("getJSON: JSON error from " .. postUrl)
+                Utils.logTable(decode, "Result from JSON decode")
+                LrErrors.throwUserError("Oh dear. The server didn't like us " .. errorMessage .. ", it said " .. decode.error .. ", which apparently means \"".. decode.error_description .. "\". \nThis might be a permanent error if you repeatedly get this message.")
+            else
+                logger:info("getJSON: No known errors for " .. postUrl)
+                return decode
+            end
         end
+        
     end
 
 end
@@ -192,7 +189,7 @@ end
 
 function Utils.networkComms( action, url )
 
-    logger:info("Called Utils.networkComms for " .. url)
+    logger:info("Utils.networkComms: Called for " .. url)
     local payload, headers = nil
     -- Do the request
     if action == "post" then
@@ -212,16 +209,17 @@ function Utils.checkResponse( data, headers, url )
     if headers and headers.error then
         logger:error("checkResponse: Lightroom network error for url: " .. url)
         Utils.logTable(headers, "checkResponse headers")
-        return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name }
-    end
-
+        return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name or ""}
+    
     -- Alternatively, the server could throw back an error.
     -- Only return data if we're sure
-    if headers and tonumber(headers.status) > 299 then
+    elseif headers and tonumber(headers.status) > 299 then
         logger:error("checkResponse: Server error " .. headers.status .. " for url: " .. url)
         Utils.logTable(headers)
         logger:info(data)
         return { status = "error", from = "server", code = headers.status, payload = data }
+    
+    -- Finally we can test to make sure the response actually has data.
     else
         if data ~= nil then
             return data
@@ -257,7 +255,7 @@ function Utils.updatePlugin()
             data.uploadCount = prefs.uploadCount
         end
 
-        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. JSON:encode(data))
+        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. Utils.urlEncode(JSON:encode(data)))
         local localFiles = Utils.md5Files(_PLUGIN.path)
 
         for k, v in pairs (remoteFiles) do
@@ -268,7 +266,7 @@ function Utils.updatePlugin()
                 local path = LrPathUtils.makeAbsolute(k, _PLUGIN.path)
                 LrFileUtils.makeFileWritable(path)
                 if LrFileUtils.exists(path) then
-                    logger:info("Going to move " .. file .. "to " .. path)
+                    logger:info("Going to move " .. file .. " to " .. path)
                     Utils.makeBackups(k, 0)
                 end
                 local ok, message = LrFileUtils.move(file, path)
@@ -288,6 +286,18 @@ end
 
 function Utils.getVersion()
     return string.format("%i.%i.%07x", Info.VERSION.major, Info.VERSION.minor, Info.VERSION.revision)
+end
+--------------------------------------------------------------------------------
+
+-- URLEncode function from http://lua-users.org/wiki/StringRecipes
+function Utils.urlEncode(str)
+    if (str) then
+        str = string.gsub (str, "\n", "\r\n")
+        str = string.gsub (str, "([^%w ])",
+            function (c) return string.format ("%%%02X", string.byte(c)) end)
+        str = string.gsub (str, " ", "+")
+        end
+    return str
 end
 
 return Utils

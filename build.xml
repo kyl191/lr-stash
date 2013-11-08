@@ -45,7 +45,6 @@
             <targetfile />
             <fileset dir=".">
                 <include name="**/*.lua" />
-                <exclude name="Info.lua" />
             </fileset>
             <mapper type="glob" from="*.lua" to="${pluginFolder}/*.lua" />
         </apply>
@@ -58,5 +57,13 @@
 
     <target name="install" depends="dist">
         <unzip src="${pluginDeploymentUnit}" dest="${lrPluginFolder}" overwrite="true" />
+    </target>
+
+    <target name="test" depends="modify-version">
+        <copy todir="${lrPluginFolder}/${pluginFolderName}" overwrite="true" >
+            <fileset dir=".">
+                <include name="**/*.lua"/>
+            </fileset>
+        </copy>
     </target>
 </project>
