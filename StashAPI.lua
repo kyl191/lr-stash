@@ -28,10 +28,8 @@ function StashAPI.getToken(code)
 
     -- Get the initial authorization token.
     -- ONLY called by StashUser.login
-    -- And, yes, redirect_uri appears to be needed, so don't remove it
-    -- redirect_uri=http://oauth2.kyl191.net/
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=lightroom://net.kyl191.lightroom.export.stash.dev/", Auth.client_id, Auth.client_secret,code)
+    local postUrl = string.format("https://www.deviantart.com/oauth2/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s", Auth.client_id, Auth.client_secret,code)
 
     local error = "contacting the sta.sh server to get access"
 
