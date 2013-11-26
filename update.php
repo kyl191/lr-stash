@@ -1,4 +1,4 @@
-<?php include("db.php")
+<?php include("db.php");
 
 function md5Files($dirpath){
 	$files=array();
@@ -32,6 +32,7 @@ if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroo
 			@file_put_contents($filelist,$md5,LOCK_EX);
 			//header('Content-type: application/json');
 			echo $md5;
+			flush();
 		}
 	} else {
 			//header('Content-type: application/json');
@@ -44,23 +45,20 @@ if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroo
 if(isset($_GET['data']) && $db ){
 	try{
 		$data = @json_decode(@urldecode($_GET['data']), true);
-
 		// Because we're using hash as an index, check that it's exactly 32 characters long.
 		$hash = $data['hash'];
 		assert_options(ASSERT_BAIL, true);
 		assert(strlen($hash) == 32);
-
 		$pluginVersion = $data['pluginVersion']['major'] . "." . $data['pluginVersion']['minor'] . "." . $data['pluginVersion']['revision'];
 		$lightroomVersion = $data['lightroomVersion']['major'] . "." . $data['lightroomVersion']['minor'] . "." . $data['lightroomVersion']['build'] . "." . $data['lightroomVersion']['revision'];
 		$arch = $data['arch'];
 		$os = $data['os'];
-
 		// If the user doesn't want to submit personal data, put placeholders in.
 		if (array_key_exists('username', $data)){
 			$username = $data['username'];
 		} else {
 			$username = "Nil";
-		}
+
 		if (array_key_exists('uploadCount', $data)){
 			$uploadCount = $data['uploadCount'];
 		} else {
