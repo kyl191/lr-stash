@@ -249,7 +249,7 @@ function StashAPI.getUsername()
 
     local token = Utils.getJSON(postUrl, error)
 
-    return { symbol = token.symbol, name = token.username }
+    return { symbol = "", name = token.username }
 
 end
 
