@@ -258,7 +258,7 @@ end
 function StashAPI.renameFolder(folderid, newName)
 
     -- Rename a folder after escaping characters in the new folder name.
-    local postUrl = "https://www.deviantart.com/api/draft15/stash/folder?token=" .. prefs.access_token .. "&folder=" .. Utils.urlEncode(newName) .. "&folderid=" .. folderid
+    local postUrl = "https://www.deviantart.com/api/oauth2/stash/folder?token=" .. prefs.access_token .. "&folder=" .. Utils.urlEncode(newName) .. "&folderid=" .. folderid
     local error = "renaming a folder"
 
     local token = Utils.getJSON(postUrl, error)
