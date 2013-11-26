@@ -9,15 +9,15 @@ function md5Files($dirpath){
 		while (($file = readdir($dir))!==false) {
 			if ((strcasecmp(substr($file,-5),".json") != 0) && (strcasecmp(substr($file, -1), ".") != 0)) {
 				$files[$file] = md5_file($dirpath . $file);
-			} 
+			}
 		}
-		closedir($dir); 
+		closedir($dir);
 	} else {
 		echo "Oops. Can't find the directory ".$dirpath.". Might want to check it.<br />";
 	}
 	// don't sort the array, let the script will handle the sorting
 	reset($files);
-	return $files; 
+	return $files;
 }
 
 if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroom", 20) == 0)) {
