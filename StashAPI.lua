@@ -64,16 +64,16 @@ function StashAPI.processToken( token, context )
     -- Token gets to here after passing through getResult, with the attendant network error checking
     -- So no need for network errors
     -- Also, one of the checks was to see if the status was 'error', so the default case that we assume is that status == success
-    
+
     -- Setup the various plugin preferences
     if token.status == "success" then
         prefs.access_token = token.access_token
         prefs.refresh_token = token.refresh_token
         prefs.expire = import 'LrDate'.currentTime() + token.expires_in
-    
+
     -- If the token has anything other than status = success, oops, we've got a problem
     -- Function context comes from StashUser.login
-    else 
+    else
         import 'LrDialogs'.attachErrorDialogToFunctionContext(context)
         LrErrors.throwUserError( "Unable to authenticate" )
     end
@@ -88,7 +88,7 @@ function StashAPI.uploadPhoto( params )
     -- Make sure that we got a table of parameters
     assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 
-    local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token 
+    local postUrl = 'https://www.deviantart.com/api/draft15/submit?token='.. prefs.access_token
     logger:info( 'Uploading photo', params.filePath )
 
     -- Identification on Sta.sh
@@ -139,22 +139,22 @@ function StashAPI.uploadPhoto( params )
     local mimeChunks = {}
 
     local filePath = assert( params.filePath )
-    
+
     local fileName = LrPathUtils.leafName( filePath )
 
     mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
-    
+
     -- Before uploading, check to make sure that there's enough space to upload
     local space = StashAPI.getRemainingSpace()
     local fileAttribs = import 'LrFileUtils'.fileAttributes(filePath)
-    
+
     if tonumber(space) < tonumber(fileAttribs.fileSize) then
         LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
     end
 
     -- Post it and wait for confirmation.
     logger:info("Uploading photo to: " .. postUrl)
-    
+
     local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 
     result = Utils.checkResponse(result, headers, postUrl)
@@ -237,7 +237,7 @@ function StashAPI.uploadPhoto( params )
 
     -- And of course, if there's no error, return the parsed JSON object
     return json
-    
+
 end
 
 --------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ function StashAPI.getUsername()
     local error = "retriving user details"
 
     local token = Utils.getJSON(postUrl, error)
-    
+
     return { symbol = token.symbol, name = token.username }
 
 end
