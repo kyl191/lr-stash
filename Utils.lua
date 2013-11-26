@@ -251,7 +251,6 @@ function Utils.updatePlugin()
         data.os = LrSystemInfo.osVersion()
         if prefs.submitData then
             data.username = prefs.username
-            data.userSymbol = prefs.userSymbol
             data.uploadCount = prefs.uploadCount
         end
 
