@@ -78,7 +78,7 @@ function Utils.getJSON( postUrl, errorMessage )
 
     -- data is either the data, or a table of messages
     data = Utils.networkComms( "post", postUrl )
-    
+
     -- We can't do anything about a Lightroom transport error!
     if data.status and data.status == "error" and data.from == "lightroom" then
         logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a lightroom error instad.")
@@ -109,7 +109,7 @@ function Utils.getJSON( postUrl, errorMessage )
                 return decode
             end
         end
-        
+
     end
 
 end
@@ -210,7 +210,7 @@ function Utils.checkResponse( data, headers, url )
         logger:error("checkResponse: Lightroom network error for url: " .. url)
         Utils.logTable(headers, "checkResponse headers")
         return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name or ""}
-    
+
     -- Alternatively, the server could throw back an error.
     -- Only return data if we're sure
     elseif headers and tonumber(headers.status) > 299 then
@@ -218,7 +218,7 @@ function Utils.checkResponse( data, headers, url )
         Utils.logTable(headers)
         logger:info(data)
         return { status = "error", from = "server", code = headers.status, payload = data }
-    
+
     -- Finally we can test to make sure the response actually has data.
     else
         if data ~= nil then
