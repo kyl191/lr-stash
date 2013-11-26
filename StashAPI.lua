@@ -46,7 +46,7 @@ function StashAPI.refreshAuth()
     -- Refresh the auth token
     -- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/draft15/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
+    local postUrl = string.format("https://www.deviantart.com/oauth2/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
     local error = "renewing the authorization"
 
     local token = Utils.getJSON(postUrl, error)
