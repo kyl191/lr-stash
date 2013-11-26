@@ -273,7 +273,7 @@ function StashAPI.getRemainingSpace()
 
     -- Get the amount of space left in the sta.sh quota for the user
 
-    local postUrl = "https://www.deviantart.com/api/draft15/stash/space?token=" .. prefs.access_token
+    local postUrl = "https://www.deviantart.com/api/oauth2/stash/space?token=" .. prefs.access_token
     local error = "getting amount of space in Sta.sh"
 
     local token = Utils.getJSON(postUrl, error)
