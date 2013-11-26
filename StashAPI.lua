@@ -244,7 +244,7 @@ function StashAPI.getUsername()
 
     -- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
-    local postUrl = "https://www.deviantart.com/api/draft15/user/whoami?token=" .. prefs.access_token
+    local postUrl = "https://www.deviantart.com/api/oauth2/user/whoami?token=" .. prefs.access_token
     local error = "retriving user details"
 
     local token = Utils.getJSON(postUrl, error)
