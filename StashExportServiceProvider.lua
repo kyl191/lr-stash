@@ -741,6 +741,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                                         foldername = folderName or nil,
                                         overwriteMetadata = exportSettings.overwriteMetadata or nil,
                                     } )
+                Utils.logTable(StashInfo, "Upload Result")
+
 
                 
                 if publishing then 
@@ -758,7 +760,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                 
                 -- Sta.sh does not return a folder ID once a photo's submitted to dA.
                 if StashInfo.folderid ~= nil then
-                     logger:info("About to record folderID")
+                    logger:info("About to record folderID: " ..  LrStringUtils.numberToString(StashInfo.folderid))
                     folderId = LrStringUtils.numberToString(StashInfo.folderid)
                 end
                 
