@@ -7,6 +7,7 @@ Common code for Lightroom plugins
 local LrMD5 = import 'LrMD5'
 local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
+local LrStringUtils = import 'LrStringUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 local Info = require 'Info'
@@ -31,7 +32,11 @@ Utils = {}
 function Utils.logTable(x, label)
     local function dump1 (x, indent, visited)
         if type (x) ~= "table" then
-            logger:info (string.rep (" ", indent) .. tostring (x))
+            if type(x) == "number" then
+                logger:info (string.rep (" ", indent) ..  LrStringUtils.numberToString(x))
+            else
+                logger:info (string.rep (" ", indent) .. tostring (x))
+            end
             return
         end
 
@@ -40,8 +45,11 @@ function Utils.logTable(x, label)
             logger:info (string.rep (" ", indent) .. tostring (x))
         end
         for k, v in pairs (x) do
-            logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " ..
-                    tostring (v))
+            if type(v) == "number" then
+                logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " .. LrStringUtils.numberToString(v))
+            else
+                logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " .. tostring (v))
+            end
             if type (v) == "table" and not visited [v] then
                 dump1 (v, indent + 4, visited)
             end
