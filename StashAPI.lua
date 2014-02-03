@@ -96,14 +96,11 @@ function StashAPI.uploadPhoto( params )
 
     if not (params.stashid == nil) then
         postUrl = postUrl .. '&stashid=' .. params.stashid
-    else
-        if not (params.folderid == nil) then
-            postUrl = postUrl .. '&folderid=' .. params.folderid
-        else
-            if not (params.foldername == nil) then
-                postUrl = postUrl .. '&folder=' .. Utils.urlEncode(params.foldername)
-            end
-        end
+    else if not (params.foldername == nil) then
+        postUrl = postUrl .. '&folder=' .. Utils.urlEncode(params.foldername)
+    -- I'm just completely ignoring the folderId, because it's horribly *BROKEN* on sta.sh...
+    -- else if not (params.folderid == nil) then
+    --    postUrl = postUrl .. '&folderid=' .. params.folderid
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
