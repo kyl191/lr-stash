@@ -47,7 +47,6 @@ local function notLoggedIn( propertyTable )
     prefs.refresh_token = nil
     prefs.expire = nil
     prefs.username = nil
-    prefs.userSymbol = nil
 
     -- Show the user a 'Log In' button in the Export/Publish menu
 
@@ -66,7 +65,7 @@ local client_id = StashAPI.client_id
 
 local f = LrView.osFactory()
 
-local auth_dialog_contents = nil 
+local auth_dialog_contents = nil
 
 
 function StashUser.login( propertyTable )
@@ -84,7 +83,7 @@ function StashUser.login( propertyTable )
         -- Give the user a status message and disable the login button
         propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/LoggingIn=Logging in..."
         propertyTable.loginButtonEnabled = false
-        
+
         -- Make sure login is valid when done, or if it's invalid, reset the status
         context:addCleanupHandler( function()
 
@@ -107,35 +106,35 @@ function StashUser.login( propertyTable )
                 height_in_lines = 2,
                 size = 'small',
             },
-            
+
             f:row {
                 spacing = f:label_spacing(),
-                
+
                 f:static_text {
                     title = "Code:",
                     alignment = 'right',
                     width = share 'title_width',
                 },
-                
-                f:edit_field { 
+
+                f:edit_field {
                     fill_horizonal = 1,
-                    width_in_chars = 19, 
+                    width_in_chars = 19,
                     value = bind { key = 'auth_code', object = propertyTable },
                 },
             },
         }
-        
+
         local result = LrDialogs.presentModalDialog {
-                title = LOC "$$$/Stash/ApiKeyDialog/Title=Enter Your Sta.sh Code", 
+                title = LOC "$$$/Stash/ApiKeyDialog/Title=Enter Your Sta.sh Code",
                 contents = auth_dialog_contents,
                 accessoryView = f:push_button {
                     title = LOC "$$$/Stash/ApiKeyDialog/GoToStash=Authorize at Sta.sh...",
                     action = function()
-                        import 'LrHttp'.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/draft15/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id ))
+                        import 'LrHttp'.openUrlInBrowser( string.format("https://www.deviantart.com/oauth2/authorize?client_id=%i&response_type=code&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id ))
                     end
                 },
             }
-        
+
         if result == 'ok' then
             propertyTable.auth_code = LrStringUtils.trimWhitespace( propertyTable.auth_code )
         else
@@ -149,10 +148,10 @@ function StashUser.login( propertyTable )
 
         -- User has OK'd authentication. Tell them that we're getting their user info.
         propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for a response from Sta.sh..."
-        
+
         -- Verify that the login was successful, and update the menus.
         StashUser.verifyLogin( propertyTable )
-        
+
     end )
 
 end
@@ -164,14 +163,14 @@ function StashUser.verifyLogin( propertyTable )
     -- Observe changes to prefs and update status message accordingly.
 
     local function updateStatus()
-    
+
         LrTasks.startAsyncTask( function()
             logger:info( "StashUser.verifyLogin: updateStatus() is executing." )
-            
+
             -- Start off assuming the user hasn't logged in before
             propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Sign In?"
             propertyTable.loginButtonEnabled = true
-            propertyTable.LR_cantExportBecause = "Waiting for you to log into Sta.sh..." 
+            propertyTable.LR_cantExportBecause = "Waiting for you to log into Sta.sh..."
 
             -- If there's a record of a past login, check if the credentials have expired
             -- If so, refresh them
@@ -186,12 +185,11 @@ function StashUser.verifyLogin( propertyTable )
                 propertyTable.accountStatus = "Logging into Sta.sh, please wait..."
                 propertyTable.loginButtonTitle = LOC "$$$/Stash/LoginButton/LogInAgain=Re-Login?"
                 propertyTable.loginButtonEnabled = true
-                propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..." 
+                propertyTable.LR_cantExportBecause = "Still logging into Sta.sh..."
 
                 local user = StashAPI.getUsername()
-                prefs.userSymbol = user.symbol
                 prefs.username = user.name
-                propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.userSymbol .. prefs.username)
+                propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1", prefs.username)
                 propertyTable.LR_cantExportBecause = nil
 
                 -- Be nice and try to show the user how much space he has left.
@@ -199,9 +197,9 @@ function StashUser.verifyLogin( propertyTable )
                 if space ~= nil then
                     space = "(" .. LrStringUtils.byteString(space) .. " of space remaining.)"
                 end
-                propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", prefs.userSymbol .. prefs.username, space )
-            
-                -- If the user's editing an existing connection, we can't allow him to switch users, 
+                propertyTable.accountStatus = LOC( "$$$/Stash/AccountStatus/LoggedIn=Logged in as ^1 ^2", prefs.username, space )
+
+                -- If the user's editing an existing connection, we can't allow him to switch users,
                 -- otherwise we'll get an error when trying to republish under a different user.
                 -- Todo: Find a way to track which account the user's published through before?
                 -- Because he can still change which user he wants in the export section...
@@ -218,14 +216,14 @@ function StashUser.verifyLogin( propertyTable )
                 LrDialogs.message("Existing credentials are invalid, please login again.")
                 notLoggedIn( propertyTable )
             end
-    
+
         end )
-        
+
     end
 
     propertyTable:addObserver( 'access_token', updateStatus )
     updateStatus()
-    
+
 end
 
 --------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ Common code for Lightroom plugins
 local LrMD5 = import 'LrMD5'
 local LrFileUtils = import 'LrFileUtils'
 local LrPathUtils = import 'LrPathUtils'
+local LrStringUtils = import 'LrStringUtils'
 local LrFunctionContext = import 'LrFunctionContext'
 local logger = import 'LrLogger'( 'Stash' )
 local Info = require 'Info'
@@ -31,7 +32,11 @@ Utils = {}
 function Utils.logTable(x, label)
     local function dump1 (x, indent, visited)
         if type (x) ~= "table" then
-            logger:info (string.rep (" ", indent) .. tostring (x))
+            if type(x) == "number" then
+                logger:info (string.rep (" ", indent) ..  LrStringUtils.numberToString(x))
+            else
+                logger:info (string.rep (" ", indent) .. tostring (x))
+            end
             return
         end
 
@@ -40,8 +45,11 @@ function Utils.logTable(x, label)
             logger:info (string.rep (" ", indent) .. tostring (x))
         end
         for k, v in pairs (x) do
-            logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " ..
-                    tostring (v))
+            if type(v) == "number" then
+                logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " .. LrStringUtils.numberToString(v))
+            else
+                logger:info (string.rep (" ", indent + 4) .. tostring (k) .. " = " .. tostring (v))
+            end
             if type (v) == "table" and not visited [v] then
                 dump1 (v, indent + 4, visited)
             end
@@ -78,7 +86,7 @@ function Utils.getJSON( postUrl, errorMessage )
 
     -- data is either the data, or a table of messages
     data = Utils.networkComms( "post", postUrl )
-    
+
     -- We can't do anything about a Lightroom transport error!
     if data.status and data.status == "error" and data.from == "lightroom" then
         logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a lightroom error instad.")
@@ -109,7 +117,7 @@ function Utils.getJSON( postUrl, errorMessage )
                 return decode
             end
         end
-        
+
     end
 
 end
@@ -210,7 +218,7 @@ function Utils.checkResponse( data, headers, url )
         logger:error("checkResponse: Lightroom network error for url: " .. url)
         Utils.logTable(headers, "checkResponse headers")
         return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name or ""}
-    
+
     -- Alternatively, the server could throw back an error.
     -- Only return data if we're sure
     elseif headers and tonumber(headers.status) > 299 then
@@ -218,7 +226,7 @@ function Utils.checkResponse( data, headers, url )
         Utils.logTable(headers)
         logger:info(data)
         return { status = "error", from = "server", code = headers.status, payload = data }
-    
+
     -- Finally we can test to make sure the response actually has data.
     else
         if data ~= nil then
@@ -251,7 +259,6 @@ function Utils.updatePlugin()
         data.os = LrSystemInfo.osVersion()
         if prefs.submitData then
             data.username = prefs.username
-            data.userSymbol = prefs.userSymbol
             data.uploadCount = prefs.uploadCount
         end
 

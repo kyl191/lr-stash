@@ -741,6 +741,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                                         foldername = folderName or nil,
                                         overwriteMetadata = exportSettings.overwriteMetadata or nil,
                                     } )
+                Utils.logTable(StashInfo, "Upload Result")
+
 
                 
                 if publishing then 
@@ -756,7 +758,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                     
                 end
                 
-                folderId = LrStringUtils.numberToString(StashInfo.folderid)
+                -- Sta.sh does not return a folder ID once a photo's submitted to dA.
+                if StashInfo.folderid ~= nil then
+                    logger:info("About to record folderID: " ..  LrStringUtils.numberToString(StashInfo.folderid))
+                    folderId = LrStringUtils.numberToString(StashInfo.folderid)
+                end
                 
                 -- When done with photo, delete temp file. There is a cleanup step that happens later,
                 -- but this will help manage space in the event of a large upload.
@@ -770,8 +776,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     end
 
     if publishing then
-        logger:info("Uploaded collection to folderid: " .. folderId)
         if folderId ~= nil then
+            logger:info("Uploaded collection to folderid: " .. folderId)
             exportSession:recordRemoteCollectionId(folderId)
         end
     end
