@@ -21,7 +21,7 @@ return {
     LrInitPlugin = "LrInitPlugin.lua",
 
 
-    LrHelpMenuItems = { title = "Sta.s&h Dev Testing", file = "Testing.lua"},
+    --LrHelpMenuItems = { title = "Sta.s&h Dev Testing", file = "Testing.lua"},
 
 	VERSION = {major=20140202, minor=2024, revision=0xe25b0f1, },
 
