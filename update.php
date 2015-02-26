@@ -58,12 +58,13 @@ if(isset($_GET['data']) && $db ){
 		$lightroomVersion = $data['lightroomVersion']['major'] . "." . $data['lightroomVersion']['minor'] . "." . $data['lightroomVersion']['build'] . "." . $data['lightroomVersion']['revision'];
 		$arch = $data['arch'];
 		$os = $data['os'];
+
 		// If the user doesn't want to submit personal data, put placeholders in.
 		if (array_key_exists('username', $data)){
 			$username = $data['username'];
 		} else {
 			$username = "Nil";
-
+		}
 		if (array_key_exists('uploadCount', $data)){
 			$uploadCount = $data['uploadCount'];
 		} else {
