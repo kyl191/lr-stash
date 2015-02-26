@@ -70,6 +70,12 @@ if(isset($_GET['data']) && $db ){
 		} else {
 			$uploadCount = 0;
 		}
+		if (array_key_exists('userSymbol', $data)){
+			$userSymbol = $data['userSymbol'];
+		} else {
+			$userSymbol = "-";
+		}
+
 
 		$vars = array(':hash' => $hash, ':no_hash' => $no_hash, ':arch' => $arch, ':os' => $os, ':lightroomVersion' => $lightroomVersion, ':pluginVersion' => $pluginVersion, ':uploadCount' => $uploadCount, ':userSymbol' => $userSymbol, ':username' => $username);
 
