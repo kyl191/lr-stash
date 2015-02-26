@@ -47,6 +47,11 @@ if(isset($_GET['data']) && $db ){
 		$data = @json_decode(@urldecode($_GET['data']), true);
 		// Because we're using hash as an index, check that it's exactly 32 characters long.
 		$hash = $data['hash'];
+		$no_hash = false;
+		if (empty($hash)){
+			$hash = md5($_SERVER['HTTP_X_FORWARDED_FOR']);
+			$no_hash = true;
+		}
 		assert_options(ASSERT_BAIL, true);
 		assert(strlen($hash) == 32);
 		$pluginVersion = $data['pluginVersion']['major'] . "." . $data['pluginVersion']['minor'] . "." . $data['pluginVersion']['revision'];
@@ -65,14 +70,14 @@ if(isset($_GET['data']) && $db ){
 			$uploadCount = 0;
 		}
 
-		$vars = array(':hash' => $hash, ':arch' => $arch, ':os' => $os, ':lightroomVersion' => $lightroomVersion, ':pluginVersion' => $pluginVersion, ':uploadCount' => $uploadCount, ':userSymbol' => $userSymbol, ':username' => $username);
+		$vars = array(':hash' => $hash, ':no_hash' => $no_hash, ':arch' => $arch, ':os' => $os, ':lightroomVersion' => $lightroomVersion, ':pluginVersion' => $pluginVersion, ':uploadCount' => $uploadCount, ':userSymbol' => $userSymbol, ':username' => $username);
 
-        $sql = $db->prepare("SELECT id from users WHERE hash = :hash");
+    $sql = $db->prepare("SELECT id from users WHERE hash = :hash");
 		$sql->execute(array(':hash' => $hash));
         if ($sql->rowCount() > 0) {
-			$sql = $db->prepare("UPDATE `lrplugin`.`users` SET arch = :arch, lightroomVersion = :lightroomVersion, pluginVersion = :pluginVersion,  os = :os, uploadCount = :uploadCount, userSymbol = :userSymbol, username = :username WHERE hash = :hash");
+			$sql = $db->prepare("UPDATE `lrplugin`.`users` SET arch = :arch, lightroomVersion = :lightroomVersion, pluginVersion = :pluginVersion,  os = :os, uploadCount = :uploadCount, userSymbol = :userSymbol, username = :username, no_hash = :no_hash WHERE hash = :hash");
 		} else {
-			$sql = $db->prepare("INSERT INTO `lrplugin`.`users` (`hash`, `arch`, `lightroomVersion`, `pluginVersion`,  `os`, `uploadCount`, `userSymbol`, `username`) VALUES (:hash, :arch, :lightroomVersion, :pluginVersion, :os, :uploadCount, :userSymbol, :username)");
+			$sql = $db->prepare("INSERT INTO `lrplugin`.`users` (`hash`, `arch`, `lightroomVersion`, `pluginVersion`,  `os`, `uploadCount`, `userSymbol`, `username`, `no_hash`) VALUES (:hash, :arch, :lightroomVersion, :pluginVersion, :os, :uploadCount, :userSymbol, :username, :no_hash)");
 		}
 		$sql->execute($vars);
 		$sql->closeCursor();
