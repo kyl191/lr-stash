@@ -20,10 +20,11 @@ function md5Files($dirpath){
 	return $files;
 }
 
+// Make sure that the plugin is named correctly
 if (isset($_GET['plugin']) && (strncasecmp($_GET['plugin'], "net.kyl191.lightroom", 20) == 0)) {
 	$dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $_GET['plugin'] . "/head/";
-	$filelist = $dir . "md5sums.json";
 	if(file_exists($dir) && is_dir($dir)) {
+		$filelist = $dir . "md5sums.json";
 		if(file_exists($filelist)){
 			//header('Content-type: application/json');
 			echo file_get_contents($filelist);
