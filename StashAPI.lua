@@ -218,7 +218,7 @@ function StashAPI.verifyItemExists(itemId)
     local error = "Checking if item is present"
     local result = Utils.networkComms("get", postUrl)
     if (result.status == "error") and (result.from == "server") and (299 < result.code) and (result.code < 500) then
-            return false
+        return false
     else
         return true
     end
