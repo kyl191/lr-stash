@@ -79,42 +79,31 @@ end
 
 --------------------------------------------------------------------------------
 
-function Utils.getJSON( postUrl, errorMessage )
+function Utils.getJSON(url)
+    data, headers = Utils.postUrl(url)
 
-    -- data is either the data, or a table of messages
-    data = Utils.networkComms("post", postUrl)
+    -- We're assuming that the remote system has returned JSON - this is getJSON after all.
+    local validJSON, decode = LrTasks.pcall(function() return JSON:decode(data) end)
 
-    -- We can't do anything about a Lightroom transport error!
-    if data.status and data.status == "error" and data.from == "lightroom" then
-        logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a lightroom error instad.")
-        LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but Lightroom had a problem:\n" .. data.description)
-    else
-        -- We're assuming that the remote system has returned JSON - this is getJSON after all.
-        local validJSON, decode = LrTasks.pcall( function() return JSON:decode(data) end)
-
-        -- If the JSON parsing failed, check if the server returned an error, or it's a problem with the encoding.
-        -- We're not checking before because our error message changes based on whether the server sent an error code or not, and we don't want to repllicate the decoding later.
-        if not validJSON then
-            if data.status and data.status == "error" and data.from == "server" then
-                logger:error("getJSON: " .. postUrl .. " was supposed to return JSON, but didn't. We got a server error instead: " .. data.code)
-                LrErrors.throwUserError("Oh dear. There was a problem " .. errorMessage .. ". \nWe were supposed to get JSON back from the server, but the server had a problem:\n" .. data.code)
-            else
-                logger.error("getJSON: JSON encoding error for url : ".. postUrl .. "\n" .. decode)
-                LrErrors.throwUserError("Oh dear. We were supposed to get JSON back from the server when " .. errorMessage .. ", but got some garbage instead. Wait a while, and try again.")
-            end
+    -- If the JSON parsing failed, check if the server returned an error, or it's a problem with the encoding.
+    if not validJSON then
+        local error_message = nil
+        if Utils.isServerError(headers) then
+            error_message = string.format("Encountered error %d downloading %s, no valid JSON recieved, terminating",
+                                                headers.status,
+                                                url)
         else
-            -- JSON was parsed successfully, now check if the server returned an error message in JSON.
-            -- Admittedly, this is skewed towards Sta.sh, with the checking of status == error, but that is the primary target right now.
-            if decode.status and decode.status == "error" then
-                logger:error("getJSON: JSON error from " .. postUrl)
-                Utils.logTable(decode, "Result from JSON decode")
-                LrErrors.throwUserError("Oh dear. The server didn't like us " .. errorMessage .. ", it said " .. decode.error .. ", which apparently means \"".. decode.error_description .. "\". \nThis might be a permanent error if you repeatedly get this message.")
-            else
-                logger:info("getJSON: No known errors for " .. postUrl)
-                return decode
-            end
+            error_message = string.format("JSON decoding error encountered from URL %s, terminating", url)
         end
+        logger:error(error_message)
+        Utils.logTable(headers)
+        if data ~= nil then
+            logger:info(string.format("Data recieved: %s", data))
+        end
+        error(error_message)
 
+    else
+        return decode
     end
 
 end
