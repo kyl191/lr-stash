@@ -93,13 +93,13 @@ function StashAPI.uploadPhoto(params)
     --- Since folder support is still buggy, if we've got the stash id, just use that.
     --- Otherwise, use the stackId if we're uploading a new photo to a known collection
     --- Last resort, new collection, send the foldername
-
+    content = {}
     if params.itemId ~= nil then
-        postUrl = postUrl .. string.format('&itemid=%s', params.itemId)
+        content[#content+1] = {name='itemid', value=params.itemId}
     elseif params.foldername ~= nil then
-        postUrl = postUrl .. string.format('&stack=%s', Utils.urlEncode(params.foldername))
+        content[#content+1] = {name='stack', value=Utils.urlEncode(params.foldername)}
     elseif params.stackId ~= nil then
-        postUrl = postUrl .. string.format('&stackid=%s', params.stackId)
+        content[#content+1] = {name='stackid', value=params.stackId}
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
@@ -109,37 +109,19 @@ function StashAPI.uploadPhoto(params)
         -- so force an overwrite, even if the variables are empty by appending an empty POST field.
         -- But by not appending a value UNLESS there *is* a value, we avoid a "concating a nil" error
         -- Reported at http://comments.deviantart.com/1/278275666/2450524379
-        postUrl = postUrl .. '&title='
-        -- We might have a title, so append that
-        if not (params.title == nil or #params.title == 0) then
-            postUrl = postUrl .. Utils.urlEncode(params.title)
-        end
 
-        postUrl = postUrl .. '&tags='
-        -- Append the tags if present
-        if not (params.tags == nil or #params.tags == 0) then
-            postUrl = postUrl .. Utils.urlEncode(params.tags)
-        end
-
-        postUrl = postUrl .. '&artist_comments='
-        -- Append the description
-        -- Though it's short, so maybe a Memo/long description panel in Lightroom?
-        if not (params.description == nil or #params.description == 0) then
-            postUrl = postUrl .. Utils.urlEncode(params.description)
-        end
+        content[#content+1] = {name='title', value=Utils.urlEncode(params.title)}
+        content[#content+1] = {name='tags', value=Utils.urlEncode(params.tags)}
+        content[#content+1] = {name='artist_comments', value=Utils.urlEncode(params.description)}
     end
 
     -- Add the photo itself
-    local mimeChunks = {}
-
     local filePath = assert(params.filePath)
-
     local fileName = LrPathUtils.leafName(filePath)
-
-    mimeChunks[#mimeChunks + 1] = {name = 'photo',
-                                    fileName = fileName,
-                                    filePath = filePath,
-                                    contentType = 'application/octet-stream' }
+    content[#content+1] = {name = 'photo',
+                            fileName = fileName,
+                            filePath = filePath,
+                            contentType = 'application/octet-stream' }
 
     -- Before uploading, check to make sure that there's enough space to upload
     local space = StashAPI.getRemainingSpace()
@@ -152,7 +134,7 @@ function StashAPI.uploadPhoto(params)
     -- Post it and wait for confirmation.
     logger:info(string.format("Uploading photo to: %s", postUrl))
 
-    local result, headers = LrHttp.postMultipart(postUrl, mimeChunks)
+    local result, headers = LrHttp.postMultipart(postUrl, content)
 
     result = Utils.checkResponse(result, headers, postUrl)
 
