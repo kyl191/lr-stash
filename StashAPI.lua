@@ -142,14 +142,14 @@ function StashAPI.uploadPhoto(params)
     local result, headers = LrHttp.postMultipart(postUrl, content)
 
     result = Utils.checkResponse(result, headers, postUrl)
+    if Utils.isLightroomError(headers) then
+        local error = string.format("Lightroom network error while uploading to Sta.sh: %d \n %s",
+                                    headers.error.errorCode,
+                                    headers.error.name or "")
+        LrErrors.throwUserError(error)
 
     if result.status and result.status == "error" then
 
-        if result.from == "lightroom" then
-            -- We can't do much about a Lightroom error.
-            LrErrors.throwUserError(string.format("Lightroom network error while uploading to Sta.sh: %d \n %s",
-                                                    result.code,
-                                                    result.description))
 
         elseif result.from == "server" then
             -- However, a server error? That we need to check - Sta.sh returns an error code if something goes wrong.
