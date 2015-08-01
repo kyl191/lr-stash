@@ -478,34 +478,28 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
         {
             title = "Sta.sh account",
-
             synopsis = bind 'accountStatus',
-
             f:row {
                 spacing = f:control_spacing(),
-
                 f:static_text {
                     title = bind 'accountStatus',
                     alignment = 'right',
                     fill_horizontal = 1,
                 },
-
                 f:push_button {
                     width = 90,
                     title = bind 'loginButtonTitle',
                     enabled = bind 'loginButtonEnabled',
                     action = function()
-                    require 'StashUser'
-                    StashUser.login( propertyTable )
+                        require 'StashUser'
+                        StashUser.login( propertyTable )
                     end,
                 },
-
             },
         },
 
         {
             title = LOC "$$$/Stash/ExportDialog/Title=Sta.sh Options",
-
             synopsis = function( props )
                 if props.titleFirstChoice == 'title' then
                     return LOC( "$$$/Stash/ExportDialog/Synopsis/TitleWithFallback=IPTC Title or ^1", displayNameForTitleChoice[ props.titleSecondChoice ] )
@@ -513,19 +507,15 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
                     return props.titleFirstChoice and displayNameForTitleChoice[ props.titleFirstChoice ] or ''
                 end
             end,
-
             f:column {
                 spacing = f:control_spacing(),
-
                 f:row {
                     spacing = f:label_spacing(),
-
                     f:static_text {
                         title = LOC "$$$/Stash/ExportDialog/ChooseTitleBy=Set Stash Title Using:",
                         alignment = 'right',
                         width = share 'StashTitleSectionLabel',
                     },
-
                     f:popup_menu {
                         value = bind 'titleFirstChoice',
                         width = share 'StashTitleLeftPopup',
@@ -535,14 +525,11 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
                             { value = 'empty', title = displayNameForTitleChoice.empty },
                         },
                     },
-
                     f:spacer { width = 20 },
-
                     f:static_text {
                         title = LOC "$$$/Stash/ExportDialog/ChooseTitleBySecondChoice=If Empty, Use:",
                         enabled = LrBinding.keyEquals( 'titleFirstChoice', 'title', propertyTable ),
                     },
-
                     f:popup_menu {
                         value = bind 'titleSecondChoice',
                         enabled = LrBinding.keyEquals( 'titleFirstChoice', 'title', propertyTable ),
@@ -552,16 +539,13 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
                         },
                     },
                 },
-
                 f:row {
                     spacing = f:label_spacing(),
-
                     f:static_text {
                         title = LOC "$$$/Stash/ExportDialog/OverwriteMetadata=When updating a published photo:",
                         alignment = 'right',
                         width = share 'StashOverwriteMetadata',
                     },
-
                     f:popup_menu {
                         value = bind 'overwriteMetadata',
                         width = share 'StashOverwriteMetadataPopup',
