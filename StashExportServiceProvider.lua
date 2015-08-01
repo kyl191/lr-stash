@@ -39,20 +39,20 @@ require 'Utils'
 
 --===========================================================================--
 --[[ @sdk
---- The <i>service definition script</i> for an export service provider defines the hooks 
+--- The <i>service definition script</i> for an export service provider defines the hooks
  -- that your plug-in uses to extend the behavior of Lightroom's Export features.
- -- The plug-in's <code>Info.lua</code> file identifies this script in the 
+ -- The plug-in's <code>Info.lua</code> file identifies this script in the
  -- <code>LrExportServiceProvider</code> entry.
  -- <p>The service definition script should return a table that contains:
  --   <ul><li>A pair of functions that initialize and terminate your export service. </li>
  --	<li>Settings that you define for your export service.</li>
- --	<li>One or more items that define the desired customizations for the Export dialog. 
+ --	<li>One or more items that define the desired customizations for the Export dialog.
  --	    These can restrict the built-in services offered by the dialog,
  --	    or customize the dialog by defining new sections. </li>
- --	<li> A function that defines the export operation to be performed 
+ --	<li> A function that defines the export operation to be performed
  --	     on rendered photos (required).</li> </ul>
- -- <p>The <code>StashExportServiceProvider.lua</code> file of the Stash sample plug-in provides 
- -- 	examples of and documentation for the hooks that a plug-in must provide in order to 
+ -- <p>The <code>StashExportServiceProvider.lua</code> file of the Stash sample plug-in provides
+ -- 	examples of and documentation for the hooks that a plug-in must provide in order to
  -- 	define an export service. Lightroom expects your plug-in to define the needed callbacks
  --	and properties with the required names and syntax. </p>
  -- <p>Unless otherwise noted, all of the hooks in this section are available to
@@ -73,7 +73,7 @@ local exportServiceProvider = {}
 --------------------------------------------------------------------------------
 --- (optional) Plug-in defined value declares whether this plug-in supports the Lightroom
  -- publish feature. If not present, this plug-in is available in Export only.
- -- When true, this plug-in can be used for both Export and Publish. When 
+ -- When true, this plug-in can be used for both Export and Publish. When
  -- set to the string "only", the plug-in is visible only in Publish.
     -- @name exportServiceProvider.supportsIncrementalPublish
     -- @class property
@@ -112,8 +112,8 @@ exportServiceProvider.exportPresetFields = {
 
 --------------------------------------------------------------------------------
 --- (optional) Plug-in defined value suppresses the display of the named sections in
- -- the Export or Publish dialogs. You can use either <code>hideSections</code> or 
- -- <code>showSections</code>, but not both. If present, this should be an array 
+ -- the Export or Publish dialogs. You can use either <code>hideSections</code> or
+ -- <code>showSections</code>, but not both. If present, this should be an array
  -- containing one or more of the following strings:
     -- <ul>
         -- <li>exportLocation</li>
@@ -137,7 +137,7 @@ exportServiceProvider.hideSections = { 'exportLocation' }
 --------------------------------------------------------------------------------
 
 --- (optional) Plug-in defined value restricts the available file format choices in the
- -- Export or Publish dialogs to those named. You can use either <code>allowFileFormats</code> or 
+ -- Export or Publish dialogs to those named. You can use either <code>allowFileFormats</code> or
  -- <code>disallowFileFormats</code>, but not both. If present, this should be an array
  -- containing one or more of the following strings:
     -- <ul>
@@ -159,7 +159,7 @@ exportServiceProvider.allowFileFormats = { 'JPEG' }
 --------------------------------------------------------------------------------
 
 --- (optional) Plug-in defined value restricts the available color space choices in the
- -- Export or Publish dialogs to those named.  You can use either <code>allowColorSpaces</code> or 
+ -- Export or Publish dialogs to those named.  You can use either <code>allowColorSpaces</code> or
  -- <code>disallowColorSpaces</code>, but not both. If present, this should be an array
  -- containing one or more of the following strings:
     -- <ul>
@@ -186,7 +186,7 @@ exportServiceProvider.allowColorSpaces = { 'sRGB' }
 exportServiceProvider.hidePrintResolution = true
 
 --------------------------------------------------------------------------------
---- (optional, Boolean)  When plug-in defined value istrue, both video and 
+--- (optional, Boolean)  When plug-in defined value istrue, both video and
  -- still photos can be exported through this plug-in. If not present or set to false,
  --  video files cannot be exported through this plug-in. If set to the string "only",
  -- video files can be exported, but not still photos.
@@ -196,12 +196,12 @@ exportServiceProvider.hidePrintResolution = true
     -- @name exportServiceProvider.canExportVideo
     -- @class property
 
-exportServiceProvider.canExportVideo = false 
+exportServiceProvider.canExportVideo = false
 
 --------------------------------------------------------------------------------
 
  -- (string) Plug-in defined value is the filename of the icon to be displayed
- -- for this publish service provider, in the Publish Services panel, the Publish 
+ -- for this publish service provider, in the Publish Services panel, the Publish
  -- Manager dialog, and in the header shown when a published collection is selected.
  -- The icon must be in PNG format and no more than 26 pixels wide or 19 pixels tall.
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
@@ -218,7 +218,7 @@ exportServiceProvider.small_icon = 'logo.png'
  -- property that should be used in this case.
     -- @name exportServiceProvider.publish_fallbackNameBinding
     -- @class property
-    
+
 exportServiceProvider.publish_fallbackNameBinding = 'fullname'
 
 --------------------------------------------------------------------------------
@@ -234,9 +234,9 @@ exportServiceProvider.publish_fallbackNameBinding = 'fullname'
 exportServiceProvider.titleForGoToPublishedCollection = "disable"
 
 --------------------------------------------------------------------------------
---- (optional, string) Plug-in defined value overrides the label for the 
+--- (optional, string) Plug-in defined value overrides the label for the
  -- "Go to Published Photo" context-menu item, allowing you to use something more appropriate to
- -- your service. Set to the special value "disable" to disable (dim) the menu item for this service. 
+ -- your service. Set to the special value "disable" to disable (dim) the menu item for this service.
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
     -- @name exportServiceProvider.titleForGoToPublishedPhoto
     -- @class property
@@ -280,8 +280,8 @@ end
 
 -------------------------------------------------------------------------------
 --- (Boolean) This plug-in defined value, when true, disables (dims) the Rename Published
- -- Collection command in the context menu of the Publish Services panel 
- -- for all published collections created by this service. 
+ -- Collection command in the context menu of the Publish Services panel
+ -- for all published collections created by this service.
  -- <p>First supported in version 3.0 of the Lightroom SDK.</p>
     -- @name exportServiceProvider.disableRenamePublishedCollection
     -- @class property
@@ -332,7 +332,7 @@ function exportServiceProvider.renamePublishedCollection( publishSettings, info 
         StashAPI.renameFolder( info.remoteId, info.name )
 
     end
-        
+
 end
 
 -------------------------------------------------------------------------------
@@ -368,7 +368,7 @@ local function updateCantExportBecause( propertyTable )
         propertyTable.LR_cantExportBecause = "You haven't logged in to Sta.sh yet."
         return
     end
-    
+
     propertyTable.LR_cantExportBecause = nil
 
 end
@@ -382,19 +382,19 @@ local displayNameForTitleChoice = {
 local function getStashTitle( photo, exportSettings, pathOrMessage )
 
     local title
-            
+
     -- Get title according to the options in Stash Title section.
 
     if exportSettings.titleFirstChoice == 'filename' then
-                
+
         title = LrPathUtils.leafName( pathOrMessage )
         logger:debug("Title built from filename")
-                
+
     elseif exportSettings.titleFirstChoice == 'title' then
-                
+
         title = photo:getFormattedMetadata 'title'
         logger:debug("Title built from metadata title")
-                
+
         if ( not title or #title == 0 ) and exportSettings.titleSecondChoice == 'filename' then
             title = LrPathUtils.leafName( pathOrMessage )
             logger:debug("Title built from filename, metadata title was empty")
@@ -403,7 +403,7 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
     else
         title = "Untitled"
     end
-                
+
     return title
 
 end
@@ -419,13 +419,13 @@ function exportServiceProvider.getCollectionBehaviorInfo( publishSettings )
         maxCollectionSetDepth = 0,
             -- Collection sets are not supported in Sta.sh.
     }
-    
+
 end
 
 -----------------------------------------------------------------------------------
  -- (optional) This plug-in defined callback function is called when the
- -- user chooses this export service provider in the Export or Publish dialog, 
- -- or when the destination is already selected when the dialog is invoked, 
+ -- user chooses this export service provider in the Export or Publish dialog,
+ -- or when the destination is already selected when the dialog is invoked,
  -- (remembered from the previous export operation).
  -- <p>This is a blocking call. If you need to start a long-running task (such as
  -- network access), create a task using the <a href="LrTasks.html"><code>LrTasks</code></a>
@@ -452,10 +452,10 @@ function exportServiceProvider.startDialog( propertyTable )
 end
 
 --------------------------------------------------------------------------------
---- (optional) This plug-in defined callback function is called when the user 
- -- chooses this export service provider in the Export or Publish dialog. 
- -- It can create new sections that appear above all of the built-in sections 
- -- in the dialog (except for the Publish Service section in the Publish dialog, 
+--- (optional) This plug-in defined callback function is called when the user
+ -- chooses this export service provider in the Export or Publish dialog.
+ -- It can create new sections that appear above all of the built-in sections
+ -- in the dialog (except for the Publish Service section in the Publish dialog,
  -- which always appears at the very top).
  -- <p>Your plug-in's <a href="#exportServiceProvider.startDialog"><code>startDialog</code></a>
  -- function, if any, is called before this function is called.</p>
@@ -475,10 +475,10 @@ end
 function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
     return {
-    
+
         {
             title = "Sta.sh account",
-            
+
             synopsis = bind 'accountStatus',
 
             f:row {
@@ -502,10 +502,10 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
 
             },
         },
-    
+
         {
             title = LOC "$$$/Stash/ExportDialog/Title=Sta.sh Options",
-            
+
             synopsis = function( props )
                 if props.titleFirstChoice == 'title' then
                     return LOC( "$$$/Stash/ExportDialog/Synopsis/TitleWithFallback=IPTC Title or ^1", displayNameForTitleChoice[ props.titleSecondChoice ] )
@@ -513,19 +513,19 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
                     return props.titleFirstChoice and displayNameForTitleChoice[ props.titleFirstChoice ] or ''
                 end
             end,
-            
+
             f:column {
                 spacing = f:control_spacing(),
 
                 f:row {
                     spacing = f:label_spacing(),
-    
+
                     f:static_text {
                         title = LOC "$$$/Stash/ExportDialog/ChooseTitleBy=Set Stash Title Using:",
                         alignment = 'right',
                         width = share 'StashTitleSectionLabel',
                     },
-                    
+
                     f:popup_menu {
                         value = bind 'titleFirstChoice',
                         width = share 'StashTitleLeftPopup',
@@ -537,12 +537,12 @@ function exportServiceProvider.sectionsForTopOfDialog( f, propertyTable )
                     },
 
                     f:spacer { width = 20 },
-    
+
                     f:static_text {
                         title = LOC "$$$/Stash/ExportDialog/ChooseTitleBySecondChoice=If Empty, Use:",
                         enabled = LrBinding.keyEquals( 'titleFirstChoice', 'title', propertyTable ),
                     },
-                    
+
                     f:popup_menu {
                         value = bind 'titleSecondChoice',
                         enabled = LrBinding.keyEquals( 'titleFirstChoice', 'title', propertyTable ),
@@ -580,7 +580,7 @@ end
 --------------------------------------------------------------------------------
 --- (optional) This plug-in defined callback function is called for each exported photo
  -- after it is rendered by Lightroom and after all post-process actions have been
- -- applied to it. This function is responsible for transferring the image file 
+ -- applied to it. This function is responsible for transferring the image file
  -- to its destination, as defined by your plug-in. The function that
  -- you define is launched within a cooperative task that Lightroom provides. You
  -- do not need to start your own task to run this function; and in general, you
@@ -593,7 +593,7 @@ end
         -- Information about your export settings and the photos to be published.
 
 function exportServiceProvider.processRenderedPhotos( functionContext, exportContext )
-    
+
     -- Ensure that the auth tokens are still good
     if not (prefs.expire == nil) and (tonumber(prefs.expire) < LrDate.currentTime()) then
         StashAPI.refreshAuth()
@@ -605,8 +605,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
     -- Make a local reference to the export parameters.
     local exportSession = exportContext.exportSession
-    local exportSettings = assert( exportContext.propertyTable )
-        
+    local exportSettings = assert(exportContext.propertyTable)
+
     -- Get the # of photos.
     local numPhotos = exportSession:countRenditions()
 
@@ -651,18 +651,16 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
     local progressScope = exportContext:configureProgress {title = action_title}
 
+    -- Iterate through photos.
 
-    -- Iterate through photo renditions.
+    for i, rendition in exportContext:renditions {stopIfCanceled = true} do
 
-    for i, rendition in exportContext:renditions { stopIfCanceled = true } do
-    
         -- Update progress scope.
-        
-        
-        -- Get next photo.
         progressScope:setPortionComplete((i - 1)/numPhotos)
 
+        -- Get next photo.
         local photo = rendition.photo
+
         -- Keep StashID local to each iteration of the loop, otherwise Lua will make it persist across loops
         -- Bad Thing because Lightroom seems to upload changed images before moving onto new ones, so the new ones will
         -- constantly overwrite the last image that was modified.
@@ -673,53 +671,36 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
             itemId = rendition.publishedPhotoId
             logger:debug("Found existing stash id: " .. itemId)
         end
-        
-        if not rendition.wasSkipped then
 
+        if not rendition.wasSkipped then
             local success, pathOrMessage = rendition:waitForRender()
-            
             -- Update progress scope again once we've got rendered photo.
-            
             progressScope:setPortionComplete( ( i - 0.5 ) / numPhotos )
 
-            
             -- Check for cancellation again after photo has been rendered.
-            
             if progressScope:isCanceled() then break end
-            
             if success then
-    
                 -- Build up common metadata for this photo.
-                
-                local title = getStashTitle( photo, exportSettings, pathOrMessage )
-                
-                local description = photo:getFormattedMetadata( 'caption' )
-                local keywordTags = photo:getFormattedMetadata( 'keywordTagsForExport' )
-                
+
+                local title = getStashTitle(photo, exportSettings, pathOrMessage)
+                local description = photo:getFormattedMetadata('caption')
+                local keywordTags = photo:getFormattedMetadata('keywordTagsForExport')
+
                 local tags
-                
                 if keywordTags then
-
                     tags = {}
-
                     local keywordIter = string.gfind( keywordTags, "[^,]+" )
-
                     for keyword in keywordIter do
-
                         -- Strip non-alphanumeric characters from keyword
                         if string.find( keyword, "[^%w*]") ~= nil then
                             keyword = string.gsub( keyword, "[^%w*]", "" )
                         end
-
                         tags[ #tags + 1 ] = keyword
-
                     end
-
                 end
 
-                -- Upload or replace the photo.
-
-                StashInfo = StashAPI.uploadPhoto( {
+                -- Upload or replace the photo
+                StashInfo = StashAPI.uploadPhoto({
                                         filePath = pathOrMessage,
                                         title = title,
                                         description = description,
@@ -728,11 +709,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                                         stackId = stackId or nil,
                                         stackName = stackName or nil,
                                         overwriteMetadata = exportSettings.overwriteMetadata or nil,
-                                    } )
+                                    })
                 Utils.logTable(StashInfo, "Upload Result")
 
-
-                
                 if publishing then
                     -- the itemid is a unsigned long int, which Lua doesn't support
                     -- so convert it to text
@@ -744,20 +723,20 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                     rendition:recordPublishedPhotoId(StashInfo.itemid)
                     rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.itemid)
                 end
-                
+
                 -- Sta.sh does not return a folder ID once a photo's submitted to dA.
                 if StashInfo.stackid ~= nil then
                     logger:info("Noting stackId: " ..  LrStringUtils.numberToString(StashInfo.stackid))
                     stackId = LrStringUtils.numberToString(StashInfo.stackid)
                 end
-                
+
                 -- When done with photo, delete temp file. There is a cleanup step that happens later,
                 -- but this will help manage space in the event of a large upload.
-                LrFileUtils.delete( pathOrMessage )
+                LrFileUtils.delete(pathOrMessage)
                 prefs.uploadCount = prefs.uploadCount + 1
-            
+
             end
-            
+
         end
 
     end
@@ -770,7 +749,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     end
 
     progressScope:done()
-    
+
 end
 
 --------------------------------------------------------------------------------
