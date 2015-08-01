@@ -145,7 +145,6 @@ function Utils.getFile(url, path)
             logger:info(string.format("Data recieved: %s", data))
         end
         error(error_message)
-        end
     end
 
     local path = LrPathUtils.standardizePath(path)
