@@ -608,9 +608,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     local exportSettings = assert( exportContext.propertyTable )
         
     -- Get the # of photos.
-    local nPhotos = exportSession:countRenditions()
-    
-    -- By default, use the foldername "Lightroom Exports" with there's more than 1 image uploaded.
+    local numPhotos = exportSession:countRenditions()
+
+    -- By default, use the stackName "Lightroom Exports" with there's more than 1 image uploaded.
     -- This is the case for exporting.
     -- For publishing, the name becomes "Uploaded by Lightroom"
     local folderName = "Lightroom Exports"
@@ -663,9 +663,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     
         -- Update progress scope.
         
-        progressScope:setPortionComplete( ( i - 1 ) / nPhotos )
         
         -- Get next photo.
+        progressScope:setPortionComplete((i - 1)/numPhotos)
 
         local photo = rendition.photo
         -- Keep StashID local to each iteration of the loop, otherwise Lua will make it persist across loops
@@ -685,7 +685,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
             
             -- Update progress scope again once we've got rendered photo.
             
-            progressScope:setPortionComplete( ( i - 0.5 ) / nPhotos )
+            progressScope:setPortionComplete( ( i - 0.5 ) / numPhotos )
 
             
             -- Check for cancellation again after photo has been rendered.
