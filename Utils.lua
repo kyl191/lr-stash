@@ -211,6 +211,24 @@ function Utils.networkComms( action, url )
 end
 --------------------------------------------------------------------------------
 
+function Utils.isLightroomError(headers)
+    -- Lightroom errors are signified by having .error set to true
+    if headers and headers.error then
+        return true
+    else
+        return false
+    end
+end
+
+function Utils.isServerError(headers)
+    -- Anything greater than a 399 is a HTTP error
+    if headers and tonumber(headers.status) > 399 then
+        return true
+    else
+        return false
+    end
+end
+
 function Utils.checkResponse( data, headers, url )
 
     -- If headers.error is set, that means Lightroom had an error.
