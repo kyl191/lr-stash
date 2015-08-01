@@ -98,10 +98,12 @@ function StashAPI.uploadPhoto(params)
         if StashAPI.verifyItemExists(params.itemId) then
             content.insert({name='itemid', value=params.itemId})
         end
-    elseif params.foldername ~= nil then
-        content.insert({name='stack', value=Utils.urlEncode(params.foldername)})
-    elseif params.stackId ~= nil then
-        content.insert({name='stackid', value=params.stackId})
+    end
+    if params.foldername ~= nil then
+        table.insert(content, {name='stack', value=Utils.urlEncode(params.foldername)})
+    end
+    if params.stackId ~= nil then
+        table.insert(content, {name='stackid', value=params.stackId})
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
