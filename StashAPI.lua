@@ -210,11 +210,7 @@ function StashAPI.verifyItemExists(itemId)
                         itemId,
                         prefs.access_token)
     local success = LrTasks.pcall(StashAPI.getJSON, url)
-    if success then
-        return true
-    else
-        return false
-    end
+    return success
 end
 
 function StashAPI.getJSON(url)
