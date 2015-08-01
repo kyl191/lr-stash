@@ -144,7 +144,7 @@ function StashUser.login( propertyTable )
 
         local token = StashAPI.getToken(propertyTable.auth_code)
 
-        StashAPI.processToken(token, context)
+        StashAPI.processToken(token)
 
         -- User has OK'd authentication. Tell them that we're getting their user info.
         propertyTable.accountStatus = LOC "$$$/Stash/AccountStatus/WaitingForStash=Waiting for a response from Sta.sh..."
