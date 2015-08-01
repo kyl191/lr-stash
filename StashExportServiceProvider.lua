@@ -106,7 +106,7 @@ exportServiceProvider.supportsIncrementalPublish = 'true'
 exportServiceProvider.exportPresetFields = {
     { key = 'titleFirstChoice', default = 'title'},
     { key = 'titleSecondChoice',  default = 'filename'},
-    { key = 'overwriteMetadata', default = 'false'}
+    { key = 'overwriteMetadata', default = false}
 
 }
 
