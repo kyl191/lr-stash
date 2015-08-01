@@ -87,6 +87,7 @@ function StashAPI.uploadPhoto( params )
     assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 
     logger:info( 'Uploading photo', params.filePath )
+    Utils.logTable(params)
     local postUrl = string.format('https://www.deviantart.com/api/v1/oauth2/stash/submit?token=%s', prefs.access_token)
 
     -- Identification on Sta.sh
