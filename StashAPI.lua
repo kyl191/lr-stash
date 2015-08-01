@@ -142,11 +142,8 @@ function StashAPI.uploadPhoto(params)
     local result, headers = LrHttp.postMultipart(postUrl, content)
 
     if Utils.isLightroomError(headers) then
-        local error = Utils.getLightroomError(headers)
-        local error_message = string.format("Lightroom network error while uploading to Sta.sh: %d \n %s",
-                                            error.error,
-                                            error.error_description)
-        LrErrors.throwUserError(error_message)
+        local lr_error = Utils.getLightroomError(headers)
+        LrErrors.throwUserError(lr_error.message)
 
     elseif Utils.isServerError(headers) and data == nil then
         if params.retry and params.retry == "empty" then

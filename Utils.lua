@@ -233,8 +233,13 @@ end
 
 function Utils.getLightroomError(headers)
     if Utils.isLightroomError(headers) then
-        return {error = headers.error.errorCode,
-                description = headers.error.name or ""}
+        local error_message = string.format("There was a problem getting %s. \nLightroom had a problem:\n %s - %s",
+                                    url,
+                                    headers.error.errorCode,
+                                    headers.error.name or "")
+        return {code = headers.error.errorCode,
+                description = headers.error.name or "",
+                message = error_message}
     else
         return nil
     end
