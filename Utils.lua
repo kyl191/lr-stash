@@ -220,6 +220,15 @@ function Utils.isLightroomError(headers)
     end
 end
 
+function Utils.getLightroomError(headers)
+    if Utils.isLightroomError(headers) then
+        return {error = headers.error.errorCode,
+                description = headers.error.name or ""}
+    else
+        return nil
+    end
+end
+
 function Utils.isServerError(headers)
     -- Anything greater than a 399 is a HTTP error
     if headers and tonumber(headers.status) > 399 then
