@@ -86,8 +86,8 @@ function StashAPI.uploadPhoto( params )
     -- Make sure that we got a table of parameters
     assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
 
-    local postUrl = 'https://www.deviantart.com/api/oauth2/stash/submit?token='.. prefs.access_token
     logger:info( 'Uploading photo', params.filePath )
+    local postUrl = string.format('https://www.deviantart.com/api/v1/oauth2/stash/submit?token=%s', prefs.access_token)
 
     -- Identification on Sta.sh
     --- Since folder support is still buggy, if we've got the stash id, just use that.
@@ -147,7 +147,7 @@ function StashAPI.uploadPhoto( params )
     end
 
     -- Post it and wait for confirmation.
-    logger:info("Uploading photo to: " .. postUrl)
+    logger:info(string.format("Uploading photo to: %s", postUrl))
 
     local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
 
@@ -157,7 +157,9 @@ function StashAPI.uploadPhoto( params )
 
         if result.from == "lightroom" then
             -- We can't do much about a Lightroom error.
-            LrErrors.throwUserError ("Lightroom network error while uploading to Sta.sh: " .. result.code .. "\n" .. result.description)
+            LrErrors.throwUserError(string.format("Lightroom network error while uploading to Sta.sh: %d \n %s",
+                                                    result.code,
+                                                    result.description))
 
         elseif result.from == "server" then
             -- However, a server error? That we need to check - Sta.sh returns an error code if something goes wrong.
