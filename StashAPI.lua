@@ -80,15 +80,14 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.uploadPhoto( params )
+function StashAPI.uploadPhoto(params)
 
     -- Prepare to upload.
     -- Make sure that we got a table of parameters
-    assert( type( params ) == 'table', 'StashAPI.uploadPhoto: params must be a table' )
-
-    logger:info( 'Uploading photo', params.filePath )
+    assert(type(params) == 'table', 'StashAPI.uploadPhoto: params must be a table')
     Utils.logTable(params)
     local postUrl = string.format('https://www.deviantart.com/api/v1/oauth2/stash/submit?token=%s', prefs.access_token)
+    logger:info('Uploading photo', params.filePath)
 
     -- Identification on Sta.sh
     --- Since folder support is still buggy, if we've got the stash id, just use that.
@@ -133,24 +132,27 @@ function StashAPI.uploadPhoto( params )
     -- Add the photo itself
     local mimeChunks = {}
 
-    local filePath = assert( params.filePath )
+    local filePath = assert(params.filePath)
 
-    local fileName = LrPathUtils.leafName( filePath )
+    local fileName = LrPathUtils.leafName(filePath)
 
-    mimeChunks[ #mimeChunks + 1 ] = { name = 'photo', fileName = fileName, filePath = filePath, contentType = 'application/octet-stream' }
+    mimeChunks[#mimeChunks + 1] = {name = 'photo',
+                                    fileName = fileName,
+                                    filePath = filePath,
+                                    contentType = 'application/octet-stream' }
 
     -- Before uploading, check to make sure that there's enough space to upload
     local space = StashAPI.getRemainingSpace()
     local fileAttribs = import 'LrFileUtils'.fileAttributes(filePath)
 
     if tonumber(space) < tonumber(fileAttribs.fileSize) then
-        LrErrors.throwUserError( "Not enough space in Sta.sh to upload the file!" )
+        LrErrors.throwUserError("Not enough space in Sta.sh to upload the file!")
     end
 
     -- Post it and wait for confirmation.
     logger:info(string.format("Uploading photo to: %s", postUrl))
 
-    local result, headers = LrHttp.postMultipart( postUrl, mimeChunks )
+    local result, headers = LrHttp.postMultipart(postUrl, mimeChunks)
 
     result = Utils.checkResponse(result, headers, postUrl)
 
@@ -180,7 +182,7 @@ function StashAPI.uploadPhoto( params )
 
             end
 
-            local validJSON, message = LrTasks.pcall( function() return JSON:decode(result.payload) end)
+            local validJSON, message = LrTasks.pcall(function() return JSON:decode(result.payload) end)
 
             -- If it's valid JSON, try to identify the error and reupload.
             if validJSON then
