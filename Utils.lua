@@ -125,12 +125,18 @@ end
 --------------------------------------------------------------------------------
 
 function Utils.getFile(url, path, errorMessage)
-    data = Utils.networkComms( "get", url)
+    data, headers = LrHttp.get(url)
 
     -- We can't do anything about a Lightroom transport error!
-    if data.status and data.status == "error" and data.from == "lightroom" then
-        logger:error(url .. " had a problem.")
-        LrErrors.throwUserError("Oh dear. There was a problem getting " .. errorMessage .. ". \nLightroom had a problem:\n" .. data.description)
+    if Utils.isLightroomError(headers) then
+        local error = Utils.getLightroomError(headers)
+        logger:error(string.format("%s had a problem.", url))
+        Utils.logTable(error_message)
+        local error_message = string.format("There was a problem getting %s. \nLightroom had a problem:\n %s - %s",
+                                    url,
+                                    error.error,
+                                    error.error_description)
+        LrErrors.throwUserError(error_message)
     end
 
     path = LrPathUtils.standardizePath(path)
