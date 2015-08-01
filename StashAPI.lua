@@ -133,7 +133,8 @@ function StashAPI.uploadPhoto(params)
 
     -- Post it and wait for confirmation.
     logger:info(string.format("Uploading photo to: %s", postUrl))
-
+    logger:info("With form fields:")
+    Utils.logTable(content)
     local result, headers = LrHttp.postMultipart(postUrl, content)
 
     result = Utils.checkResponse(result, headers, postUrl)
