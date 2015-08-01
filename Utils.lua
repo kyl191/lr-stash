@@ -257,33 +257,6 @@ function Utils.isServerError(headers)
     end
 end
 
-function Utils.checkResponse( data, headers, url )
-
-    -- If headers.error is set, that means Lightroom had an error.
-    if headers and headers.error then
-        logger:error("checkResponse: Lightroom network error for url: " .. url)
-        Utils.logTable(headers, "checkResponse headers")
-        return { status = "error", from = "lightroom", code = headers.error.errorCode, description = headers.error.name or ""}
-
-    -- Alternatively, the server could throw back an error.
-    -- Only return data if we're sure
-    elseif headers and tonumber(headers.status) > 299 then
-        logger:error("checkResponse: Server error " .. headers.status .. " for url: " .. url)
-        Utils.logTable(headers)
-        logger:info(data)
-        return { status = "error", from = "server", code = tonumber(headers.status), payload = data }
-
-    -- Finally we can test to make sure the response actually has data.
-    else
-        if data ~= nil then
-            return data
-        else
-            logger:error("checkResponse: Response for " .. url .. " was empty.")
-            return { status = "error", from = "server", code = "empty", payload = data }
-        end
-    end
-end
-
 --------------------------------------------------------------------------------
 
 function Utils.updatePlugin()
