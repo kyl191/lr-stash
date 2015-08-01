@@ -162,7 +162,7 @@ function StashAPI.uploadPhoto(params)
                 logger:warn("Error from Sta.sh:")
                 Utils.logTable(json, "Parsed JSON from Sta.sh, 1st try at uploading photo")
 
-                if json.error == "invalid_request" and json.error_code = 1 then
+                if json.error == "invalid_request" and json.error_code == 1 then
                     if params.itemId ~= nil  then
                         -- Most common error I'm seeing is item was deleted server side
                         -- Try clearing our item ID & continuing
