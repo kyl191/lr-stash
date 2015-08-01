@@ -644,24 +644,17 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
     -- Set progress title depending on whether we're exporting or publishing,
     -- and if we're exporting/publishing more than one photo.
-
-    local progressScope = nil
-    
+    local action = "Exporting"
     if publishing then
-        progressScope = exportContext:configureProgress {
-                        title = nPhotos > 1
-                                    and string.format("Publishing %s photos to Sta.sh",  nPhotos)
-                                    or "Publishing one photo to Sta.sh",
-                    }
-    else
-    
-        progressScope = exportContext:configureProgress {
-                        title = nPhotos > 1
-                                    and string.format("Exporting %s photos to Sta.sh",  nPhotos)
-                                    or "Exporting one photo to Sta.sh",
-                    }
+        action = "Publishing"
     end
 
+    local action_title = string.format("%s one photo to Sta.sh",  action)
+    if numPhotos > 1 then
+        action_title = string.format("%s %s photos to Sta.sh", action, numPhotos)
+    end
+
+    local progressScope = exportContext:configureProgress {title = action_title}
 
 
     -- Iterate through photo renditions.
