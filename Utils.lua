@@ -111,9 +111,21 @@ end
 --------------------------------------------------------------------------------
 
 function Utils.getFile(url, path, errorMessage)
+function Utils.getUrl(url)
     data, headers = LrHttp.get(url)
+    if Utils.isLightroomError(headers) then
+        logger:error(string.format("Lightroom had a problem GETing %s", url))
+        local error_headers = Utils.getLightroomError(headers)
+        Utils.logTable(error_headers)
+        error(error_headers.message)
+    else
+        return data, headers
+    end
+end
 
     -- We can't do anything about a Lightroom transport error!
+function Utils.postUrl(url)
+    data, headers = LrHttp.post(url, "")
     if Utils.isLightroomError(headers) then
         local error = Utils.getLightroomError(headers)
         logger:error(string.format("%s had a problem.", url))
@@ -123,6 +135,14 @@ function Utils.getFile(url, path, errorMessage)
                                     error.error,
                                     error.error_description)
         LrErrors.throwUserError(error_message)
+        logger:error(string.format("Lightroom had a problem POSTing to %s", url))
+        local error_headers = Utils.getLightroomError(headers)
+        Utils.logTable(error_headers)
+        error(error_headers.message)
+    else
+        return data, headers
+    end
+end
     end
 
     local path = LrPathUtils.standardizePath(path)
