@@ -225,7 +225,7 @@ function Utils.checkResponse( data, headers, url )
         logger:error("checkResponse: Server error " .. headers.status .. " for url: " .. url)
         Utils.logTable(headers)
         logger:info(data)
-        return { status = "error", from = "server", code = headers.status, payload = data }
+        return { status = "error", from = "server", code = tonumber(headers.status), payload = data }
 
     -- Finally we can test to make sure the response actually has data.
     else
