@@ -4,25 +4,22 @@ Utils.lua
 Common code for Lightroom plugins
 
 ------------------------------------------------------------------------------]]
-local LrMD5 = import 'LrMD5'
+local Info = require 'Info'
+local logger = import 'LrLogger'( 'Stash' )
+local LrApplication = import 'LrApplication'
+local LrErrors = import 'LrErrors'
 local LrFileUtils = import 'LrFileUtils'
+local LrFunctionContext = import 'LrFunctionContext'
+local LrHttp = import 'LrHttp'
+local LrMD5 = import 'LrMD5'
+local LrPathUtils = import 'LrPathUtils'
 local LrPathUtils = import 'LrPathUtils'
 local LrStringUtils = import 'LrStringUtils'
-local LrFunctionContext = import 'LrFunctionContext'
-local logger = import 'LrLogger'( 'Stash' )
-local Info = require 'Info'
-local prefs = import 'LrPrefs'.prefsForPlugin()
+local LrSystemInfo = import 'LrSystemInfo'
 local LrTasks = import 'LrTasks'
 
-local LrPathUtils = import 'LrPathUtils'
-
-local LrHttp = import 'LrHttp'
-local LrErrors = import 'LrErrors'
-local LrApplication = import 'LrApplication'
-local LrSystemInfo = import 'LrSystemInfo'
-
---------------------------------------------------------------------------------
-JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
+local prefs = import 'LrPrefs'.prefsForPlugin()
+local JSON = (loadfile (LrPathUtils.child(_PLUGIN.path, "json.lua")))()
 
 --------------------------------------------------------------------------------
 
