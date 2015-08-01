@@ -613,11 +613,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     -- By default, use the stackName "Lightroom Exports" with there's more than 1 image uploaded.
     -- This is the case for exporting.
     -- For publishing, the name becomes "Uploaded by Lightroom"
-    local folderName = "Lightroom Exports"
-
+    local stackName = "Lightroom Exports"
+    local stackId = nil
 
     -- Setup a variable to distinguish if we're trying to publish, or just exporting
-    local publishing = nil
+    local publishing = false
 
     if exportContext.publishService then
         publishing = true
@@ -626,17 +626,17 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
         local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
 
         -- Look for a folder id for this collection - determines if we've previously published this collection
-        folderId = publishedCollectionInfo.remoteId
 
         -- However, if we're uploading from the default collection, then just dump stuff into a folder labelled
         -- "Uploaded by Lightroom"
         -- The presumed use-case of this collection is piece-meal uploading, so in virtually all cases, this is fine.
         -- However, if the user creates a collection, we'll create a corresponding folder on Sta.sh.
         if isDefaultCollection then
-            folderId = nil
-            local folderName = "Uploaded by Lightroom"
-        else 
-            folderName = publishedCollectionInfo.name
+            stackId = nil
+            stackName = "Uploaded by Lightroom"
+        else
+            stackId = publishedCollectionInfo.remoteId
+            stackName = publishedCollectionInfo.name
         end
         --LrDialogs.message(folderName)
 
@@ -672,11 +672,11 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
         -- Bad Thing because Lightroom seems to upload changed images before moving onto new ones, so the new ones will
         -- constantly overwrite the last image that was modified.
         -- Fixes https://github.com/kyl191/lr-stash/issues/1
-        local stashId = nil
+        local itemId = nil
 
         if publishing and rendition.publishedPhotoId then
-            stashId = rendition.publishedPhotoId	
-            logger:debug("Found existing stash id: " .. stashId)
+            itemId = rendition.publishedPhotoId
+            logger:debug("Found existing stash id: " .. itemId)
         end
         
         if not rendition.wasSkipped then
@@ -728,33 +728,32 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                                         filePath = pathOrMessage,
                                         title = title,
                                         description = description,
-                                        tags = table.concat( tags, ' ' ),
-                                        stashid = stashId or nil,
-                                        folderid = folderId or nil,
-                                        foldername = folderName or nil,
+                                        tags = table.concat(tags, ' '),
+                                        itemId = itemId or nil,
+                                        stackId = stackId or nil,
+                                        stackName = stackName or nil,
                                         overwriteMetadata = exportSettings.overwriteMetadata or nil,
                                     } )
                 Utils.logTable(StashInfo, "Upload Result")
 
 
                 
-                if publishing then 
-                    
-                    if type(StashInfo.stashid) == 'number' then
-                        logger:info("Stashid is a number")
-                        StashInfo.stashid = LrStringUtils.numberToString(StashInfo.stashid)
+                if publishing then
+                    -- the itemid is a unsigned long int, which Lua doesn't support
+                    -- so convert it to text
+                    if type(StashInfo.itemid) == 'number' then
+                        StashInfo.itemid = LrStringUtils.numberToString(StashInfo.itemid)
                     end
 
-                    logger:info("Uploaded photo to " .. StashInfo.stashid)
-                    rendition:recordPublishedPhotoId(StashInfo.stashid)
-                    rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.stashid)
-                    
+                    logger:info("Recording item id " .. StashInfo.itemid)
+                    rendition:recordPublishedPhotoId(StashInfo.itemid)
+                    rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.itemid)
                 end
                 
                 -- Sta.sh does not return a folder ID once a photo's submitted to dA.
-                if StashInfo.folderid ~= nil then
-                    logger:info("About to record folderID: " ..  LrStringUtils.numberToString(StashInfo.folderid))
-                    folderId = LrStringUtils.numberToString(StashInfo.folderid)
+                if StashInfo.stackid ~= nil then
+                    logger:info("Noting stackId: " ..  LrStringUtils.numberToString(StashInfo.stackid))
+                    stackId = LrStringUtils.numberToString(StashInfo.stackid)
                 end
                 
                 -- When done with photo, delete temp file. There is a cleanup step that happens later,
@@ -769,9 +768,9 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
     end
 
     if publishing then
-        if folderId ~= nil then
-            logger:info("Uploaded collection to folderid: " .. folderId)
-            exportSession:recordRemoteCollectionId(folderId)
+        if stackId ~= nil then
+            logger:info(string.format("Recording stackId: %s", stackId))
+            exportSession:recordRemoteCollectionId(stackId)
         end
     end
 
