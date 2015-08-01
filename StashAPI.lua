@@ -91,20 +91,19 @@ function StashAPI.uploadPhoto( params )
 
     -- Identification on Sta.sh
     --- Since folder support is still buggy, if we've got the stash id, just use that.
-    --- Otherwise, use the folderid if we're uploading a new photo to a known collection
+    --- Otherwise, use the stackId if we're uploading a new photo to a known collection
     --- Last resort, new collection, send the foldername
 
-    if not (params.stashid == nil) then
-        postUrl = postUrl .. '&stashid=' .. params.stashid
-    elseif not (params.foldername == nil) then
-        postUrl = postUrl .. '&folder=' .. Utils.urlEncode(params.foldername)
-    -- I'm just completely ignoring the folderId, because it's horribly *BROKEN* on sta.sh...
-    -- else if not (params.folderid == nil) then
-    --    postUrl = postUrl .. '&folderid=' .. params.folderid
+    if params.itemId ~= nil then
+        postUrl = postUrl .. string.format('&itemid=%s', params.itemId)
+    elseif params.foldername ~= nil then
+        postUrl = postUrl .. string.format('&stack=%s', Utils.urlEncode(params.foldername))
+    elseif params.stackId ~= nil then
+        postUrl = postUrl .. string.format('&stackid=%s', params.stackId)
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
-    if params.overwriteMetadata or (params.stashid == nil) then
+    if params.overwriteMetadata or (params.itemId == nil) then
 
         -- If we're overwriting, there might be a case where the user removes everything in Lightroom,
         -- so force an overwrite, even if the variables are empty by appending an empty POST field.
@@ -116,7 +115,7 @@ function StashAPI.uploadPhoto( params )
             postUrl = postUrl .. Utils.urlEncode(params.title)
         end
 
-        postUrl = postUrl .. '&keywords='
+        postUrl = postUrl .. '&tags='
         -- Append the tags if present
         if not (params.tags == nil or #params.tags == 0) then
             postUrl = postUrl .. Utils.urlEncode(params.tags)
@@ -188,20 +187,20 @@ function StashAPI.uploadPhoto( params )
                     logger:error("Error from Sta.sh:")
                     Utils.logTable(json, "Parsed JSON from Sta.sh, 1st try at uploading photo")
 
-                    if json.error == "internal_error_item" or json.error == "invalid_stashid" then
-                        -- internal_error_item seems to mean we tried uploading to a deleted stashid
-                        -- Checking invalid_stashid too, since that seems to be another likely one to do with stashid
-                        params.stashid = nil
+                    if json.error == "internal_error_item" or json.error == "invalid_itemId" then
+                        -- internal_error_item seems to mean we tried uploading to a deleted itemId
+                        -- Checking invalid_itemId too, since that seems to be another likely one to do with itemId
+                        params.itemId = nil
                         params.retry = json.error
-                        logger:info('Something wrong with the stashid, retrying with a blank id.')
+                        logger:info('Something wrong with the itemId, retrying with a blank id.')
                         return StashAPI.uploadPhoto(params)
 
-                    elseif json.error == "internal_error_missing_folder" or json.error == "invalid_folderid" or json.error == "internal_error_missing_metadata" then
+                    elseif json.error == "internal_error_missing_folder" or json.error == "invalid_stackId" or json.error == "internal_error_missing_metadata" then
                         -- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
-                        -- Same for invalid_folderid and internal_error_missing_metadata too
-                        params.folderid = nil
+                        -- Same for invalid_stackId and internal_error_missing_metadata too
+                        params.stackId = nil
                         params.retry = json.error
-                        logger:info('Something wrong with the folderid, retrying with a blank id.')
+                        logger:info('Something wrong with the stackId, retrying with a blank id.')
                         return StashAPI.uploadPhoto(params)
 
                     else
