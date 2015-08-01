@@ -141,12 +141,12 @@ function StashAPI.uploadPhoto(params)
     Utils.logTable(content)
     local result, headers = LrHttp.postMultipart(postUrl, content)
 
-    result = Utils.checkResponse(result, headers, postUrl)
     if Utils.isLightroomError(headers) then
         local error = string.format("Lightroom network error while uploading to Sta.sh: %d \n %s",
                                     headers.error.errorCode,
                                     headers.error.name or "")
         LrErrors.throwUserError(error)
+
     elseif Utils.isServerError(headers) and data == nil then
         if params.retry and params.retry == "empty" then
             logger:error("Got an empty result from Sta.sh twice, giving up.")
@@ -156,62 +156,51 @@ function StashAPI.uploadPhoto(params)
             return StashAPI.uploadPhoto(params)
         end
 
-    if result.status and result.status == "error" then
+    elseif Utils.isServerError(headers) and data ~= nil then
+        local isValid, json = LrTasks.pcall(function() return JSON:decode(data) end)
+        if not isValid then
+            LrErrors.throwUserError(string.format("Sta.sh gave us a server error, but isn't saying what the error is: %d",
+                                                    headers.code))
+        else
+            if json.error == nil then
+                Utils.logTable(json, "This makes no sense, got back valid JSON but with no indication of an error")
+            elseif not params.retry then
+                logger:warn("Error from Sta.sh:")
+                Utils.logTable(json, "Parsed JSON from Sta.sh, 1st try at uploading photo")
 
-
-
-
-                    return StashAPI.uploadPhoto(params)
-
-
-            local validJSON, message = LrTasks.pcall(function() return JSON:decode(result.payload) end)
-
-            -- If it's valid JSON, try to identify the error and reupload.
-            if validJSON then
-                json = message
-
-                if json.error ~= nil and not params.retry then
-                    logger:error("Error from Sta.sh:")
-                    Utils.logTable(json, "Parsed JSON from Sta.sh, 1st try at uploading photo")
-
-                    if json.error == "internal_error_item" or json.error == "invalid_itemId" then
-                        -- internal_error_item seems to mean we tried uploading to a deleted itemId
-                        -- Checking invalid_itemId too, since that seems to be another likely one to do with itemId
+                if json.error == "invalid_request" and json.error_code = 1 then
+                    if params.itemId ~= nil  then
+                        -- Most common error I'm seeing is item was deleted server side
+                        -- Try clearing our item ID & continuing
                         params.itemId = nil
-                        params.retry = json.error
-                        logger:info('Something wrong with the itemId, retrying with a blank id.')
-                        return StashAPI.uploadPhoto(params)
-
-                    elseif json.error == "internal_error_missing_folder" or json.error == "invalid_stackId" or json.error == "internal_error_missing_metadata" then
-                        -- internal_error_missing_folder seems to indicate something's gone awry with the folder, so reupload with a different folder id
-                        -- Same for invalid_stackId and internal_error_missing_metadata too
-                        params.stackId = nil
-                        params.retry = json.error
-                        logger:info('Something wrong with the stackId, retrying with a blank id.')
+                        logger:info('Something wrong with the item id, retrying with a blank id.')
                         return StashAPI.uploadPhoto(params)
 
                     else
-                        -- Haven't seen any other errors yet.
-                        -- Try uploading again.
+                        -- item id is nill, only other thing is the stack not being found
+                        params.stackId = nil
                         params.retry = json.error
-                        logger:info("Got a JSON error I haven't seen before, automatically retrying")
+                        logger:info('Something wrong with the stack id, retrying with a blank id.')
                         return StashAPI.uploadPhoto(params)
-
                     end
 
-                elseif json.error ~= nil and params.retry then
-                    logger:error("Retried once, still got an error. Giving up.")
-                    Utils.logTable(json, "Parsed JSON from Sta.sh, 2nd try at uploading photo")
-                    LrErrors.throwUserError( "Error uploading to Sta.sh, even after retrying. Last error was: \n" .. json.error .. " : \n" .. json.error_description)
-
+                else
+                    -- Haven't seen any other errors yet.
+                    -- Try uploading again.
+                    params.retry = json.error
+                    logger:info("Got a JSON error I haven't seen before, automatically retrying")
+                    return StashAPI.uploadPhoto(params)
                 end
 
-            -- If it's not valid JSON, throw the error up to the user.
-            else
-                LrErrors.throwUserError ("Sta.sh gave us a server error, and I'm not sure how to handle it, so I'm just giving up: " .. result.code)
+            elseif json.error ~= nil and params.retry then
+                logger:error("Retried once, still got an error. Giving up.")
+                Utils.logTable(json, "Parsed JSON from Sta.sh, 2nd try at uploading photo")
+                local error = string.format("Error uploading to Sta.sh, even after retrying. Last error was: \n %s: \n %s",
+                    json.error,
+                    json.error_description)
+                LrErrors.throwUserError(error)
             end
         end
-
     end
 
     local ok, json = LrTasks.pcall(function() return JSON:decode(result) end)
