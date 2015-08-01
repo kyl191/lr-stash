@@ -85,7 +85,7 @@ end
 function Utils.getJSON( postUrl, errorMessage )
 
     -- data is either the data, or a table of messages
-    data = Utils.networkComms( "post", postUrl )
+    data = Utils.networkComms("post", postUrl)
 
     -- We can't do anything about a Lightroom transport error!
     if data.status and data.status == "error" and data.from == "lightroom" then
