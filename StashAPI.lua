@@ -96,7 +96,7 @@ function StashAPI.uploadPhoto(params)
     content = {}
     if params.itemId ~= nil then
         if StashAPI.verifyItemExists(params.itemId) then
-            content.insert({name='itemid', value=params.itemId})
+            table.insert(content, {name='itemid', value=params.itemId})
         end
     end
     if params.foldername ~= nil then
@@ -114,15 +114,15 @@ function StashAPI.uploadPhoto(params)
         -- But by not appending a value UNLESS there *is* a value, we avoid a "concating a nil" error
         -- Reported at http://comments.deviantart.com/1/278275666/2450524379
 
-        content.insert({name='title', value=Utils.urlEncode(params.title)})
-        content.insert({name='tags', value=Utils.urlEncode(params.tags)})
-        content.insert({name='artist_comments', value=Utils.urlEncode(params.description)})
+        table.insert(content, {name='title', value=Utils.urlEncode(params.title)})
+        table.insert(content, {name='tags', value=Utils.urlEncode(params.tags)})
+        table.insert(content, {name='artist_comments', value=Utils.urlEncode(params.description)})
     end
 
     -- Add the photo itself
     local filePath = assert(params.filePath)
     local fileName = LrPathUtils.leafName(filePath)
-    content.insert({name = 'photo',
+    table.insert(content, {name = 'photo',
                     fileName = fileName,
                     filePath = filePath,
                     contentType = 'application/octet-stream' })
