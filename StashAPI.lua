@@ -95,7 +95,9 @@ function StashAPI.uploadPhoto(params)
     --- Last resort, new collection, send the foldername
     content = {}
     if params.itemId ~= nil then
+        if StashAPI.verifyItemExists(params.itemId) then
             content.insert({name='itemid', value=params.itemId})
+        end
     elseif params.foldername ~= nil then
         content.insert({name='stack', value=Utils.urlEncode(params.foldername)})
     elseif params.stackId ~= nil then
@@ -223,6 +225,18 @@ function StashAPI.uploadPhoto(params)
 end
 
 --------------------------------------------------------------------------------
+function StashAPI.verifyItemExists(itemId)
+    local postUrl = string.format("https://www.deviantart.com/api/v1/oauth2/stash/item/%s?token=%s",
+                        itemId,
+                        prefs.access_token)
+    local error = "Checking if item is present"
+    local result = Utils.networkComms("get", postUrl)
+    if (result.status == "error") and (result.from == "server") and (299 < result.code) and (result.code < 500) then
+            return false
+    else
+        return true
+    end
+end
 
 function StashAPI.getUsername()
 
