@@ -287,7 +287,7 @@ end
 --------------------------------------------------------------------------------
 
 function Utils.updatePlugin()
-    LrFunctionContext.postAsyncTaskWithContext( 'Auto-updating!', function(context)
+    LrFunctionContext.postAsyncTaskWithContext('Auto-updating!', function(context)
 
         context:addCleanupHandler(function(result,message)
             logger:error("Updating: Cleanup: " .. message)
