@@ -95,11 +95,11 @@ function StashAPI.uploadPhoto(params)
     --- Last resort, new collection, send the foldername
     content = {}
     if params.itemId ~= nil then
-        content[#content+1] = {name='itemid', value=params.itemId}
+            content.insert({name='itemid', value=params.itemId})
     elseif params.foldername ~= nil then
-        content[#content+1] = {name='stack', value=Utils.urlEncode(params.foldername)}
+        content.insert({name='stack', value=Utils.urlEncode(params.foldername)})
     elseif params.stackId ~= nil then
-        content[#content+1] = {name='stackid', value=params.stackId}
+        content.insert({name='stackid', value=params.stackId})
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
@@ -110,18 +110,18 @@ function StashAPI.uploadPhoto(params)
         -- But by not appending a value UNLESS there *is* a value, we avoid a "concating a nil" error
         -- Reported at http://comments.deviantart.com/1/278275666/2450524379
 
-        content[#content+1] = {name='title', value=Utils.urlEncode(params.title)}
-        content[#content+1] = {name='tags', value=Utils.urlEncode(params.tags)}
-        content[#content+1] = {name='artist_comments', value=Utils.urlEncode(params.description)}
+        content.insert({name='title', value=Utils.urlEncode(params.title)})
+        content.insert({name='tags', value=Utils.urlEncode(params.tags)})
+        content.insert({name='artist_comments', value=Utils.urlEncode(params.description)})
     end
 
     -- Add the photo itself
     local filePath = assert(params.filePath)
     local fileName = LrPathUtils.leafName(filePath)
-    content[#content+1] = {name = 'photo',
-                            fileName = fileName,
-                            filePath = filePath,
-                            contentType = 'application/octet-stream' }
+    content.insert({name = 'photo',
+                    fileName = fileName,
+                    filePath = filePath,
+                    contentType = 'application/octet-stream' })
 
     -- Before uploading, check to make sure that there's enough space to upload
     local space = StashAPI.getRemainingSpace()
