@@ -621,11 +621,8 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
     if exportContext.publishService then
         publishing = true
-
         local publishedCollectionInfo = exportContext.publishedCollectionInfo
         local isDefaultCollection = publishedCollectionInfo.isDefaultCollection
-
-        -- Look for a folder id for this collection - determines if we've previously published this collection
 
         -- However, if we're uploading from the default collection, then just dump stuff into a folder labelled
         -- "Uploaded by Lightroom"
@@ -638,8 +635,6 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
             stackId = publishedCollectionInfo.remoteId
             stackName = publishedCollectionInfo.name
         end
-        --LrDialogs.message(folderName)
-
     end
 
     -- Set progress title depending on whether we're exporting or publishing,
