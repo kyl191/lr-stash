@@ -29,13 +29,14 @@ function StashAPI.getToken(code)
     -- Get the initial authorization token.
     -- ONLY called by StashUser.login
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id, Auth.client_secret,code)
+    local url = string.format("https://www.deviantart.com/oauth2/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id, Auth.client_secret,code)
 
-    local error = "contacting the sta.sh server to get access"
-
-    local token = Utils.getJSON(postUrl, error)
-
-    return token
+    local success, token = LrTasks.pcall(StashAPI.getJSON, url)
+    if success then
+        return token
+    else
+        LrErrors.throwUserError(string.format("Error contacting the sta.sh server to get access: %s", token))
+    end
 
 end
 
@@ -46,13 +47,16 @@ function StashAPI.refreshAuth()
     -- Refresh the auth token
     -- getToken needs the initial authorization code from the user, an has a different URL (specifically, the grant_type), so it's split off into a separate function
 
-    local postUrl = string.format("https://www.deviantart.com/oauth2/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s", Auth.client_id, Auth.client_secret, prefs.refresh_token)
-    local error = "renewing the authorization"
-
-    local token = Utils.getJSON(postUrl, error)
-
-    StashAPI.processToken( token, nil )
-
+    local url = string.format("https://www.deviantart.com/oauth2/token?grant_type=refresh_token&client_id=%i&client_secret=%s&refresh_token=%s",
+        Auth.client_id,
+        Auth.client_secret,
+        prefs.refresh_token)
+    local success, token = LrTasks.pcall(StashAPI.getJSON, url)
+    if success then
+        StashAPI.processToken(token)
+    else
+        LrErrors.throwUserError(string.format("Error renewing the authorization token: %s", token))
+    end
 end
 
 --------------------------------------------------------------------------------
