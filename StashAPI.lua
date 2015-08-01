@@ -147,27 +147,22 @@ function StashAPI.uploadPhoto(params)
                                     headers.error.errorCode,
                                     headers.error.name or "")
         LrErrors.throwUserError(error)
+    elseif Utils.isServerError(headers) and data == nil then
+        if params.retry and params.retry == "empty" then
+            logger:error("Got an empty result from Sta.sh twice, giving up.")
+            LrErrors.throwUserError("Sorry, but Sta.sh is just giving me a blank file, even though I re-tried twice. I'm giving up now. :(")
+        else
+            params.retry = "empty"
+            return StashAPI.uploadPhoto(params)
+        end
 
     if result.status and result.status == "error" then
 
 
-        elseif result.from == "server" then
-            -- However, a server error? That we need to check - Sta.sh returns an error code if something goes wrong.
-            -- We can recover from certain errors.
 
-            -- If it's an empty result, reset and try again
-            if result.code == "empty" then
 
-                -- But check to see if this is a retry first, and die if so.
-                if params.retry and params.retry == "empty" then
-                    logger:error("Got an empty result from Sta.sh again, giving up.")
-                    LrErrors.throwUserError("Sorry, but Sta.sh is just giving me a blank file, even though I re-tried twice. I'm giving up now. :(")
-                else
-                    params.retry = "empty"
                     return StashAPI.uploadPhoto(params)
-                end
 
-            end
 
             local validJSON, message = LrTasks.pcall(function() return JSON:decode(result.payload) end)
 
