@@ -210,13 +210,15 @@ end
 
 --------------------------------------------------------------------------------
 function StashAPI.verifyItemExists(itemId)
-    local postUrl = string.format("https://www.deviantart.com/api/v1/oauth2/stash/item/%s?token=%s",
+    local url = string.format("https://www.deviantart.com/api/v1/oauth2/stash/item/%s?token=%s",
                         itemId,
                         prefs.access_token)
-    local error = "Checking if item is present"
-    local result = Utils.networkComms("get", postUrl)
-    if (result.status == "error") and (result.from == "server") and (299 < result.code) and (result.code < 500) then
+    local success = LrTasks.pcall(StashAPI.getJSON, url)
+    if success then
+        return true
+    else
         return false
+    end
     else
         return true
     end
