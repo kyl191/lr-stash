@@ -294,20 +294,26 @@ function Utils.updatePlugin()
             data.uploadCount = prefs.uploadCount
         end
 
-        local remoteFiles = Utils.getJSON("http://code.kyl191.net/update.php?plugin=" .. _PLUGIN.id .. "&data=" .. Utils.urlEncode(JSON:encode(data)))
+        local checksumUrl = string.format("http://code.kyl191.net/update.php?plugin=%s&data=%s",
+                                            _PLUGIN.id,
+                                            Utils.urlEncode(JSON:encode(data)))
+        local remoteFiles = Utils.getJSON(checksumUrl)
         local localFiles = Utils.md5Files(_PLUGIN.path)
 
-        for k, v in pairs (remoteFiles) do
-            if localFiles[k] == v then
-                -- do nothing
+        for filename, hash in pairs (remoteFiles) do
+            if localFiles[filename] == hash then
+                -- correct version & no corruption!
             else
-                local file = Utils.getFile("http://code.kyl191.net/" .. _PLUGIN.id .. "/head/" .. k, "tempupdatefile", nil)
-                local path = LrPathUtils.makeAbsolute(k, _PLUGIN.path)
+                local url = string.format("http://code.kyl191.net/%s/head/%s", _PLUGIN.id, filename)
+                local file = Utils.getFile(url, "tempupdatefile", false)
+
+                local path = LrPathUtils.makeAbsolute(file, _PLUGIN.path)
                 LrFileUtils.makeFileWritable(path)
                 if LrFileUtils.exists(path) then
-                    logger:info("Going to move " .. file .. " to " .. path)
-                    Utils.makeBackups(k, 0)
+                    logger:info(string.format("Going to move %s to %s", file, path))
+                    Utils.makeBackups(file, 0)
                 end
+
                 local ok, message = LrFileUtils.move(file, path)
                 if not ok then
                     logger:error(message)
