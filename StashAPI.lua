@@ -57,24 +57,16 @@ end
 
 --------------------------------------------------------------------------------
 
-function StashAPI.processToken( token, context )
+function StashAPI.processToken(token)
 
     -- Token gets to here after passing through getResult, with the attendant network error checking
     -- So no need for network errors
     -- Also, one of the checks was to see if the status was 'error', so the default case that we assume is that status == success
 
     -- Setup the various plugin preferences
-    if token.status == "success" then
-        prefs.access_token = token.access_token
-        prefs.refresh_token = token.refresh_token
-        prefs.expire = import 'LrDate'.currentTime() + token.expires_in
-
-    -- If the token has anything other than status = success, oops, we've got a problem
-    -- Function context comes from StashUser.login
-    else
-        import 'LrDialogs'.attachErrorDialogToFunctionContext(context)
-        LrErrors.throwUserError( "Unable to authenticate" )
-    end
+    prefs.access_token = token.access_token
+    prefs.refresh_token = token.refresh_token
+    prefs.expire = import 'LrDate'.currentTime() + token.expires_in
 
 end
 
