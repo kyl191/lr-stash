@@ -109,8 +109,6 @@ function Utils.getJSON(url)
 end
 
 --------------------------------------------------------------------------------
-
-function Utils.getFile(url, path, errorMessage)
 function Utils.getUrl(url)
     data, headers = LrHttp.get(url)
     if Utils.isLightroomError(headers) then
@@ -123,18 +121,9 @@ function Utils.getUrl(url)
     end
 end
 
-    -- We can't do anything about a Lightroom transport error!
 function Utils.postUrl(url)
     data, headers = LrHttp.post(url, "")
     if Utils.isLightroomError(headers) then
-        local error = Utils.getLightroomError(headers)
-        logger:error(string.format("%s had a problem.", url))
-        Utils.logTable(error_message)
-        local error_message = string.format("There was a problem getting %s. \nLightroom had a problem:\n %s - %s",
-                                    url,
-                                    error.error,
-                                    error.error_description)
-        LrErrors.throwUserError(error_message)
         logger:error(string.format("Lightroom had a problem POSTing to %s", url))
         local error_headers = Utils.getLightroomError(headers)
         Utils.logTable(error_headers)
@@ -143,6 +132,20 @@ function Utils.postUrl(url)
         return data, headers
     end
 end
+
+
+function Utils.getFile(url, path)
+    data, headers = Utils.getUrl(url)
+
+    if Utils.isServerError(headers) then
+        local error_message = string.format("Encountered error %d downloading %s, terminating", headers.status, url)
+        logger:error(error_message)
+        Utils.logTable(headers)
+        if data ~= nil then
+            logger:info(string.format("Data recieved: %s", data))
+        end
+        error(error_message)
+        end
     end
 
     local path = LrPathUtils.standardizePath(path)
