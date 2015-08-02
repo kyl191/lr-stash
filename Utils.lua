@@ -122,8 +122,8 @@ function Utils._getJSON(url, usePost, body)
         local error_message = nil
         if Utils.isServerError(headers) then
             error_message = string.format("Encountered error %d downloading %s, no valid JSON recieved, terminating",
-                                                headers.status,
-                                                url)
+                                            headers.status,
+                                            url)
         else
             error_message = string.format("JSON decoding error encountered from URL %s, terminating", url)
         end
