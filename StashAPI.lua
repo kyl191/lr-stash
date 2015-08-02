@@ -99,7 +99,9 @@ function StashAPI.uploadPhoto(params)
         table.insert(content, {name='stack', value=Utils.urlEncode(params.stackName)})
     end
     if params.stackId ~= nil then
-        table.insert(content, {name='stackid', value=params.stackId})
+        if StashAPI.verifyStackExists(params.stackId) then
+            table.insert(content, {name='stackid', value=params.stackId})
+        end
     end
 
     -- Overwrite metadata if the user says yes, or there's no stash id (which means the photo hasn't been uploaded)
@@ -215,6 +217,15 @@ end
 
 function StashAPI.getJSON(url)
     data = Utils.getJSON(url)
+function StashAPI.verifyStackExists(stackId)
+    local url = string.format("https://www.deviantart.com/api/v1/oauth2/stash/%s?token=%s",
+                        stackId,
+                        prefs.access_token)
+    logger:debug(string.format("Verifying stack %s exists", stackId))
+    local success = LrTasks.pcall(StashAPI.getJSON, url)
+    return success
+end
+
     -- JSON was parsed successfully, now check if the server returned an error message in JSON.
     if data.status and data.status == "error" then
         local err_message = string.format("StashAPI: error %s from %s: %s", data.error, url, data.error_description)
