@@ -146,7 +146,7 @@ function StashAPI.uploadPhoto(params)
     logger:info(string.format("Uploading photo to: %s", postUrl))
     logger:info("With form fields:")
     Utils.logTable(content)
-    local result, headers = LrHttp.postMultipart(postUrl, content)
+    local data, headers = LrHttp.postMultipart(postUrl, content)
 
     if Utils.isLightroomError(headers) then
         local lr_error = Utils.getLightroomError(headers)
@@ -212,7 +212,7 @@ function StashAPI.uploadPhoto(params)
         end
     end
 
-    local ok, json = LrTasks.pcall(function() return JSON:decode(result) end)
+    local ok, json = LrTasks.pcall(function() return JSON:decode(data) end)
 
     -- And of course, if there's no error, return the parsed JSON object
     return json
