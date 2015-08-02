@@ -78,9 +78,35 @@ function Utils.md5Files(path)
 end
 
 --------------------------------------------------------------------------------
+function Utils.getJSON(args)
+    local url = nil
+    if type(args) == "string" then
+        url = args
+    elseif not args.url then
+        logger:error("No URL provided!")
+        return
+    else
+        url = args.url
+    end
+    local usePost = false
+    if args.usePost then
+        usePost = args.usePost
+    end
+    local body = nil
+    if args.body then
+        body = args.body
+    end
+    return Utils._getJSON(url, usePost, body)
+end
 
-function Utils.getJSON(url)
-    data, headers = Utils.postUrl(url)
+function Utils._getJSON(url, usePost, body)
+    logger:debug("Getting " .. url)
+    if usePost then
+        data, headers = Utils._postUrl(url, body)
+    else
+        data, headers = Utils._getUrl(url)
+    end
+
     if data == nil then
         error_message = string.format("%s returned an empty response, terminating", url)
         logger:error(error_message)
