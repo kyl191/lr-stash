@@ -605,11 +605,12 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
         -- The presumed use-case of this collection is piece-meal uploading, so in virtually all cases, this is fine.
         -- However, if the user creates a collection, we'll create a corresponding folder on Sta.sh.
         if isDefaultCollection then
-            stackId = nil
             stackName = "Uploaded by Lightroom"
         else
-            stackId = publishedCollectionInfo.remoteId
             stackName = publishedCollectionInfo.name
+        end
+        if publishedCollectionInfo.remoteId ~= nil and StashAPI.verifyStackExists(publishedCollectionInfo.remoteId) then
+            stackId = publishedCollectionInfo.remoteId
         end
     end
 
