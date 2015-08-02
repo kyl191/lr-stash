@@ -252,16 +252,16 @@ function StashAPI.getJSON(args)
 end
 
 function StashAPI.getUsername()
-
     -- Get the user's dA username in the form of ~kyl191 (the dA symbol, and the actual name)
 
-    local postUrl = "https://www.deviantart.com/api/oauth2/user/whoami?token=" .. prefs.access_token
-    local error = "retriving user details"
+    local url = "https://www.deviantart.com/api/v1/oauth2/user/whoami?token=" .. prefs.access_token
 
-    local token = Utils.getJSON(postUrl, error)
-
-    return { symbol = "", name = token.username }
-
+    local success, data = LrTasks.pcall(StashAPI.getJSON, url)
+    if success then
+        return { symbol = "", name = data.username }
+    else
+        LrErrors.throwUserError(string.format("Error retriving user details: %s", data))
+    end
 end
 
 --------------------------------------------------------------------------------
