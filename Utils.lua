@@ -128,7 +128,7 @@ function Utils._getJSON(url, usePost, body)
             error_message = string.format("JSON decoding error encountered from URL %s, terminating", url)
         end
         logger:error(error_message)
-        Utils.logTable(headers)
+        Utils.logTable(headers, "Headers")
         logger:info(string.format("Data recieved: %s", data))
         error(error_message)
 
@@ -162,6 +162,8 @@ function Utils.postUrl(url)
         body = table.concat(fields, '&')
     end
     headers = {{field="Content-Type", value="application/x-www-form-urlencoded"}}
+    logger:debug(string.format("POSTing to %s with body", url))
+    Utils.logTable(body)
     if Utils.isLightroomError(headers) then
         logger:error(string.format("Lightroom had a problem POSTing to %s", url))
         local error_headers = Utils.getLightroomError(headers)
