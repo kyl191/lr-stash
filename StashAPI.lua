@@ -215,8 +215,6 @@ function StashAPI.verifyItemExists(itemId)
     return success
 end
 
-function StashAPI.getJSON(url)
-    data = Utils.getJSON(url)
 function StashAPI.verifyStackExists(stackId)
     local url = string.format("https://www.deviantart.com/api/v1/oauth2/stash/%s?token=%s",
                         stackId,
@@ -226,6 +224,8 @@ function StashAPI.verifyStackExists(stackId)
     return success
 end
 
+function StashAPI.getJSON(args)
+    data = Utils.getJSON(args)
     -- JSON was parsed successfully, now check if the server returned an error message in JSON.
     if data.status and data.status == "error" then
         local err_message = string.format("StashAPI: error %s from %s: %s", data.error, url, data.error_description)
