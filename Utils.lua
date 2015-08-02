@@ -153,6 +153,15 @@ end
 
 function Utils.postUrl(url)
     data, headers = LrHttp.post(url, "")
+    if type(body) == "table" then
+        fields = {}
+        for k, v in pairs(body) do
+            local field = string.format("%s=%s", Utils.urlEncode(k), Utils.urlEncode(v))
+            table.insert(fields, field)
+        end
+        body = table.concat(fields, '&')
+    end
+    headers = {{field="Content-Type", value="application/x-www-form-urlencoded"}}
     if Utils.isLightroomError(headers) then
         logger:error(string.format("Lightroom had a problem POSTing to %s", url))
         local error_headers = Utils.getLightroomError(headers)
