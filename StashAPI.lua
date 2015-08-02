@@ -29,9 +29,18 @@ function StashAPI.getToken(code)
     -- Get the initial authorization token.
     -- ONLY called by StashUser.login
 
-    local url = string.format("https://www.deviantart.com/oauth2/token?grant_type=authorization_code&client_id=%i&client_secret=%s&code=%s&redirect_uri=http://oauth2.kyl191.net/", Auth.client_id, Auth.client_secret,code)
-
-    local success, token = LrTasks.pcall(StashAPI.getJSON, url)
+    local url = "https://www.deviantart.com/oauth2/token?grant_type=authorization_code&redirect_uri=http://oauth2.kyl191.net/"
+    local args = {url = url,
+                    usePost = true,
+                    body = {
+                        client_id = Auth.client_id,
+                        client_secret = Auth.client_secret,
+                        code = code
+                    }
+                }
+    logger:debug("Calling StashAPI.getToken")
+    local success, token = LrTasks.pcall(StashAPI.getJSON, args)
+    logger:debug(token)
     if success then
         return token
     else
