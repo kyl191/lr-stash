@@ -242,7 +242,7 @@ function StashAPI.getJSON(args)
     data = Utils.getJSON(args)
     -- JSON was parsed successfully, now check if the server returned an error message in JSON.
     if data.status and data.status == "error" then
-        local err_message = string.format("StashAPI: error %s from %s: %s", data.error, url, data.error_description)
+        local err_message = string.format("StashAPI: error %s: %s", data.error, data.error_description)
         logger:error(err_message)
         Utils.logTable(data, "Result from JSON data")
         error(err_message)
