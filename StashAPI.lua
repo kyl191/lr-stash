@@ -242,6 +242,13 @@ function StashAPI.getJSON(args)
     data = Utils.getJSON(args)
     -- JSON was parsed successfully, now check if the server returned an error message in JSON.
     if data.status and data.status == "error" then
+        if data.error == "invalid_token" and args.retry == nil then
+            logger:debug("Caught invalid token error, attempting refresh of token")
+            StashAPI.refreshAuth()
+            logger:debug("Token refreshed, retrying request")
+            args.retry = true
+            return StashAPI.getJSON(args)
+        end
         local err_message = string.format("StashAPI: error %s: %s", data.error, data.error_description)
         logger:error(err_message)
         Utils.logTable(data, "Result from JSON data")
