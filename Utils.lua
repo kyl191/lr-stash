@@ -96,15 +96,15 @@ function Utils.getJSON(args)
     if args.body then
         body = args.body
     end
-    return Utils._getJSON(url, usePost, body)
+    return _getJSON(url, usePost, body)
 end
 
-function Utils._getJSON(url, usePost, body)
+local function _getJSON(url, usePost, body)
     logger:debug("Getting " .. url)
     if usePost then
-        data, headers = Utils._postUrl(url, body)
+        data, headers = _postUrl(url, body)
     else
-        data, headers = Utils._getUrl(url)
+        data, headers = _getUrl(url)
     end
 
     if data == nil then
@@ -139,7 +139,7 @@ function Utils._getJSON(url, usePost, body)
 end
 
 --------------------------------------------------------------------------------
-function Utils._getUrl(url)
+local function _getUrl(url)
     data, headers = LrHttp.get(url)
     if Utils.isLightroomError(headers) then
         logger:error(string.format("Lightroom had a problem GETing %s", url))
@@ -151,7 +151,7 @@ function Utils._getUrl(url)
     end
 end
 
-function Utils._postUrl(url, body)
+local function _postUrl(url, body)
     if type(body) == "table" then
         fields = {}
         for k, v in pairs(body) do
