@@ -228,7 +228,7 @@ function Utils.getJSON(args)
     if args.body then
         body = args.body
     end
-    return _getJSON(url, usePost, body)
+    return Utils._getJSON(url, usePost, body)
 end
 
 function Utils.getFile(url, path)
