@@ -332,7 +332,7 @@ function Utils.updatePlugin()
                 -- correct version & no corruption!
             else
                 local url = string.format("http://code.kyl191.net/%s/head/%s", _PLUGIN.id, filename)
-                local file = Utils.getFile(url, "tempupdatefile", false)
+                local file = Utils.getFile(url, "tempupdatefile")
 
                 local path = LrPathUtils.makeAbsolute(file, _PLUGIN.path)
                 LrFileUtils.makeFileWritable(path)
