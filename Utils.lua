@@ -151,7 +151,7 @@ function Utils._getUrl(url)
     end
 end
 
-function Utils.postUrl(url)
+function Utils._postUrl(url, body)
     if type(body) == "table" then
         fields = {}
         for k, v in pairs(body) do
