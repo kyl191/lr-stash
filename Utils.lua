@@ -165,23 +165,6 @@ function Utils.getVersion()
     return string.format("%i.%i.%07x", Info.VERSION.major, Info.VERSION.minor, Info.VERSION.revision)
 end
 --------------------------------------------------------------------------------
-
-function Utils.networkComms( action, url )
-
-    logger:info("Utils.networkComms: Called for " .. url)
-    local payload, headers = nil
-    -- Do the request
-    if action == "post" then
-        payload, headers = LrHttp.post(url, "")
-    else
-        payload, headers = LrHttp.get(url)
-    end
-
-    return Utils.checkResponse( payload, headers, url )
-
-end
---------------------------------------------------------------------------------
-
 function Utils.isLightroomError(headers)
     -- Lightroom errors are signified by having .error set to true
     if headers and headers.error then
