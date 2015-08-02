@@ -139,7 +139,7 @@ function Utils._getJSON(url, usePost, body)
 end
 
 --------------------------------------------------------------------------------
-function Utils.getUrl(url)
+function Utils._getUrl(url)
     data, headers = LrHttp.get(url)
     if Utils.isLightroomError(headers) then
         logger:error(string.format("Lightroom had a problem GETing %s", url))
