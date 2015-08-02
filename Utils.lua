@@ -81,6 +81,12 @@ end
 
 function Utils.getJSON(url)
     data, headers = Utils.postUrl(url)
+    if data == nil then
+        error_message = string.format("%s returned an empty response, terminating", url)
+        logger:error(error_message)
+        Utils.logTable(headers, "Headers")
+        error(error_message)
+    end
 
     -- We're assuming that the remote system has returned JSON - this is getJSON after all.
     local validJSON, decode = LrTasks.pcall(function() return JSON:decode(data) end)
@@ -97,9 +103,7 @@ function Utils.getJSON(url)
         end
         logger:error(error_message)
         Utils.logTable(headers)
-        if data ~= nil then
-            logger:info(string.format("Data recieved: %s", data))
-        end
+        logger:info(string.format("Data recieved: %s", data))
         error(error_message)
 
     else
