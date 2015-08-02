@@ -384,20 +384,13 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
     local title
 
     -- Get title according to the options in Stash Title section.
-
     if exportSettings.titleFirstChoice == 'filename' then
-
-        title = LrPathUtils.leafName( pathOrMessage )
-        logger:debug("Title built from filename")
+        title = LrPathUtils.leafName(pathOrMessage)
 
     elseif exportSettings.titleFirstChoice == 'title' then
-
         title = photo:getFormattedMetadata 'title'
-        logger:debug("Title built from metadata title")
-
-        if ( not title or #title == 0 ) and exportSettings.titleSecondChoice == 'filename' then
-            title = LrPathUtils.leafName( pathOrMessage )
-            logger:debug("Title built from filename, metadata title was empty")
+        if (not title or #title == 0) and exportSettings.titleSecondChoice == 'filename' then
+            title = LrPathUtils.leafName(pathOrMessage)
         end
 
     else
@@ -405,7 +398,6 @@ local function getStashTitle( photo, exportSettings, pathOrMessage )
     end
 
     return title
-
 end
 
 --------------------------------------------------------------------------------
