@@ -164,6 +164,10 @@ function StashAPI.uploadPhoto(params)
     elseif Utils.isServerError(headers) and data ~= nil then
         local isValid, json = LrTasks.pcall(function() return JSON:decode(data) end)
         if not isValid then
+            logger:error("Got an error from sta.sh that isn't JSON-formatted")
+            Utils.logTable(headers)
+            Utils.logTable(json)
+            logger:info(string.format("Data recieved: %s", data))
             LrErrors.throwUserError(string.format("Sta.sh gave us a server error, but isn't saying what the error is: %d",
                                                     headers.code))
         else
@@ -220,6 +224,7 @@ function StashAPI.verifyItemExists(itemId)
     local url = string.format("https://www.deviantart.com/api/v1/oauth2/stash/item/%s?token=%s",
                         itemId,
                         prefs.access_token)
+    logger:debug(string.format("Verifying item %s exists", itemId))
     local success = LrTasks.pcall(StashAPI.getJSON, url)
     return success
 end
