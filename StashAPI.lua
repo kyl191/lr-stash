@@ -95,8 +95,8 @@ function StashAPI.uploadPhoto(params)
             table.insert(content, {name='itemid', value=params.itemId})
         end
     end
-    if params.foldername ~= nil then
-        table.insert(content, {name='stack', value=Utils.urlEncode(params.foldername)})
+    if params.stackName ~= nil then
+        table.insert(content, {name='stack', value=Utils.urlEncode(params.stackName)})
     end
     if params.stackId ~= nil then
         table.insert(content, {name='stackid', value=params.stackId})
