@@ -698,7 +698,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
 
                     logger:info("Recording item id " .. StashInfo.itemid)
                     rendition:recordPublishedPhotoId(StashInfo.itemid)
-                    rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.itemid)
+                    rendition:recordPublishedPhotoUrl("https://sta.sh/1" .. StashInfo.itemid)
                 end
 
                 -- Sta.sh is now assigning new stackids to each upload
