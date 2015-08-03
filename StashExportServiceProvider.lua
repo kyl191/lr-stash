@@ -701,32 +701,25 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                     rendition:recordPublishedPhotoUrl("http://sta.sh/1" .. StashInfo.itemid)
                 end
 
-                -- Sta.sh does not return a folder ID once a photo's submitted to dA.
-                if StashInfo.stackid ~= nil then
-                    logger:info("Noting stackId: " ..  LrStringUtils.numberToString(StashInfo.stackid))
+                -- Sta.sh is now assigning new stackids to each upload
+                -- Set the stackid on the first upload if it's a new folder or the recorded folder
+                -- doesn't exist
+                if publishedCollectionInfo.remoteId == nil or
+                    not StashAPI.verifyStackExists(publishedCollectionInfo.remoteId) then
                     stackId = LrStringUtils.numberToString(StashInfo.stackid)
+                    logger:info(string.format("Recording stackId: %s", stackId))
+                    exportSession:recordRemoteCollectionId(stackId)
                 end
 
                 -- When done with photo, delete temp file. There is a cleanup step that happens later,
                 -- but this will help manage space in the event of a large upload.
                 LrFileUtils.delete(pathOrMessage)
                 prefs.uploadCount = prefs.uploadCount + 1
-
             end
-
-        end
-
-    end
-
-    if publishing then
-        if stackId ~= nil then
-            logger:info(string.format("Recording stackId: %s", stackId))
-            exportSession:recordRemoteCollectionId(stackId)
         end
     end
 
     progressScope:done()
-
 end
 
 --------------------------------------------------------------------------------
