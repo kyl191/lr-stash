@@ -672,7 +672,7 @@ function exportServiceProvider.processRenderedPhotos( functionContext, exportCon
                         if string.find( keyword, "[^%w*]") ~= nil then
                             keyword = string.gsub( keyword, "[^%w*]", "" )
                         end
-                        tags[ #tags + 1 ] = keyword
+                        table.insert(tags, keyword)
                     end
                 end
 
