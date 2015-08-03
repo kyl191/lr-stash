@@ -275,7 +275,9 @@ end
 
 function StashAPI.renameFolder(stackId, newName)
 
-    -- Rename a folder after escaping characters in the new folder name.
+    if not StashAPI.verifyStackExists(stackId) then
+        logger:error(string.format("Stack %s doesn't exist, skipping rename", stackId))
+    end
     local url = string.format("https://www.deviantart.com/api/v1/oauth2/stash/update/%s?token=%s",
                                 stackId,
                                 prefs.access_token)
