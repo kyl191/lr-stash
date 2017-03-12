@@ -17,7 +17,7 @@ $sdk = new Aws\Sdk($aws_conf);
 
 $s3 = $sdk->createS3();
 $bucket = "lr-stash";
-$key = "head/md5sums.json"
+$key = "head/md5sums.json";
 $res = $s3->getObject([
   'Bucket' => $bucket,
   'Key'    => $key,
